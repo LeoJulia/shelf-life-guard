@@ -16,7 +16,7 @@
 Установите зависимости проекта:
 
 ```bash
-yarn install
+npm run install
 ```
 
 ## Запуск
@@ -24,11 +24,11 @@ yarn install
 Запустите сервер разработки на `http://localhost:3000`:
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 Соберите проект для продакшена:
 
 ```bash
-yarn build
+npm run build
 ```
