@@ -1,9 +1,11 @@
 <script setup lang="ts">
 const { data } = await useFetch('/api/product');
+const router = useRouter();
 </script>
 
 <template>
   <div class="m-8">
+    <UIcon name="lets-icons:back-light" class="size-8" @click="router.back()" />
     <div class="text-highlighted text-lg/8">
       {{ data?.brand }} - {{ data?.productName }}
     </div>
