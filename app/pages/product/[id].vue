@@ -1,13 +1,10 @@
 <script setup lang="ts">
 const { data } = await useFetch('/api/product');
-const onClick = () => {
-  alert('click');
-}
 </script>
 
 <template>
   <div class="m-8">
-    <div class="text-highlighted text-lg/8" @click="onClick">
+    <div class="text-highlighted text-lg/8">
       {{ data?.brand }} - {{ data?.productName }}
     </div>
     <div class="flex flex-col divide-y">
