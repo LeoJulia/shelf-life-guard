@@ -1,5 +1,16 @@
-import productJson from "../../__mocks__/product.json";
+import { serverSupabaseClient } from "#supabase/server";
 
-export default defineEventHandler((event) => {
-  return productJson;
+export default defineEventHandler(async (event) => {
+  const query = getQuery(event);
+  const client = await serverSupabaseClient(event);
+
+  if (!query.id) return null;
+
+  const { data: product } = await client
+    .from("products")
+    .select("*")
+    .eq("id", query.id)
+    .single();
+
+  return product;
 });

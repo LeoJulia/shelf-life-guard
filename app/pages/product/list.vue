@@ -4,6 +4,6 @@ const { data } = await useFetch('/api/product-list');
 
 <template>
   <div class="m-8" v-for="i in data">
-    <NuxtLink :to="{ name: 'product-id', params: { id: i.id } }">{{ i.brand }} - {{ i.productName }}</NuxtLink>
+    <NuxtLink :to="{ name: 'product-id', params: { id: i.id } }">{{ i.brand }} - {{ i.name }}</NuxtLink>
   </div>
 </template>
