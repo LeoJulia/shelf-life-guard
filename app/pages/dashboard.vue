@@ -6,6 +6,7 @@ const { data } = await useFetch<TProduct[]>('/api/product-list');
 
 <template>
   <main class="mx-auto max-w-7xl px-6 py-8">
+    <Statistic />
     <ProductList :data="data" />
   </main>
 </template>

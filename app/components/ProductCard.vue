@@ -11,7 +11,7 @@ const progress = product?.expiry_date ? Math.round(Math.max(
   ))) : 0;
 
 const lastDate = product?.finished_at ? new Date(product.finished_at) : new Date();
-const costPerDay = product?.actual_price ? product.actual_price / ((lastDate.getTime() - new Date(String(product.opened_at)).getTime()) / 8.64e+7) : null;
+const costPerDay = product?.opened_at ? (product?.actual_price ?? 0) / ((lastDate.getTime() - new Date(product.opened_at).getTime()) / 8.64e+7) : null;
 </script>
 
 <template>
@@ -121,7 +121,7 @@ const costPerDay = product?.actual_price ? product.actual_price / ((lastDate.get
             Стоимость за день
           </span>
         </div>
-        <p v-if="costPerDay" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
+        <p v-if="typeof costPerDay === 'number'" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
           {{ costPerDay.toFixed(2) }}
         </p>
         <p v-else class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
