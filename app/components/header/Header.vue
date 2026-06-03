@@ -2,8 +2,8 @@
   <header class="border-b border-border bg-card/50 backdrop-blur-sm">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
       <div class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(0.85_0.1_340)]">
-          <Package class="h-5 w-5 text-white" />
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[oklch(0.85_0.1_340)]">
+          <UIcon name="mage:package-box" class="size-6 text-white" />
         </div>
         <span class="text-lg font-semibold text-foreground">
           Shelf Life Guard

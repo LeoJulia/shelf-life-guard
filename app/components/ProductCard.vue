@@ -1,13 +1,15 @@
 <script setup>
-const { product } = defineProps(['product']);
+const { product } = defineProps(["product"]);
 
 const progress = product.expiry_date ? Math.round(Math.max(
   0,
   Math.min(
     100,
-    (new Date().getTime() / new Date(product.expiry_date).getTime()) * 100
+    ((new Date(product.expiry_date).getTime() - new Date().getTime()) / (90 * 8.64e+7)) * 100
   ))) : 0;
-const costPerDay = product.actual_price / ((new Date(product.finished_at).getTime() - new Date(product.opened_at).getTime()) / 8.64e+7);
+
+const lastDate = product.finished_at ? new Date(product.finished_at) : new Date();
+const costPerDay = product.actual_price / ((lastDate.getTime() - new Date(product.opened_at).getTime()) / 8.64e+7);
 </script>
 
 <template>
@@ -16,7 +18,7 @@ const costPerDay = product.actual_price / ((new Date(product.finished_at).getTim
     <div class="flex gap-4">
       <!-- {/* Product Image */} -->
       <div class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input">
-        <Image src='product.image' alt='product.name' fill
+        <img src="" :alt="product.name" fill
           class="object-cover transition-transform duration-300 group-hover:scale-105" />
       </div>
 
@@ -38,7 +40,7 @@ const costPerDay = product.actual_price / ((new Date(product.finished_at).getTim
         </div>
 
         <!-- {/* Tags */} -->
-        <div class=" mt-2 flex flex-wrap gap-1.5">
+        <div class="mt-2 flex flex-wrap gap-1.5">
           <span
             class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_340)] text-[oklch(0.45_0.1_340)]">{{
               product?.category }}</span>
@@ -57,7 +59,7 @@ const costPerDay = product.actual_price / ((new Date(product.finished_at).getTim
     </div>
 
     <!-- {/* Progress Bar */} -->
-    <div class=" mt-4" v-if="product.expiry_date && !product.finished_at">
+    <div class="mt-4" v-if="product.expiry_date && !product.finished_at">
       <div class="flex items-center justify-between text-xs text-muted-foreground">
         <span>Срок годности</span>
         <span class="font-medium text-foreground">
@@ -84,7 +86,7 @@ const costPerDay = product.actual_price / ((new Date(product.finished_at).getTim
           <UIcon name="mage:calendar" class="size-4" />
           <span class="text-[10px] font-medium uppercase tracking-wide">Открыт</span>
         </div>
-        <p class="mt-1 text-xs font-semibold text-[oklch(0.4_0.08_200)]">
+        <p v-if="product.opened_at" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.08_200)]">
           {{
             new Date(product.opened_at).toLocaleDateString("ru-RU", {
               month: "short",
@@ -92,6 +94,9 @@ const costPerDay = product.actual_price / ((new Date(product.finished_at).getTim
               year: "numeric",
             })
           }}
+        </p>
+        <p v-else class="mt-1 text-xs font-semibold text-[oklch(0.4_0.08_200)]">
+          Баночка еще не открыта
         </p>
       </div>
 
@@ -114,8 +119,11 @@ const costPerDay = product.actual_price / ((new Date(product.finished_at).getTim
             Стоимость за день
           </span>
         </div>
-        <p v-if="product.finished_at" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
+        <p v-if="product.opened_at" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
           {{ costPerDay.toFixed(2) }}
+        </p>
+        <p v-else class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
+          Начни банку, чтобы узнать
         </p>
       </div>
     </div>
