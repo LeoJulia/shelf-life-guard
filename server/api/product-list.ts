@@ -8,5 +8,12 @@ export default defineEventHandler(async (event) => {
     .select("*")
     .order("created_at", { ascending: false });
 
+  if (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message,
+    });
+  }
+
   return products;
 });

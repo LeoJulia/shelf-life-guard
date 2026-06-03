@@ -1,19 +1,21 @@
-<script setup>
-const { product } = defineProps(["product"]);
+<script setup lang="ts">
+import type { TProduct } from '~/types/product.types';
 
-const progress = product.expiry_date ? Math.round(Math.max(
+const { product } = defineProps<{ product?: TProduct }>();
+
+const progress = product?.expiry_date ? Math.round(Math.max(
   0,
   Math.min(
     100,
-    ((new Date(product.expiry_date).getTime() - new Date().getTime()) / (90 * 8.64e+7)) * 100
+    ((new Date(product?.expiry_date).getTime() - new Date().getTime()) / (90 * 8.64e+7)) * 100
   ))) : 0;
 
-const lastDate = product.finished_at ? new Date(product.finished_at) : new Date();
-const costPerDay = product.actual_price / ((lastDate.getTime() - new Date(product.opened_at).getTime()) / 8.64e+7);
+const lastDate = product?.finished_at ? new Date(product.finished_at) : new Date();
+const costPerDay = product?.actual_price ? product.actual_price / ((lastDate.getTime() - new Date(String(product.opened_at)).getTime()) / 8.64e+7) : null;
 </script>
 
 <template>
-  <div
+  <div v-if="product"
     class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
     <div class="flex gap-4">
       <!-- {/* Product Image */} -->
@@ -34,7 +36,7 @@ const costPerDay = product.actual_price / ((lastDate.getTime() - new Date(produc
         <!-- {/* Rating */} -->
         <div class="mt-1.5 flex items-center gap-1">
           <div v-for="i in 5">
-            <UIcon v-if="i < product.rating" name="mage:star-fill" class="size-5 fill-primary text-primary" />
+            <UIcon v-if="i < (product.rating ?? 0)" name="mage:star-fill" class="size-5 fill-primary text-primary" />
             <UIcon v-else name="mage:star-fill" class="size-5 fill-muted text-muted" />
           </div>
         </div>
@@ -43,13 +45,13 @@ const costPerDay = product.actual_price / ((lastDate.getTime() - new Date(produc
         <div class="mt-2 flex flex-wrap gap-1.5">
           <span
             class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_340)] text-[oklch(0.45_0.1_340)]">{{
-              product?.category }}</span>
+              product.category }}</span>
           <span
             class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_200)] text-[oklch(0.45_0.1_200)]">{{
-              product?.volume }}</span>
+              product.volume }}</span>
           <span
             class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_165)] text-[oklch(0.4_0.1_165)]">{{
-              product?.year }}</span>
+              product.year }}</span>
           <span
             class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.92_0.08_80)] text-[oklch(0.45_0.12_80)]">{placeholder}</span>
           <span
@@ -108,7 +110,7 @@ const costPerDay = product.actual_price / ((lastDate.getTime() - new Date(produc
           </span>
         </div>
         <p class="mt-1 text-xs font-semibold text-[oklch(0.35_0.1_165)]">
-          {{ product?.shop }}
+          {{ product.shop }}
         </p>
       </div>
 
@@ -119,7 +121,7 @@ const costPerDay = product.actual_price / ((lastDate.getTime() - new Date(produc
             Стоимость за день
           </span>
         </div>
-        <p v-if="product.opened_at" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
+        <p v-if="costPerDay" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
           {{ costPerDay.toFixed(2) }}
         </p>
         <p v-else class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">

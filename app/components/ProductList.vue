@@ -1,5 +1,7 @@
-<script setup>
-defineProps(['data']);
+<script setup lang="ts">
+import type { TProduct } from '~/types/product.types';
+
+const { data } = defineProps<{ data?: TProduct[] }>();
 </script>
 
 <template>
@@ -9,7 +11,7 @@ defineProps(['data']);
         Мои баночки
       </h2>
       <span class="text-sm text-muted-foreground">
-        {{ data.length }} шт
+        {{ data?.length }} шт
       </span>
     </div>
     <div class="mt-4 grid gap-4 grid-cols-1" v-for="i in data">

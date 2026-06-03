@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { TProduct } from '~/types/product.types';
+
 const router = useRouter();
 const route = useRoute();
 
-const { data } = await useFetch('/api/product', {
+const { data } = await useFetch<TProduct>('/api/product', {
   query: { id: route.params.id },
 });
 </script>

@@ -25,10 +25,10 @@
         </a>
       </nav>
 
-      <Button size="sm" class="gap-2">
-        <Plus class="h-4 w-4" />
+      <UButton size="sm" class="gap-2">
+        <UIcon name="mage:plus" class="size-6" />
         Добавить
-      </Button>
+      </UButton>
     </div>
   </header>
 </template>

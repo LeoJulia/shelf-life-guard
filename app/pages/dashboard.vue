@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { data } = await useFetch('/api/product-list');
+import type { TProduct } from '~/types/product.types';
+
+const { data } = await useFetch<TProduct[]>('/api/product-list');
 </script>
 
 <template>
