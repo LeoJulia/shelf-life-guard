@@ -118,7 +118,7 @@ const costPerDay = product?.opened_at ? (product?.actual_price ?? 0) / ((lastDat
         <div class="flex items-center gap-1 text-[oklch(0.5_0.1_340)]">
           <UIcon name="solar:ruble-broken" class="size-4" />
           <span class="text-[10px] font-medium uppercase tracking-wide">
-            Стоимость за день
+            Цена за день
           </span>
         </div>
         <p v-if="typeof costPerDay === 'number'" class="mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]">
