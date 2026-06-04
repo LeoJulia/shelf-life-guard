@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { TProduct } from '~/types/product.types';
 
-const { data } = defineProps<{ data?: TProduct[] }>();
+const { data, setSearch } = defineProps<{ data?: TProduct[], setSearch: Function }>();
+
 const viewMode = ref('grid');
 const setViewMode = (mode: string) => {
   viewMode.value = mode;
@@ -9,8 +10,8 @@ const setViewMode = (mode: string) => {
 </script>
 
 <template>
-  <Filter :setViewMode :viewMode />
-  <div v-if="data" class="mt-6">
+  <Filter :setViewMode :viewMode :setSearch />
+  <div v-if="data?.length" class="mt-6">
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold text-foreground">
         Мои баночки
@@ -29,7 +30,7 @@ const setViewMode = (mode: string) => {
   </div>
   <div v-else class="mt-6">
     <div class="mt-12 flex flex-col items-center justify-center text-center">
-      <UIcon name="mage:package-box" class=" h-12 w-12 text-muted-foreground" />
+      <UIcon name="mage:package-box" class="h-12 w-12 text-muted-foreground" />
       <h3 class="mt-4 text-lg font-medium text-foreground">
         No products found
       </h3>

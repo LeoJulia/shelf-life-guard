@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps(['viewMode', 'setViewMode']);
+defineProps(['viewMode', 'setViewMode', 'setSearch']);
 </script>
 
 <template>
@@ -8,7 +8,7 @@ defineProps(['viewMode', 'setViewMode']);
     <div class="relative flex-1 sm:max-w-md">
       <UIcon name="mage:search" class="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
       <input class="w-md h-8 pl-10 border border-border rounded-sm focus:bg-input"
-        placeholder="Ищи продукты, бренды или теги..." />
+        placeholder="Ищи продукты, бренды или теги..." @input="setSearch" />
     </div>
 
     <div class="flex items-center gap-2">
