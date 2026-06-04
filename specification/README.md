@@ -14,6 +14,8 @@
 - **UI Library**: @nuxt/ui
 - **CSS**: Tailwind CSS
 - **JavaScript**: ES Modules (type: "module")
+- **State Management**: Pinia
+- **Icons**: Mage Icons
 
 ### Основные зависимости
 
@@ -24,7 +26,8 @@
   "nuxt": "^3.x",
   "tailwindcss": "^3.x",
   "vue": "^3.5.34",
-  "vue-router": "^4.x"
+  "vue-router": "^4.x",
+  "pinia": "^2.x"
 }
 ```
 
@@ -39,7 +42,12 @@ shelf-life-guard/
 │   │   ├── Filter.vue     # Компонент фильтрации и поиска
 │   │   ├── ProductCard.vue # Карточка продукта
 │   │   ├── ProductList.vue # Список продуктов
-│   │   └── Statistic.vue  # Статистика
+│   │   ├── ProductRow.vue # Строка с меткой и значением
+│   │   ├── Statistic.vue  # Статистика
+│   │   └── ui/            # UI компоненты
+│   │       ├── ProgressBar.vue # Прогресс-бар срока годности
+│   │       ├── Rating.vue    # Рейтинг продукта (звёзды)
+│   │       └── Tags.vue      # Теги продукта
 │   ├── components/header/ # Шапка сайта
 │   │   └── Header.vue     # Компонент хедера
 │   ├── middleware/        # Глобальные мидлвары
@@ -48,6 +56,9 @@ shelf-life-guard/
 │   │   ├── dashboard.vue  # Главная страница (дашборд)
 │   │   └── product/       # Маршрут для просмотра продукта
 │   │       └── [id].vue   # Динамическая страница по ID продукта
+│   ├── stores/            # Pinia сторы
+│   │   ├── filterStore.ts  # Стор для фильтрации и поиска
+│   │   └── productStore.ts # Стор для продуктов (если используется)
 │   └── app.vue            # Корневой компонент
 ├── assets/                # Статические ресурсы
 │   └── css/              # CSS файлы
@@ -67,8 +78,9 @@ shelf-life-guard/
 ├── supabase/              # Конфигурация Supabase
 ├── nuxt.config.ts         # Конфигурация Nuxt
 ├── package.json           # Зависимости и скрипты
-└── types/                 # TypeScript типы
-    └── database.types.ts  # Типы базы данных Supabase
+├── types/                 # TypeScript типы
+│   └── database.types.ts  # Типы базы данных Supabase
+└── tsconfig.json          # Конфигурация TypeScript
 ```
 
 ---
@@ -96,6 +108,7 @@ shelf-life-guard/
 | `rating`       | number \| null | Оценка продукта (1-5)               | 5                       |
 | `ingredients`  | string \| null | Состав продукта (текстовый список)  | "ароматизатор, вода..." |
 | `notes`        | string \| null | Дополнительные заметки              | "Очень нравится"        |
+| `created_at`   | string \| null | Дата создания записи                | ISO timestamp           |
 
 ---
 
@@ -117,7 +130,17 @@ shelf-life-guard/
   "name": "Mild cleansing gel",
   "brand": "NEEDLY",
   "category": "Очищение",
-  ...
+  "volume": "235мл",
+  "market_price": 1900.0,
+  "actual_price": 972.99,
+  "shop": "82box",
+  "year": 2025,
+  "opened_at": "2025-08-08",
+  "expiry_date": "2026-05-13",
+  "finished_at": null,
+  "rating": 5,
+  "ingredients": "ароматизатор, вода...",
+  "notes": "Очень нравится"
 }
 ```
 
@@ -131,7 +154,7 @@ shelf-life-guard/
 
 **Query Parameters**:
 
-- `search` (string): Поиск по названию, бренду или категории
+- `searchQuery` (string): Поиск по названию, бренду или категории
 - `shop` (string): Фильтр по магазину
 
 **Response**:
@@ -142,6 +165,7 @@ shelf-life-guard/
     "id": "uuid-123",
     "name": "Mild cleansing gel",
     "brand": "NEEDLY",
+    "category": "Очищение",
     ...
   },
   ...
@@ -156,6 +180,17 @@ shelf-life-guard/
 
 **Описание**: Возвращает статистические данные о продуктах.
 
+**Response**:
+
+```json
+{
+  "total": 10, // Общее количество продуктов
+  "spentYear": 5, // Количество продуктов, открытых в текущем году
+  "expiring30Days": 2, // Продуктов, срок годности которых истекает в ближайшие 60 дней
+  "openedTotal": 7 // Всего открытых продуктов (есть opened_at)
+}
+```
+
 **File**: [`server/api/statistic.ts`](../server/api/statistic.ts)
 
 ---
@@ -169,8 +204,11 @@ shelf-life-guard/
 **Props**:
 
 - `viewMode` (string): Текущий режим отображения ('grid' или 'list')
-- `setViewMode` (Function): Функция для смены режима отображения
-- `setSearch` (Function): Функция для обработки поиска
+- `setViewMode`: Функция для смены режима отображения
+
+**State (через filterStore)**:
+
+- `searchQuery` (string): Запрос поиска
 
 **Функциональность**:
 
@@ -190,7 +228,7 @@ shelf-life-guard/
 **Props**:
 
 - `data` (TProduct[]): Массив данных продуктов
-- `setSearch` (Function): Функция для обработки поиска
+- `setViewMode`: Функция для смены режима отображения
 
 **File**: [`app/components/ProductList.vue`](../app/components/ProductList.vue)
 
@@ -200,15 +238,21 @@ shelf-life-guard/
 
 Компонент карточки продукта.
 
+**Props**:
+
+- `product` (TProduct): Данные продукта
+
+**Отображаемая информация**:
+
+- Бренд и название продукта
+- Рейтинг (звёзды через компонент Rating)
+- Теги (категория, объём, год)
+- Прогресс-бар срока годности
+- Дата открытия
+- Магазин покупки
+- Цена за день использования (расчётная стоимость)
+
 **File**: [`app/components/ProductCard.vue`](../app/components/ProductCard.vue)
-
----
-
-### Statistic.vue
-
-Компонент для отображения статистики продуктов.
-
-**File**: [`app/components/Statistic.vue`](../app/components/Statistic.vue)
 
 ---
 
@@ -225,9 +269,84 @@ shelf-life-guard/
 
 ---
 
+### Statistic.vue
+
+Компонент для отображения статистики продуктов.
+
+**Функциональность**:
+
+- Отображает 4 метрики:
+  - Всего продуктов
+  - Потрачено за год (продуктов, открытых в текущем году)
+  - Открыто всего (всего открытых продуктов)
+  - Скоро просрок (продуктов с истекающим сроком годности)
+
+**File**: [`app/components/Statistic.vue`](../app/components/Statistic.vue)
+
+---
+
+### ProgressBar.vue
+
+UI-компонент для отображения прогресса срока годности продукта.
+
+**Props**:
+
+- `product` (TProduct): Данные продукта
+
+**Функциональность**:
+
+- Отображает процент оставшегося срока годности
+- Показывает дату истечения срока
+- Визуальный индикатор с градиентом
+
+**File**: [`app/components/ui/ProgressBar.vue`](../app/components/ui/ProgressBar.vue)
+
+---
+
+### Rating.vue
+
+UI-компонент для отображения рейтинга продукта в виде звёзд.
+
+**Props**:
+
+- `rating` (number): Оценка от 1 до 5
+
+**Функциональность**:
+
+- Отображает заполненные звёзды для указанного рейтинга
+- Пустые звёзды отображаются серым цветом
+
+**File**: [`app/components/ui/Rating.vue`](../app/components/ui/Rating.vue)
+
+---
+
+### Tags.vue
+
+UI-компонент для отображения тегов продукта.
+
+**Props**:
+
+- `product` (TProduct): Данные продукта
+
+**Отображаемые теги**:
+
+- Категория
+- Объём
+- Год покупки
+
+**File**: [`app/components/ui/Tags.vue`](../app/components/ui/Tags.vue)
+
+---
+
 ### Header.vue
 
 Компонент шапки сайта.
+
+**Функциональность**:
+
+- Логотип и название приложения
+- Навигация (заглушки)
+- Кнопка "Добавить" (заглушка)
 
 **File**: [`app/components/header/Header.vue`](../app/components/header/Header.vue)
 
@@ -239,13 +358,32 @@ shelf-life-guard/
 
 Основная страница приложения, отображающая статистику и список продуктов.
 
+**Функциональность**:
+
+- Отображает компонент Statistic с метриками
+- Отображает список продуктов через ProductList
+- Использует filterStore для поиска
+
 **File**: [`app/pages/dashboard.vue`](../app/pages/dashboard.vue)
 
 ---
 
-### /product/[id]
+### /product/[id] (Детальная страница продукта)
 
-Страница просмотра информации о конкретном продукте. Отображает все основные данные продукта через компонент ProductRow.
+Страница просмотра информации о конкретном продукте.
+
+**Функциональность**:
+
+- Отображает все основные данные продукта
+- Показывает рейтинг, теги и прогресс-бар срока годности
+- Детальная информация через ProductRow:
+  - Комментарий (notes)
+  - Состав (ingredients)
+  - Рыночная стоимость
+  - Стоимость покупки
+  - Магазин покупки
+  - Дата начала использования
+  - Дата окончания использования
 
 **File**: [`app/pages/product/[id].vue`](../app/pages/product/[id].vue)
 
@@ -286,3 +424,6 @@ export default defineNuxtConfig({
 4. **Цены**: Поля `market_price` и `actual_price` хранятся как числа без валюты (валюта определяется контекстом)
 5. **База данных**: Используется Supabase для хранения данных о продуктах
 6. **Типы TypeScript**: Типы генерируются из схемы Supabase в файле `types/database.types.ts`
+7. **Расчёт стоимости за день**: В компоненте ProductCard.vue рассчитывается стоимость продукта за день использования на основе даты открытия и фактической цены
+8. **Прогресс-бар срока годности**: Рассчитывается как процент времени, прошедшего с момента покупки до истечения срока (90 дней)
+9. **State management**: Pinia используется для управления состоянием фильтрации и поиска через filterStore

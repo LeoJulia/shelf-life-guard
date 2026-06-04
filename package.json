@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt/ui": "^4.8.1",
     "@nuxtjs/supabase": "^2.0.9",
+    "@pinia/nuxt": "^0.11.3",
     "nuxt": "^4.4.6",
     "supabase": "^2.104.0",
     "tailwindcss": "^4.3.0",

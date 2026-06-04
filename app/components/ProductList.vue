@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TProduct } from '~/types/product.types';
 
-const { data, setSearch } = defineProps<{ data?: TProduct[], setSearch: Function }>();
+const { data } = defineProps<{ data?: TProduct[] }>();
 
 const viewMode = ref('grid');
 const setViewMode = (mode: string) => {
@@ -10,7 +10,7 @@ const setViewMode = (mode: string) => {
 </script>
 
 <template>
-  <Filter :setViewMode :viewMode :setSearch />
+  <Filter :setViewMode :viewMode />
   <div v-if="data?.length" class="mt-6">
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold text-foreground">

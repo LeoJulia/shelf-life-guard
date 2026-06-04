@@ -10,12 +10,12 @@ export default defineEventHandler(async (event) => {
     request = request.eq("shop", query.shop);
   }
 
-  if (query.search) {
+  if (query.searchQuery) {
     request = request.or(
       [
-        `name.ilike.%${query.search}%`,
-        `brand.ilike.%${query.search}%`,
-        `category.ilike.%${query.search}%`,
+        `name.ilike.%${query.searchQuery}%`,
+        `brand.ilike.%${query.searchQuery}%`,
+        `category.ilike.%${query.searchQuery}%`,
       ].join(","),
     );
   }

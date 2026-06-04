@@ -1,5 +1,9 @@
 <script setup lang="ts">
-defineProps(['viewMode', 'setViewMode', 'setSearch']);
+import { useFilterStore } from '~/stores/filterStore';
+
+defineProps(['viewMode', 'setViewMode']);
+const filterStore = useFilterStore();
+const { searchQuery } = storeToRefs(filterStore);
 </script>
 
 <template>
@@ -8,7 +12,7 @@ defineProps(['viewMode', 'setViewMode', 'setSearch']);
     <div class="relative flex-1 sm:max-w-md">
       <UIcon name="mage:search" class="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
       <input class="w-md h-8 pl-10 border border-border rounded-sm focus:bg-input"
-        placeholder="Ищи продукты, бренды или теги..." @input="setSearch" />
+        placeholder="Ищи продукты, бренды или теги..." v-model="searchQuery" />
     </div>
 
     <div class="flex items-center gap-2">
