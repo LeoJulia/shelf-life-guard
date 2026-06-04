@@ -3,8 +3,8 @@ defineProps(['field', 'value']);
 </script>
 
 <template>
-  <div>
+  <div class="grid grid-cols-4 gap-2">
     <span class="font-mono">{{ field }}:</span>
-    {{ value ?? "-" }}
+    <span class="col-span-3">{{ value ?? "-" }}</span>
   </div>
 </template>

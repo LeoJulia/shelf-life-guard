@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import type { TProduct } from '~/types/product.types';
+import Rating from './ui/Rating.vue';
+import ProgressBar from './ui/ProgressBar.vue';
+import Tags from './ui/Tags.vue';
 
 const { product } = defineProps<{ product?: TProduct }>();
-
-const progress = product?.expiry_date ? Math.round(Math.max(
-  0,
-  Math.min(
-    100,
-    ((new Date(product?.expiry_date).getTime() - new Date().getTime()) / (90 * 8.64e+7)) * 100
-  ))) : 0;
 
 const lastDate = product?.finished_at ? new Date(product.finished_at) : new Date();
 const costPerDay = product?.opened_at ? (product?.actual_price ?? 0) / ((lastDate.getTime() - new Date(product.opened_at).getTime()) / 8.64e+7) : null;
@@ -34,52 +30,15 @@ const costPerDay = product?.opened_at ? (product?.actual_price ?? 0) / ((lastDat
         </h3>
 
         <!-- {/* Rating */} -->
-        <div class="mt-1.5 flex items-center gap-1">
-          <div v-for="i in 5">
-            <UIcon v-if="i < (product.rating ?? 0)" name="mage:star-fill" class="size-5 fill-primary text-primary" />
-            <UIcon v-else name="mage:star-fill" class="size-5 fill-muted text-muted" />
-          </div>
-        </div>
+        <Rating :rating="product.rating" />
 
         <!-- {/* Tags */} -->
-        <div class="mt-2 flex flex-wrap gap-1.5">
-          <span
-            class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_340)] text-[oklch(0.45_0.1_340)]">{{
-              product.category }}</span>
-          <span
-            class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_200)] text-[oklch(0.45_0.1_200)]">{{
-              product.volume }}</span>
-          <span
-            class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_165)] text-[oklch(0.4_0.1_165)]">{{
-              product.year }}</span>
-          <span
-            class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.92_0.08_80)] text-[oklch(0.45_0.12_80)]">{placeholder}</span>
-          <span
-            class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_280)] text-[oklch(0.45_0.1_280)]">{placeholder}</span>
-        </div>
+        <Tags :product="product" />
       </div>
     </div>
 
     <!-- {/* Progress Bar */} -->
-    <div class="mt-4" v-if="product.expiry_date && !product.finished_at">
-      <div class="flex items-center justify-between text-xs text-muted-foreground">
-        <span>Срок годности</span>
-        <span class="font-medium text-foreground">
-          {{
-            new Date(product.expiry_date).toLocaleDateString("ru-RU", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
-          }} {{ progress }}%
-        </span>
-      </div>
-      <div class="mt-1.5 h-2 overflow-hidden rounded-full bg-[oklch(0.92_0.04_340)]">
-        <div
-          class="h-full rounded-full bg-gradient-to-r from-[oklch(0.8_0.1_340)] to-[oklch(0.85_0.08_200)] transition-all duration-500"
-          :style="{ width: progress + '%' }" />
-      </div>
-    </div>
+    <ProgressBar :product="product" />
 
     <!-- {/* Stats Grid */} -->
     <div class="mt-4 grid grid-cols-3 gap-2">

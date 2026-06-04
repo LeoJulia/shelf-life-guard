@@ -1,33 +1,55 @@
 <script setup lang="ts">
 import type { TProduct } from '~/types/product.types';
+import Rating from '~/components/ui/Rating.vue';
+import ProgressBar from '~/components/ui/ProgressBar.vue';
+import Tags from '~/components/ui/Tags.vue';
 
 const router = useRouter();
 const route = useRoute();
 
-const { data } = await useFetch<TProduct>('/api/product', {
+const { data: product } = await useFetch<TProduct>('/api/product', {
   query: { id: route.params.id },
 });
 </script>
 
 <template>
-  <div class="m-8">
-    <UIcon name="lets-icons:back-light" class="size-8" @click="router.back()" />
-    <div class="text-highlighted text-lg/8">
-      {{ data?.brand }} - {{ data?.name }}
+  <main class="mx-auto max-w-7xl px-6 py-8">
+    <div class="flex items-center mb-6" @click="router.back()">
+      <UIcon name="mage:arrow-left-square" class="size-8" />
+      Назад
     </div>
-    <div class="flex flex-col divide-y">
-      <ProductRow field="Оценка" :value="data?.rating" />
-      <ProductRow field="Комментарий" :value="data?.notes" />
-      <ProductRow field="Тип продукта" :value="data?.category" />
-      <ProductRow field="Срок годности" :value="data?.expiry_date" />
-      <ProductRow field="Состав" :value="data?.ingredients" />
-      <ProductRow field="Объем" :value="data?.volume" />
-      <ProductRow field="Рыночная стоимость" :value="data?.market_price" />
-      <ProductRow field="Стоимость покупки" :value="data?.actual_price" />
-      <ProductRow field="Магазин покупки" :value="data?.shop" />
-      <ProductRow field="Дата начала использования" :value="data?.opened_at" />
-      <ProductRow field="Дата окончания использования" :value="data?.finished_at" />
-      <ProductRow field="Год покупки" :value="data?.year" />
+    <div
+      class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
+      <div class="mb-6">
+        <span class="text-s font-medium uppercase tracking-wider text-muted-foreground">
+          {{ product.brand }}
+        </span>
+        <h2 class="mt-0.5 text-base font-semibold leading-tight text-foreground">
+          {{ product.name }}
+        </h2>
+      </div>
+
+      <Rating :rating="product.rating" />
+      <Tags :product="product" />
+      <ProgressBar :product="product" />
+
+      <div class="flex flex-col divide-y mt-4">
+        <ProductRow field="Комментарий" :value="product?.notes" />
+        <ProductRow field="Состав" :value="product?.ingredients" />
+        <ProductRow field="Рыночная стоимость" :value="product?.market_price" />
+        <ProductRow field="Стоимость покупки" :value="product?.actual_price" />
+        <ProductRow field="Магазин покупки" :value="product?.shop" />
+        <ProductRow field="Дата начала использования" :value="new Date(product.opened_at).toLocaleDateString('ru-RU', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })" />
+        <ProductRow field="Дата окончания использования" :value="new Date(product.finished_at).toLocaleDateString('ru-RU', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })" />
+      </div>
     </div>
-  </div>
+  </main>
 </template>
