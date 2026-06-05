@@ -35,6 +35,7 @@ const { data: product } = await useFetch<TProduct>('/api/product', {
 
       <div class="flex flex-col divide-y mt-4">
         <ProductRow field="Комментарий" :value="product?.notes" />
+        <!-- TODO: скопировать состав для анализа в ИИ -->
         <ProductRow field="Состав" :value="product?.ingredients" />
         <ProductRow field="Рыночная стоимость" :value="product?.market_price" />
         <ProductRow field="Стоимость покупки" :value="product?.actual_price" />

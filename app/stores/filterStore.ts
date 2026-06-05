@@ -2,23 +2,29 @@ import { defineStore } from "pinia";
 
 export const useFilterStore = defineStore("filter", {
   state: () => ({
+    showFilter: false,
     searchQuery: "",
-    filterCategory: "all",
+    filterBrand: [],
+    filterCategory: [],
+    filterShop: [],
     filterMinPrice: 0,
     filterMaxPrice: Number.MAX_SAFE_INTEGER,
+    dateRangeStart: null,
+    dateRangeEnd: null,
+    initialValues: null,
   }),
-
-  getters: {
-    getSearchQuery: (state) => state.searchQuery,
-  },
 
   actions: {
     setSearchQuery(query: string) {
       this.searchQuery = query;
     },
 
-    setFilterCategory(category: string) {
-      this.filterCategory = category;
+    setInitialValues(values: any) {
+      this.initialValues = values;
+    },
+
+    setShowFilter(showFilter: boolean) {
+      this.showFilter = showFilter;
     },
 
     setFilterMinPrice(price: number) {
@@ -31,7 +37,9 @@ export const useFilterStore = defineStore("filter", {
 
     resetFilters() {
       this.searchQuery = "";
-      this.filterCategory = "all";
+      this.filterCategory = [];
+      this.filterBrand = [];
+      this.filterShop = [];
       this.filterMinPrice = 0;
       this.filterMaxPrice = Number.MAX_SAFE_INTEGER;
     },

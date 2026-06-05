@@ -76,7 +76,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_brands: {
+        Args: never
+        Returns: {
+          brand: string
+        }[]
+      }
+      get_categories: {
+        Args: never
+        Returns: {
+          category: string
+        }[]
+      }
+      get_shops: {
+        Args: never
+        Returns: {
+          shop: string
+        }[]
+      }
+      get_volumes: {
+        Args: never
+        Returns: {
+          volume: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

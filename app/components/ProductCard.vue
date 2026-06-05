@@ -12,6 +12,7 @@ const costPerDay = product?.opened_at ? (product?.actual_price ?? 0) / ((lastDat
 
 <template>
   <!-- TODO: добавить значок статуса продукта -->
+  <!-- TODO: скопировать состав для анализа в ИИ -->
   <div v-if="product"
     class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
     <div class="flex gap-4">

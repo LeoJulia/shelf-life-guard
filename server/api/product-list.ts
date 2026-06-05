@@ -1,13 +1,42 @@
 import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
-  const supabase = await serverSupabaseClient<{}>(event);
+  const supabase = await serverSupabaseClient(event);
   const query = getQuery(event);
 
   let request = supabase.from("products").select("*");
 
+  if (query.brands) {
+    const brands = query.brands
+      ? Array.isArray(query.brands)
+        ? query.brands
+        : [query.brands]
+      : [];
+
+    request = request.in("brand", brands);
+  }
+  if (query.categories) {
+    const categories = query.categories
+      ? Array.isArray(query.categories)
+        ? query.categories
+        : [query.categories]
+      : [];
+
+    request = request.in("category", categories);
+  }
+
+  if (query.shops) {
+    const shops = query.shops
+      ? Array.isArray(query.shops)
+        ? query.shops
+        : [query.shops]
+      : [];
+
+    request = request.in("shop", shops);
+  }
+
   if (query.shop) {
-    request = request.eq("shop", query.shop);
+    request = request.in("shop", query.shop as string[]);
   }
 
   if (query.searchQuery) {

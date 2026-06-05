@@ -9,4 +9,11 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ["./app/stores"],
   },
+  appConfig: {
+    ui: {
+      icons: {
+        close: "material-symbols:close-rounded",
+      },
+    },
+  },
 });

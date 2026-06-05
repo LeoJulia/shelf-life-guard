@@ -3,7 +3,11 @@ import { useFilterStore } from '~/stores/filterStore';
 
 defineProps(['viewMode', 'setViewMode']);
 const filterStore = useFilterStore();
-const { searchQuery } = storeToRefs(filterStore);
+const { searchQuery, showFilter } = storeToRefs(filterStore);
+
+const onShowFilter = () => {
+  filterStore.setShowFilter(!showFilter.value);
+};
 </script>
 
 <template>
@@ -16,7 +20,8 @@ const { searchQuery } = storeToRefs(filterStore);
     </div>
 
     <div class="flex items-center gap-2">
-      <UButton variant="outline" size="sm" class="rounded-sm gap-2 text-foreground border-0.5 border-border">
+      <UButton variant="outline" size="sm" class="rounded-sm gap-2 text-foreground border-0.5 border-border"
+        :class="showFilter ? 'bg-primary' : ''" @click="onShowFilter">
         <UIcon name="mdi:filter-outline" class="size-5" />
         Фильтр
       </UButton>
