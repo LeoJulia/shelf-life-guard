@@ -32,10 +32,10 @@ const setViewMode = (mode: string) => {
     <div class="mt-12 flex flex-col items-center justify-center text-center">
       <UIcon name="mage:package-box" class="h-12 w-12 text-muted-foreground" />
       <h3 class="mt-4 text-lg font-medium text-foreground">
-        No products found
+        Упс... Нет баночек
       </h3>
       <p class="mt-1 text-sm text-muted-foreground">
-        Try adjusting your search or add a new product.
+        Попробуйте настроить свой поиск или добавить новый продукт
       </p>
     </div>
   </div>

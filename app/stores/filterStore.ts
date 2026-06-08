@@ -8,9 +8,11 @@ export const useFilterStore = defineStore("filter", {
     filterCategory: [],
     filterShop: [],
     priceRange: [1, 100],
-    dateRangeStart: 0,
-    dateRangeEnd: null,
     isOpenProducts: false,
+    isCloseProducts: false,
+    isFinishedProducts: false,
+    isTermLessThan30Days: false,
+    isTermLessThan90Days: false,
     initialValues: {
       brands: [],
       categories: [],
@@ -33,12 +35,37 @@ export const useFilterStore = defineStore("filter", {
       this.showFilter = showFilter;
     },
 
+    setIsCloseProducts(value: boolean) {
+      this.isCloseProducts = value;
+    },
+
+    setIsOpenProducts(value: boolean) {
+      this.isOpenProducts = value;
+    },
+
+    setIsFinishedProducts(value: boolean) {
+      this.isFinishedProducts = value;
+    },
+
+    setIsTermLessThan90Days(value: boolean) {
+      this.isTermLessThan90Days = value;
+    },
+
+    setIsTermLessThan30Days(value: boolean) {
+      this.isTermLessThan30Days = value;
+    },
+
     resetFilters() {
       this.searchQuery = "";
       this.filterCategory = [];
       this.filterBrand = [];
       this.filterShop = [];
       this.priceRange = this.initialValues.priceRange;
+      this.isOpenProducts = false;
+      this.isCloseProducts = false;
+      this.isFinishedProducts = false;
+      this.isTermLessThan30Days = false;
+      this.isTermLessThan90Days = false;
     },
   },
 });

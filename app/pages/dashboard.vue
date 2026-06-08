@@ -4,7 +4,18 @@ import type { TProduct } from '~/types/product.types';
 
 const products = ref();
 const filterStore = useFilterStore();
-const { searchQuery, filterBrand, filterCategory, filterShop, priceRange } = storeToRefs(filterStore);
+const {
+  searchQuery,
+  filterBrand,
+  filterCategory,
+  filterShop,
+  priceRange,
+  isOpenProducts,
+  isCloseProducts,
+  isFinishedProducts,
+  isTermLessThan30Days,
+  isTermLessThan90Days,
+} = storeToRefs(filterStore);
 
 watchEffect(async () => {
   const { data } = await useFetch<TProduct[]>('/api/product-list', {
@@ -15,6 +26,11 @@ watchEffect(async () => {
       shops: filterShop,
       minPrice: priceRange.value[0],
       maxPrice: priceRange.value[1],
+      isOpenProducts,
+      isCloseProducts,
+      isFinishedProducts,
+      isTermLessThan30Days,
+      isTermLessThan90Days,
     },
   });
 

@@ -58,6 +58,36 @@ export default defineEventHandler(async (event) => {
     );
   }
 
+  if (query.isOpenProducts === "true") {
+    if (query.isFinishedProducts === "true") {
+      request = request.not("opened_at", "is", null);
+    } else {
+      request = request.not("opened_at", "is", null).is("finished_at", null);
+    }
+  } else if (query.isFinishedProducts === "true") {
+    request = request.not("finished_at", "is", null);
+  }
+
+  if (query.isCloseProducts === "true") {
+    request = request.is("opened_at", null);
+  }
+
+  if (
+    query.isTermLessThan30Days === "true" ||
+    query.isTermLessThan90Days === "true"
+  ) {
+    const days = query.isTermLessThan90Days === "true" ? 90 : 30;
+
+    request = request
+      .gte("expiry_date", new Date().toISOString().slice(0, 10))
+      .lte(
+        "expiry_date",
+        new Date(Date.now() + days * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .slice(0, 10),
+      );
+  }
+
   const { data, error } = await request;
 
   if (error) {
