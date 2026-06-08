@@ -88,6 +88,13 @@ export type Database = {
           category: string
         }[]
       }
+      get_price_range: {
+        Args: never
+        Returns: {
+          max_price: number
+          min_price: number
+        }[]
+      }
       get_shops: {
         Args: never
         Returns: {

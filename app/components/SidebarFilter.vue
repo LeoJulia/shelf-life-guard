@@ -2,7 +2,14 @@
 import { useFilterStore } from '~/stores/filterStore';
 
 const filterStore = useFilterStore();
-const { showFilter, filterBrand, filterCategory, filterShop, initialValues } = storeToRefs(filterStore);
+const {
+  showFilter,
+  filterBrand,
+  filterCategory,
+  filterShop,
+  priceRange,
+  initialValues,
+} = storeToRefs(filterStore);
 
 const { data } = await useFetch<{}>('/api/filter');
 filterStore.setInitialValues(data.value);
@@ -35,6 +42,16 @@ filterStore.setInitialValues(data.value);
         class="w-full" v-model="filterShop" :ui="{
           base: 'rounded-sm',
         }" />
+    </div>
+    <div>
+      <span>Стоимость покупки: </span>
+      <div class="flex justify-between mb-2">
+        <span>{{ priceRange[0] }}</span>
+        <span>{{ priceRange[1] }}</span>
+      </div>
+      <USlider v-model="priceRange" :min="initialValues.priceRange[0]" :max="initialValues.priceRange[1]" :ui="{
+        track: 'bg-secondary/50'
+      }" />
     </div>
   </USidebar>
 </template>

@@ -18,6 +18,7 @@ const { data: product } = await useFetch<TProduct>('/api/product', {
       <UIcon name="mage:arrow-left-square" class="size-8" />
       Назад
     </div>
+    <!-- TODO: Шапку, рейтинг, теги и прогресс бар переиспользовать ProductCard -->
     <div
       class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
       <div class="mb-6">
@@ -45,7 +46,7 @@ const { data: product } = await useFetch<TProduct>('/api/product', {
           day: 'numeric',
           year: 'numeric',
         })" />
-        <ProductRow field="Дата окончания использования" :value="new Date(product.finished_at).toLocaleDateString('ru-RU', {
+        <ProductRow v-if="product.finished_at" field="Дата окончания использования" :value="new Date(product.finished_at).toLocaleDateString('ru-RU', {
           month: 'short',
           day: 'numeric',
           year: 'numeric',

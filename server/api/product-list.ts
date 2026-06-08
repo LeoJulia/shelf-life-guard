@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
 
     request = request.in("brand", brands);
   }
+
   if (query.categories) {
     const categories = query.categories
       ? Array.isArray(query.categories)
@@ -33,6 +34,14 @@ export default defineEventHandler(async (event) => {
       : [];
 
     request = request.in("shop", shops);
+  }
+
+  if (query.minPrice) {
+    request = request.gte("actual_price", Number(query.minPrice));
+  }
+
+  if (query.maxPrice) {
+    request = request.lte("actual_price", Number(query.maxPrice));
   }
 
   if (query.shop) {

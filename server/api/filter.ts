@@ -50,6 +50,16 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // Получаем диапазон цены покупки
+  const priceRangeResult = await supabase.rpc("get_price_range");
+
+  if (priceRangeResult.error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: priceRangeResult.error.message,
+    });
+  }
+
   // Преобразуем данные в массивы уникальных значений
   const brandsArray = Array.from(
     new Set((brandsResult.data.map(({ brand }) => brand) || []) as any[]),
@@ -74,5 +84,9 @@ export default defineEventHandler(async (event) => {
     categories: categoriesArray,
     shops: shopsArray,
     volumes: volumesArray,
+    priceRange: [
+      Math.ceil(priceRangeResult.data[0]?.min_price ?? 0),
+      Math.ceil(priceRangeResult.data[0]?.max_price ?? 100),
+    ],
   };
 });

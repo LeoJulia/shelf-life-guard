@@ -7,11 +7,16 @@ export const useFilterStore = defineStore("filter", {
     filterBrand: [],
     filterCategory: [],
     filterShop: [],
-    filterMinPrice: 0,
-    filterMaxPrice: Number.MAX_SAFE_INTEGER,
-    dateRangeStart: null,
+    priceRange: [1, 100],
+    dateRangeStart: 0,
     dateRangeEnd: null,
-    initialValues: null,
+    isOpenProducts: false,
+    initialValues: {
+      brands: [],
+      categories: [],
+      shops: [],
+      priceRange: [1, 5000],
+    },
   }),
 
   actions: {
@@ -21,18 +26,11 @@ export const useFilterStore = defineStore("filter", {
 
     setInitialValues(values: any) {
       this.initialValues = values;
+      this.priceRange = values.priceRange;
     },
 
     setShowFilter(showFilter: boolean) {
       this.showFilter = showFilter;
-    },
-
-    setFilterMinPrice(price: number) {
-      this.filterMinPrice = price;
-    },
-
-    setFilterMaxPrice(price: number) {
-      this.filterMaxPrice = price;
     },
 
     resetFilters() {
@@ -40,8 +38,7 @@ export const useFilterStore = defineStore("filter", {
       this.filterCategory = [];
       this.filterBrand = [];
       this.filterShop = [];
-      this.filterMinPrice = 0;
-      this.filterMaxPrice = Number.MAX_SAFE_INTEGER;
+      this.priceRange = this.initialValues.priceRange;
     },
   },
 });
