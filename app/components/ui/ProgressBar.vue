@@ -3,12 +3,24 @@ import type { TProduct } from '~/types/product.types';
 
 const { product } = defineProps<{ product?: TProduct }>();
 
-const progress = computed(() => product?.expiry_date ? Math.round(Math.max(
-  0,
-  Math.min(
-    100,
-    ((new Date(product?.expiry_date).getTime() - new Date().getTime()) / (90 * 8.64e+7)) * 100
-  ))) : 0);
+const remaining = computed(() => {
+  let remaining = 1;
+  let total = 90 * 8.64e+7;
+
+  if (product?.expiry_date) {
+    remaining = new Date(product?.expiry_date).getTime() - new Date().getTime();
+  }
+
+  if (product?.expiry_date && product?.created_at) {
+    total = new Date(product?.expiry_date).getTime() - new Date(product?.opened_at ?? product?.created_at).getTime();
+  }
+
+  return Math.round((remaining / total) * 100);
+});
+
+const progress = computed(
+  () => product?.expiry_date ? Math.round(Math.max(0, Math.min(100, remaining.value))) : 0,
+);
 </script>
 
 <template>
