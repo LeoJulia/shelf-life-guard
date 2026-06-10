@@ -3,68 +3,68 @@ import type { TProduct } from "~/types/product.types";
 
 export const useProductStore = defineStore("product", {
   state: () => ({
-    products: [] as TProduct[],
-    loading: false,
-    error: null as string | null,
-    currentPage: 1,
-    itemsPerPage: 10,
+    product: {
+      id: "",
+      name: "",
+      brand: null as string | null,
+      category: null as string | null,
+      volume: null as string | null,
+      market_price: null as number | null,
+      actual_price: null as number | null,
+      shop: null as string | null,
+      year: null as number | null,
+      opened_at: null as string | null,
+      expiry_date: null as string | null,
+      created_at: null as string | null,
+      finished_at: null as string | null,
+      rating: null as number | null,
+      ingredients: null as string | null,
+      notes: null as string | null,
+    },
   }),
 
   getters: {
-    totalPages: (state) => {
-      return Math.ceil(state.products.length / state.itemsPerPage);
-    },
-    paginatedProducts: (state) => {
-      const start = (state.currentPage - 1) * state.itemsPerPage;
-      const end = start + state.itemsPerPage;
-      return state.products.slice(start, end);
-    },
+    productRef: () => this.product,
   },
 
   actions: {
-    setProducts(products: TProduct[]) {
-      this.products = products;
+    setProduct(product: TProduct) {
+      this.product = { ...this.product, ...product };
     },
 
-    setLoading(loading: boolean) {
-      this.loading = loading;
+    updateField<T extends keyof TProduct>(field: T, value: TProduct[T]) {
+      (this.product as any)[field] = value;
     },
+  },
+});
 
-    setError(error: string | null) {
-      this.error = error;
-    },
+// RPC функции для получения данных
+export const useProductRPC = defineStore("product-rpc", {
+  state: () => ({
+    brands: [] as string[],
+    categories: [] as string[],
+    shops: [] as string[],
+    volumes: [] as string[],
+    priceRange: [0, 0] as [number, number],
+  }),
 
-    clearProducts() {
-      this.products = [];
-    },
+  getters: {},
 
-    addProduct(product: TProduct) {
-      this.products.unshift(product);
-    },
-
-    updateProduct(updatedProduct: TProduct) {
-      const index = this.products.findIndex((p) => p.id === updatedProduct.id);
-      if (index !== -1) {
-        this.products[index] = updatedProduct;
+  actions: {
+    async fetchAllOptions() {
+      try {
+        const response = await $fetch("/api/filter");
+        this.brands = response.brands || [];
+        this.categories = response.categories || [];
+        this.shops = response.shops || [];
+        this.volumes = response.volumes || [];
+        this.priceRange = [
+          response.priceRange?.[0] || 0,
+          response.priceRange?.[1] || 0,
+        ];
+      } catch (error) {
+        console.error("Ошибка получения фильтров:", error);
       }
-    },
-
-    deleteProduct(productId: number | string) {
-      this.products = this.products.filter(
-        (product) => product.id !== productId,
-      );
-    },
-
-    fetchProducts(page = 1, limit = 10) {
-      return new Promise<void>((resolve) => {
-        this.setLoading(true);
-        this.error = null;
-        // Реализация будет зависеть от вашего API
-        setTimeout(() => {
-          this.setLoading(false);
-          resolve();
-        }, 100);
-      });
     },
   },
 });

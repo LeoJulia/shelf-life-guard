@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFilterStore } from '~/stores/filterStore';
+import { useFilterStore } from "~/stores/filterStore";
 
 const filterStore = useFilterStore();
 const {
@@ -16,7 +16,7 @@ const {
   initialValues,
 } = storeToRefs(filterStore);
 
-const { data } = await useFetch<{}>('/api/filter');
+const { data } = await useFetch<{}>("/api/filter");
 filterStore.setInitialValues(data.value);
 
 const updateCloseToggle = () => {
@@ -43,35 +43,65 @@ const update30TermToggle = () => {
     filterStore.setIsTermLessThan30Days(false);
   }
 };
-
 </script>
 
 <template>
-  <USidebar v-model:open="showFilter" side="right" close title="Фильтры" :ui="{
-    container: 'bg-sidebar text-sidebar-foreground border-border',
-    header: 'py-5 border-border',
-    close: 'hover:bg-sidebar-primary-foreground active:bg-sidebar-primary active:text-sidebar-primary-foreground',
-  }">
+  <USidebar
+    v-model:open="showFilter"
+    side="right"
+    close
+    title="Фильтры"
+    :ui="{
+      container: 'bg-sidebar text-sidebar-foreground border-border',
+      header: 'py-5 border-border',
+      close:
+        'hover:bg-sidebar-primary-foreground active:bg-sidebar-primary active:text-sidebar-primary-foreground',
+    }"
+  >
     <div>
       <span>Бренд: </span>
-      <USelectMenu :items="initialValues?.brands" :searchInput="{ placeholder: 'Поиск...' }" multiple filter clear
-        class="w-full" v-model="filterBrand" :ui="{
+      <USelectMenu
+        :items="initialValues?.brands"
+        :searchInput="{ placeholder: 'Поиск...' }"
+        multiple
+        filter
+        clear
+        class="w-full"
+        v-model="filterBrand"
+        :ui="{
           base: 'rounded-sm',
-        }" />
+        }"
+      />
     </div>
     <div>
       <span>Тип продукта: </span>
-      <USelectMenu :items="initialValues?.categories" :searchInput="{ placeholder: 'Поиск...' }" multiple filter clear
-        class="w-full" v-model="filterCategory" :ui="{
+      <USelectMenu
+        :items="initialValues?.categories"
+        :searchInput="{ placeholder: 'Поиск...' }"
+        multiple
+        filter
+        clear
+        class="w-full"
+        v-model="filterCategory"
+        :ui="{
           base: 'rounded-sm',
-        }" />
+        }"
+      />
     </div>
     <div>
       <span>Магазин: </span>
-      <USelectMenu :items="initialValues?.shops" :searchInput="{ placeholder: 'Поиск...' }" multiple filter clear
-        class="w-full" v-model="filterShop" :ui="{
+      <USelectMenu
+        :items="initialValues?.shops"
+        :searchInput="{ placeholder: 'Поиск...' }"
+        multiple
+        filter
+        clear
+        class="w-full"
+        v-model="filterShop"
+        :ui="{
           base: 'rounded-sm',
-        }" />
+        }"
+      />
     </div>
     <div>
       <span>Стоимость покупки: </span>
@@ -79,27 +109,51 @@ const update30TermToggle = () => {
         <span>{{ priceRange[0] }}</span>
         <span>{{ priceRange[1] }}</span>
       </div>
-      <USlider v-model="priceRange" :min="initialValues.priceRange[0]" :max="initialValues.priceRange[1]" />
+      <USlider
+        v-model="priceRange"
+        :min="initialValues.priceRange[0]"
+        :max="initialValues.priceRange[1]"
+      />
     </div>
 
     <div class="mb-1">
-      <USwitch v-model="isOpenProducts" @change="updateCloseToggle" label="Открытые баночки" />
+      <USwitch
+        v-model="isOpenProducts"
+        @change="updateCloseToggle"
+        label="Открытые баночки"
+      />
     </div>
 
     <div class="mb-2">
-      <USwitch v-model="isCloseProducts" @change="updateOpenAndFinishedToggle" label="Закрытые баночки" />
+      <USwitch
+        v-model="isCloseProducts"
+        @change="updateOpenAndFinishedToggle"
+        label="Закрытые баночки"
+      />
     </div>
 
     <div class="mb-2">
-      <USwitch v-model="isFinishedProducts" @change="updateCloseToggle" label="Законченные баночки" />
+      <USwitch
+        v-model="isFinishedProducts"
+        @change="updateCloseToggle"
+        label="Законченные баночки"
+      />
     </div>
 
     <div class="mb-2">
-      <USwitch v-model="isTermLessThan30Days" @change="update90TermToggle" label="Срок меньше 30 дней" />
+      <USwitch
+        v-model="isTermLessThan30Days"
+        @change="update90TermToggle"
+        label="Срок меньше 30 дней"
+      />
     </div>
 
     <div class="mb-2">
-      <USwitch v-model="isTermLessThan90Days" @change="update30TermToggle" label="Срок меньше 90 дней" />
+      <USwitch
+        v-model="isTermLessThan90Days"
+        @change="update30TermToggle"
+        label="Срок меньше 90 дней"
+      />
     </div>
   </USidebar>
 </template>

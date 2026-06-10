@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useFilterStore } from '~/stores/filterStore';
-import type { TProduct } from '~/types/product.types';
+import { useFilterStore } from "~/stores/filterStore";
+import type { TProduct } from "~/types/product.types";
 
 const products = ref();
 const filterStore = useFilterStore();
@@ -18,7 +18,7 @@ const {
 } = storeToRefs(filterStore);
 
 watchEffect(async () => {
-  const { data } = await useFetch<TProduct[]>('/api/product-list', {
+  const { data } = await useFetch<TProduct[]>("/api/product-list", {
     query: {
       searchQuery,
       brands: filterBrand,
@@ -36,13 +36,14 @@ watchEffect(async () => {
 
   products.value = data;
 });
-
 </script>
 
 <template>
   <main class="mx-auto max-w-7xl px-6 py-8">
-    <Statistic />
-    <ProductList :data="products?.value" />
-    <SidebarFilter />
+    <div v-if="products">
+      <Statistic />
+      <ProductList :data="products?.value" />
+      <SidebarFilter />
+    </div>
   </main>
 </template>
