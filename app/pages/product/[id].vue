@@ -3,11 +3,9 @@ import type { TProduct } from "~/types/product.types";
 import Rating from "~/components/ui/Rating.vue";
 import ProgressBar from "~/components/ui/ProgressBar.vue";
 import Tags from "~/components/ui/Tags.vue";
-import { useProductStore } from "~/stores/productStore";
 
 const router = useRouter();
 const route = useRoute();
-const productStore = useProductStore();
 
 const product = ref<TProduct>();
 
@@ -16,7 +14,6 @@ watchEffect(async () => {
     query: { id: route.params.id },
   });
 
-  productStore.setProduct(data.value);
   product.value = data.value;
 });
 </script>
@@ -30,7 +27,7 @@ watchEffect(async () => {
           Назад
         </UButton>
 
-        <ProductForm />
+        <ProductForm :product="product" />
       </div>
       <!-- TODO: Шапку, рейтинг, теги и прогресс бар переиспользовать ProductCard -->
       <div
