@@ -14,8 +14,6 @@ const costPerDay = product?.opened_at
 </script>
 
 <template>
-  <!-- TODO: добавить значок статуса продукта -->
-  <!-- TODO: скопировать состав для анализа в ИИ -->
   <div
     v-if="product"
     class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
@@ -24,10 +22,10 @@ const costPerDay = product?.opened_at
       <!-- {/* Product Image */} -->
       <div class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input">
         <img
-          src=""
+          :src="product?.imageUrl"
           :alt="product.name"
           fill
-          class="object-cover transition-transform duration-300 group-hover:scale-105"
+          class="object-cover transition-transform duration-300 group-hover:scale-105 h-full"
         />
       </div>
 

@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import EditFormField from './ui/EditFormField.vue';
 import { useProductStore, useProductRPC } from "~/stores/productStore";
 import { parseDate, type DateValue } from "@internationalized/date";
 import type { TProduct } from "~/types/product.types";
+
+const supabase = useSupabaseClient()
+const user = useSupabaseUser()
 
 const productStore = useProductStore();
 const productRPC = useProductRPC();
@@ -17,6 +21,7 @@ const volumes = computed(() => productRPC.volumes);
 const expiryDate = shallowRef<DateValue | null>(null);
 const openedAt = shallowRef<DateValue | null>(null);
 const finishedAt = shallowRef<DateValue | null>(null);
+const image = ref<File>();
 
 const dateFields = [
   ["expiryDate", expiryDate, "expiry_date"],
@@ -61,12 +66,41 @@ onMounted(async () => {
   await productRPC.fetchAllOptions();
 });
 
+const uploadImage = async () => {
+  if (!image.value || !user.value) return;
+
+  const ext = image.value.name.split(".").pop();
+
+  const fileName = `${crypto.randomUUID()}.${ext}`;
+
+  const path = `${user.value.sub}/${fileName}`;
+
+  const compressedFile = await compressImage(image.value);
+
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(path, compressedFile);
+
+  if (error) {
+    throw error;
+  }
+
+  return path;
+}
+
 const onSave = async (close?: () => void) => {
   if (!product.value) return;
 
+  const imgPath = await uploadImage();
+
+  const {imageUrl, ...productWithoutUrl} = product.value;
+
   await $fetch(`/api/products/${product.value.id}`, {
     method: "PUT",
-    body: product.value,
+    body: {
+      ...productWithoutUrl,
+    image_path: imgPath ?? product.value.image_path,
+    },
   });
 
   close?.();
@@ -92,23 +126,28 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
     <template #body>
       <div v-if="product?.name || brands.length > 0">
         <UForm :state="product" @submit.prevent="">
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Название"
-            required
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
-            <UInput class="w-full" v-model="product.name" type="text" placeholder="Название продукта" />
-          </UFormField>
+          <EditFormField label="Фотография">
+            <UFileUpload
+              class="w-full"
+              v-model="image"
+              accept="image/*"
+              description="SVG, PNG, JPG or GIF (max. 2MB)"
+              label="Как выглядит твоя баночка"
+              icon="mage:image-upload"
+              :ui="{ description: 'text-muted-foreground' }"
+            />
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Бренд"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Название">
+            <UInput
+              class="w-full"
+              v-model="product.name"
+              type="text"
+              placeholder="Название продукта"
+            />
+          </EditFormField>
+
+          <EditFormField label="Бренд" required>
             <USelectMenu
               class="w-full"
               v-model="product.brand"
@@ -120,15 +159,9 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
               :content="{ align: 'start', side: 'right', sideOffset: 8 }"
               @create="onCreateBrand"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Категория"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Категория">
             <USelectMenu
               class="w-full"
               v-model="product.category"
@@ -140,15 +173,9 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
               :content="{ align: 'start', side: 'right', sideOffset: 8 }"
               @create="onCreateCategory"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Объём"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Объём" required>
             <USelectMenu
               class="w-full"
               v-model="product.volume"
@@ -160,23 +187,13 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
               :content="{ align: 'start', side: 'right', sideOffset: 8 }"
               @create="onCreateVolume"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Рейтинг"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Рейтинг">
             <UInputNumber class="w-full" v-model="product.rating" :max="5" />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Рыночная цена"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Рыночная цена">
             <UInputNumber
               class="w-full"
               v-model="product.market_price"
@@ -190,15 +207,9 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
                 currencySign: 'accounting',
               }"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Цена покупки"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Цена покупки" required>
             <UInputNumber
               class="w-full"
               v-model="product.actual_price"
@@ -212,15 +223,9 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
                 currencySign: 'accounting',
               }"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Магазин"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Магазин" required>
             <USelectMenu
               class="w-full"
               v-model="product.shop"
@@ -232,71 +237,44 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
               :content="{ align: 'start', side: 'right', sideOffset: 8 }"
               @create="onCreateShop"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Год покупки"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
+          <EditFormField label="Год покупки" required>
             <UInput
               v-model="product.year"
               type="number"
               :min="1900"
               :max="new Date().getFullYear() + 1"
             />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            required
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Срок годности"
-            help="Ввод с клавиатуры"
-            :ui="{ container: 'w-full', wrapper: 'w-40', help: 'text-muted-foreground' }"
-          >
+          <EditFormField label="Срок годности" help="Ввод с клавиатуры">
             <UInputDate v-model="expiryDate" locale="ru" />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Дата открытия"
-            help="Ввод с клавиатуры"
-            :ui="{ container: 'w-full', wrapper: 'w-40', help: 'text-muted-foreground' }"
-          >
+          <EditFormField label="Дата открытия" help="Ввод с клавиатуры">
             <UInputDate v-model="openedAt" locale="ru" />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Дата окончания"
-            help="Ввод с клавиатуры"
-            :ui="{ container: 'w-full', wrapper: 'w-40', help: 'text-muted-foreground' }"
-          >
+          <EditFormField label="Дата окончания" help="Ввод с клавиатуры">
             <UInputDate v-model="finishedAt" locale="ru" />
-          </UFormField>
+          </EditFormField>
 
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Состав"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
-            <UTextarea class="w-full" v-model="product.ingredients" placeholder="ароматизатор, вода..." />
-          </UFormField>
+          <EditFormField label="Состав">
+            <UTextarea
+              class="w-full"
+              v-model="product.ingredients"
+              placeholder="ароматизатор, вода..."
+            />
+          </EditFormField>
 
-          <UFormField
-            class="justify-start w-full mb-2"
-            orientation="horizontal"
-            label="Заметки"
-            :ui="{ container: 'w-full', wrapper: 'w-40' }"
-          >
-            <UTextarea class="w-full" v-model="product.notes" placeholder="Дополнительные заметки" />
-          </UFormField>
+          <EditFormField label="Заметки">
+            <UTextarea
+              class="w-full"
+              v-model="product.notes"
+              placeholder="Дополнительные заметки"
+            />
+          </EditFormField>
         </UForm>
       </div>
     </template>

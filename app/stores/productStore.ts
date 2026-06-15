@@ -20,6 +20,7 @@ export const useProductStore = defineStore("product", {
       rating: null as number | null,
       ingredients: null as string | null,
       notes: null as string | null,
+      image_path: null as string | null,
     },
   }),
 

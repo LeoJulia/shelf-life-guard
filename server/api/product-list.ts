@@ -97,5 +97,25 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return data;
+  const products = await Promise.all(
+    data.map(async (product) => {
+      if (!product.image_path) {
+        return {
+          ...product,
+          imageUrl: null,
+        };
+      }
+
+      const { data } = await supabase.storage
+        .from("product-images")
+        .createSignedUrl(product.image_path, 3600);
+
+      return {
+        ...product,
+        imageUrl: data?.signedUrl,
+      };
+    }),
+  );
+
+  return products;
 });

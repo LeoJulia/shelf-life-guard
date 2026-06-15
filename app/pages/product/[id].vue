@@ -42,6 +42,15 @@ watchEffect(async () => {
           </h2>
         </div>
 
+        <div class="relative h-50 w-50 flex-shrink-0 overflow-hidden rounded-lg bg-input">
+          <img
+            :src="product?.imageUrl"
+            :alt="product.name"
+            fill
+            class="object-cover transition-transform duration-300 group-hover:scale-105 h-full"
+          />
+        </div>
+
         <Rating :rating="product.rating" />
         <Tags :product="product" />
         <ProgressBar :product="product" />

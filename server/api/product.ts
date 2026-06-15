@@ -2,7 +2,7 @@ import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  const client = await serverSupabaseClient(event);
+  const supabase = await serverSupabaseClient(event);
 
   if (!query.id) {
     throw createError({
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { data: product, error } = await client
+  const { data: product, error } = await supabase
     .from("products")
     .select("*")
     .eq("id", query.id)
@@ -22,6 +22,14 @@ export default defineEventHandler(async (event) => {
       statusCode: 500,
       statusMessage: error.message,
     });
+  }
+
+  if (product.image_path) {
+    const { data } = await supabase.storage
+      .from("product-images")
+      .createSignedUrl(product.image_path, 3600);
+
+    product.imageUrl = data?.signedUrl;
   }
 
   return product;

@@ -5,7 +5,6 @@ export default defineNuxtConfig({
   telemetry: false,
   modules: ["@nuxt/ui", "@nuxtjs/supabase", "@pinia/nuxt"],
   css: ["~/assets/css/main.css"],
-  supabase: { redirect: false },
   pinia: {
     storesDirs: ["./app/stores"],
   },
