@@ -19,7 +19,6 @@ const costPerDay = product?.opened_at
     class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
   >
     <div class="flex gap-4">
-      <!-- {/* Product Image */} -->
       <div class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input">
         <img
           :src="product?.imageUrl"
@@ -29,7 +28,6 @@ const costPerDay = product?.opened_at
         />
       </div>
 
-      <!-- {/* Product Info */} -->
       <div class="flex flex-1 flex-col">
         <span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {{ product.brand }}
@@ -38,18 +36,14 @@ const costPerDay = product?.opened_at
           {{ product.name }}
         </h3>
 
-        <!-- {/* Rating */} -->
         <Rating :rating="product.rating" />
 
-        <!-- {/* Tags */} -->
         <Tags :product="product" />
       </div>
     </div>
 
-    <!-- {/* Progress Bar */} -->
     <ProgressBar :product="product" />
 
-    <!-- {/* Stats Grid */} -->
     <div class="mt-4 grid grid-cols-3 gap-2">
       <div class="rounded-lg bg-[oklch(0.92_0.06_200)] p-2.5">
         <div class="flex items-center gap-1 text-[oklch(0.5_0.08_200)]">

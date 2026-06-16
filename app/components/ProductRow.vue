@@ -1,10 +1,10 @@
 <script setup>
-defineProps(['field', 'value']);
+defineProps(["field", "value"]);
 </script>
 
 <template>
-  <div class="grid grid-cols-4 gap-2">
+  <div class="grid grid-cols-2 gap-2">
     <span class="font-mono">{{ field }}:</span>
-    <span class="col-span-3">{{ value ?? "-" }}</span>
+    <span>{{ value ?? "-" }}</span>
   </div>
 </template>

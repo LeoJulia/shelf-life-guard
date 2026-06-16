@@ -29,60 +29,63 @@ watchEffect(async () => {
 
         <ProductForm :product="product" />
       </div>
-      <!-- TODO: Шапку, рейтинг, теги и прогресс бар переиспользовать ProductCard -->
       <div
-        class="group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
+        class="md:grid md:grid-cols-3 gap-2 group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
       >
-        <div class="mb-6">
-          <span class="text-s font-medium uppercase tracking-wider text-muted-foreground">
-            {{ product?.brand }}
-          </span>
-          <h2 class="mt-0.5 text-base font-semibold leading-tight text-foreground">
-            {{ product?.name }}
-          </h2>
-        </div>
+        <div class="col-span-2">
+          <div class="mb-6">
+            <span
+              class="text-s font-medium uppercase tracking-wider text-muted-foreground"
+            >
+              {{ product?.brand }}
+            </span>
+            <h2 class="mt-0.5 text-base font-semibold leading-tight text-foreground">
+              {{ product?.name }}
+            </h2>
+          </div>
 
-        <div class="relative h-50 w-50 flex-shrink-0 overflow-hidden rounded-lg bg-input">
+          <Rating :rating="product.rating" />
+          <Tags :product="product" />
+          <ProgressBar :product="product" />
+
+          <div class="flex flex-col divide-y mt-4">
+            <ProductRow field="Комментарий" :value="product?.notes" />
+            <ProductRow field="Состав" :value="product?.ingredients" />
+            <ProductRow field="Рыночная стоимость" :value="product?.market_price" />
+            <ProductRow field="Стоимость покупки" :value="product?.actual_price" />
+            <ProductRow field="Магазин покупки" :value="product?.shop" />
+            <ProductRow
+              v-if="product?.opened_at"
+              field="Дата начала использования"
+              :value="
+                new Date(product.opened_at).toLocaleDateString('ru-RU', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              "
+            />
+            <ProductRow
+              v-if="product?.finished_at"
+              field="Дата окончания использования"
+              :value="
+                new Date(product.finished_at).toLocaleDateString('ru-RU', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              "
+            />
+          </div>
+        </div>
+        <div
+          class="relative h-auto w-full flex-shrink-0 overflow-hidden rounded-lg bg-input"
+        >
           <img
             :src="product?.imageUrl"
             :alt="product.name"
             fill
             class="object-cover transition-transform duration-300 group-hover:scale-105 h-full"
-          />
-        </div>
-
-        <Rating :rating="product.rating" />
-        <Tags :product="product" />
-        <ProgressBar :product="product" />
-
-        <div class="flex flex-col divide-y mt-4">
-          <ProductRow field="Комментарий" :value="product?.notes" />
-          <!-- TODO: скопировать состав для анализа в ИИ -->
-          <ProductRow field="Состав" :value="product?.ingredients" />
-          <ProductRow field="Рыночная стоимость" :value="product?.market_price" />
-          <ProductRow field="Стоимость покупки" :value="product?.actual_price" />
-          <ProductRow field="Магазин покупки" :value="product?.shop" />
-          <ProductRow
-            v-if="product?.opened_at"
-            field="Дата начала использования"
-            :value="
-              new Date(product.opened_at).toLocaleDateString('ru-RU', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })
-            "
-          />
-          <ProductRow
-            v-if="product?.finished_at"
-            field="Дата окончания использования"
-            :value="
-              new Date(product.finished_at).toLocaleDateString('ru-RU', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })
-            "
           />
         </div>
       </div>

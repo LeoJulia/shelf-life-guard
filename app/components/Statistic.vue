@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const { data } = await useFetch('/api/statistic');
-
+const { data } = await useFetch("/api/statistic");
 
 const stats = [
   {
@@ -36,11 +35,9 @@ const stats = [
     iconBg: "bg-[oklch(0.85_0.1_280)]",
   },
 ];
-
 </script>
 
 <template>
-  <!-- {/* Stats Cards */} -->
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <div v-for="stat in stats">
       <div :key="stat.label" :class="['rounded-2xl p-5', stat.color]">
@@ -55,7 +52,6 @@ const stats = [
         <p class="mt-2 text-3xl font-bold">
           {{ stat.value }}
         </p>
-        <!-- <p class="mt-1 text-xs font-medium opacity-70">{{ stat?.change }}</p> -->
       </div>
     </div>
   </div>
