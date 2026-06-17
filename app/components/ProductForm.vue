@@ -94,14 +94,22 @@ const onSave = async (close?: () => void) => {
   const imgPath = await uploadImage();
 
   const {imageUrl, ...productWithoutUrl} = product.value;
-
-  await $fetch(`/api/products/${product.value.id}`, {
-    method: "PUT",
-    body: {
-      ...productWithoutUrl,
+  const body = {
+    ...productWithoutUrl,
     image_path: imgPath ?? product.value.image_path,
-    },
-  });
+  };
+
+  if (product.value.id) {
+    await $fetch(`/api/products/${product.value.id}`, {
+      method: "PUT",
+      body,
+    });
+  } else {
+    await $fetch(`/api/products/products`, {
+      method: "POST",
+      body: {...body, id: undefined},
+    });
+  }
 
   close?.();
 };
@@ -119,9 +127,7 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
 
 <template>
   <UModal title="Редактирование баночки" :ui="{ footer: 'justify-end' }">
-    <UButton color="neutral" variant="ghost">
-      <UIcon name="mage:edit" class="size-8" />
-    </UButton>
+    <slot />
 
     <template #body>
       <div v-if="product?.name || brands.length > 0">

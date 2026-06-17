@@ -27,7 +27,11 @@ watchEffect(async () => {
           Назад
         </UButton>
 
-        <ProductForm :product="product" />
+        <ProductForm :product="product">
+          <UButton color="neutral" variant="ghost">
+            <UIcon name="mage:edit" class="size-8" />
+          </UButton>
+        </ProductForm>
       </div>
       <div
         class="md:grid md:grid-cols-3 gap-2 group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"

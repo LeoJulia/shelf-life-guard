@@ -1,7 +1,7 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
-  const { id, ...updateData } = await readBody(event);
+  const body = await readBody(event);
 
   const user = await serverSupabaseUser(event);
 
@@ -16,8 +16,10 @@ export default defineEventHandler(async (event) => {
 
   const { data, error } = await supabase
     .from("products")
-    .update(updateData)
-    .eq("id", id)
+    .insert({
+      ...body,
+      user_id: user.sub,
+    })
     .select()
     .single();
 
