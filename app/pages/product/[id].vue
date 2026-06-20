@@ -16,6 +16,15 @@ watchEffect(async () => {
 
   product.value = data.value;
 });
+
+const onDeleteProduct = async () => {
+  await $fetch(`/api/products/${route.params.id}`, {
+    method: "DELETE",
+  });
+
+  await refreshNuxtData();
+  await navigateTo("/dashboard");
+};
 </script>
 
 <template>
@@ -25,6 +34,10 @@ watchEffect(async () => {
         <UButton color="neutral" variant="ghost" @click="router.back()">
           <UIcon name="mage:arrow-left-square" class="size-8" />
           Назад
+        </UButton>
+
+        <UButton color="neutral" variant="ghost" @click="onDeleteProduct">
+          <UIcon name="mage:box-cross" class="size-8" />
         </UButton>
 
         <ProductForm :product="product">

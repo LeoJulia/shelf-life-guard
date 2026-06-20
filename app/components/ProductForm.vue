@@ -111,6 +111,7 @@ const onSave = async (close?: () => void) => {
     });
   }
 
+  await refreshNuxtData();
   close?.();
 };
 
