@@ -88,6 +88,64 @@ export default defineEventHandler(async (event) => {
       );
   }
 
+  if (query.sort) {
+    switch (query.sort) {
+      case "actual_price_asc":
+        request = request.order("actual_price");
+        break;
+
+      case "actual_price_desc":
+        request = request.order("actual_price", {
+          ascending: false,
+        });
+        break;
+
+      case "created_at_asc":
+        request = request.order("year").order("created_at");
+        break;
+
+      case "created_at_desc":
+        request = request
+          .order("year", {
+            ascending: false,
+          })
+          .order("created_at", {
+            ascending: false,
+          });
+        break;
+
+      case "expiry_date_asc":
+        request = request.order("expiry_date");
+        break;
+
+      case "expiry_date_desc":
+        request = request.order("expiry_date", {
+          ascending: false,
+        });
+        break;
+
+      case "opened_at_asc":
+        request = request.order("opened_at");
+        break;
+
+      case "opened_at_desc":
+        request = request.order("opened_at", {
+          ascending: false,
+        });
+        break;
+
+      case "finished_at_asc":
+        request = request.order("finished_at");
+        break;
+
+      case "finished_at_desc":
+        request = request.order("finished_at", {
+          ascending: false,
+        });
+        break;
+    }
+  }
+
   const { data, error } = await request;
 
   if (error) {

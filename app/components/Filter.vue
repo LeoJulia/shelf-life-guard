@@ -35,14 +35,7 @@ const onShowFilter = () => {
         <UIcon name="mdi:filter-outline" class="size-5" />
         Фильтр
       </UButton>
-      <UButton
-        variant="outline"
-        size="sm"
-        class="rounded-sm gap-2 text-foreground border-0.5 border-border"
-      >
-        <UIcon name="mage:filter" class="size-5" />
-        Сортировка
-      </UButton>
+      <Sort />
       <div
         class="ml-2 h-11 flex items-center rounded-sm border border-border bg-secondary/30 p-1"
       >

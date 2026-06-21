@@ -14,6 +14,7 @@ const {
   isFinishedProducts,
   isTermLessThan30Days,
   isTermLessThan90Days,
+  sort,
 } = storeToRefs(filterStore);
 
 const { data: products } = await useFetch<TProduct[]>("/api/product-list", {
@@ -29,6 +30,7 @@ const { data: products } = await useFetch<TProduct[]>("/api/product-list", {
     isFinishedProducts,
     isTermLessThan30Days,
     isTermLessThan90Days,
+    sort,
   },
 });
 </script>

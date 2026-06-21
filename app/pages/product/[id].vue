@@ -93,6 +93,17 @@ const onDeleteProduct = async () => {
                 })
               "
             />
+            <ProductRow
+              v-if="product?.expiry_date"
+              field="Срок годности"
+              :value="
+                new Date(product.expiry_date).toLocaleDateString('ru-RU', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              "
+            />
           </div>
         </div>
         <div

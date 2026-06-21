@@ -13,6 +13,7 @@ export const useFilterStore = defineStore("filter", {
     isFinishedProducts: false,
     isTermLessThan30Days: false,
     isTermLessThan90Days: false,
+    sort: "",
     initialValues: {
       brands: [],
       categories: [],
@@ -55,6 +56,10 @@ export const useFilterStore = defineStore("filter", {
       this.isTermLessThan30Days = value;
     },
 
+    setSort(value?: string) {
+      this.sort = value || "";
+    },
+
     resetFilters() {
       this.searchQuery = "";
       this.filterCategory = [];
@@ -66,6 +71,7 @@ export const useFilterStore = defineStore("filter", {
       this.isFinishedProducts = false;
       this.isTermLessThan30Days = false;
       this.isTermLessThan90Days = false;
+      this.sort = "";
     },
   },
 });
