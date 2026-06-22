@@ -65,9 +65,13 @@ watch(value, (newValue) => {
           <URadioGroup v-model="value" :items="openedDateItems" />
         </div>
 
-        <div>
+        <div class="mb-2">
           <span>Дата окончания:</span>
           <URadioGroup v-model="value" :items="finishedDateItems" />
+        </div>
+
+        <div>
+          <UButton label="Очистить" @click="filterStore.resetFilters" />
         </div>
       </div>
     </template>

@@ -155,5 +155,9 @@ const update30TermToggle = () => {
         label="Срок меньше 90 дней"
       />
     </div>
+
+    <div class="mb-2">
+      <UButton label="Очистить" @click="filterStore.resetFilters" />
+    </div>
   </USidebar>
 </template>
