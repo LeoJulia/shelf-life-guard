@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import type { TProduct } from "~/types/product.types";
 
-const { data } = defineProps<{ data?: TProduct[] }>();
-
-const viewMode = ref("grid");
-const setViewMode = (mode: string) => {
-  viewMode.value = mode;
-};
+const { data, viewMode } = defineProps<{
+  data?: TProduct[];
+  viewMode: "grid" | "list";
+}>();
 </script>
 
 <template>
-  <Filter :setViewMode :viewMode />
   <div v-if="data?.length" class="mt-6">
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold text-foreground">Мои баночки</h2>

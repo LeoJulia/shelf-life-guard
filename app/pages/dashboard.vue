@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Loader from "~/components/ui/Loader.vue";
 import { useFilterStore } from "~/stores/filterStore";
 import type { TProduct } from "~/types/product.types";
 
@@ -17,7 +18,7 @@ const {
   sort,
 } = storeToRefs(filterStore);
 
-const { data: products } = await useFetch<TProduct[]>("/api/product-list", {
+const { data: products, pending } = await useFetch<TProduct[]>("/api/product-list", {
   query: {
     searchQuery,
     brands: filterBrand,
@@ -33,14 +34,21 @@ const { data: products } = await useFetch<TProduct[]>("/api/product-list", {
     sort,
   },
 });
+
+const viewMode = ref<"grid" | "list">("grid");
+const setViewMode = (mode: "grid" | "list") => {
+  viewMode.value = mode;
+};
 </script>
 
 <template>
   <div class="mx-auto max-w-7xl px-6 py-8">
-    <div v-if="products">
-      <Statistic />
-      <ProductList :data="products" />
-      <SidebarFilter />
-    </div>
+    <Statistic />
+    <Filter :setViewMode :viewMode />
+    <ClientOnly>
+      <Loader v-if="pending" />
+      <ProductList v-else :data="products" :viewMode />
+    </ClientOnly>
+    <SidebarFilter />
   </div>
 </template>
