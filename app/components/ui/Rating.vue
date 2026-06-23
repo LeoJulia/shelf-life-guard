@@ -10,7 +10,7 @@ defineProps(["rating"]);
         name="mage:star-fill"
         class="size-5 fill-primary text-primary"
       />
-      <UIcon v-else name="mage:star-fill" class="size-5 fill-muted text-muted" />
+      <UIcon v-else name="mage:star-fill" class="size-5 fill-muted bg-muted" />
     </div>
   </div>
 </template>

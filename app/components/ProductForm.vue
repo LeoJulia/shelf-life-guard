@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { FormError } from '@nuxt/ui'
+import { parseDate, type DateValue } from "@internationalized/date";
 import EditFormField from './ui/EditFormField.vue';
 import { useProductStore, useProductRPC } from "~/stores/productStore";
-import { parseDate, type DateValue } from "@internationalized/date";
 import type { TProduct } from "~/types/product.types";
 
 const supabase = useSupabaseClient()
@@ -9,6 +10,8 @@ const user = useSupabaseUser()
 
 const productStore = useProductStore();
 const productRPC = useProductRPC();
+
+const toast = useToast();
 
 const props = defineProps<{ product?: TProduct }>();
 
@@ -28,6 +31,17 @@ const dateFields = [
   ["openedAt", openedAt, "opened_at"],
   ["finishedAt", finishedAt, "finished_at"],
 ] as const;
+
+function validate(state: TProduct): FormError[] {
+  const errors = [];
+
+  if (!state.brand) errors.push({ name: 'brand', message: 'Обязательно' });
+  if (!state.volume) errors.push({ name: 'volume', message: 'Обязательно' });
+  if (!state.actual_price) errors.push({ name: 'actual_price', message: 'Обязательно' });
+  if (!state.year) errors.push({ name: 'year', message: 'Обязательно' });
+
+  return errors;
+}
 
 watch(
   () => props.product,
@@ -89,7 +103,14 @@ const uploadImage = async () => {
 }
 
 const onSave = async (close?: () => void) => {
-  if (!product.value) return;
+  if (validate(product.value).length) {
+    toast.add({
+      title: 'Ошибка сохранения',
+      description: 'Перепроверьте обязательные поля',
+      color: 'error',
+    });
+    return;
+  };
 
   const imgPath = await uploadImage();
 
@@ -131,159 +152,157 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
     <slot />
 
     <template #body>
-      <div v-if="product?.name || brands.length > 0">
-        <UForm :state="product" @submit.prevent="">
-          <EditFormField label="Фотография">
-            <UFileUpload
-              class="w-full"
-              v-model="image"
-              accept="image/*"
-              description="SVG, PNG, JPG or GIF (max. 2MB)"
-              label="Как выглядит твоя баночка"
-              icon="mage:image-upload"
-              :ui="{ description: 'text-muted-foreground' }"
-            />
-          </EditFormField>
+      <UForm :validate="validate" :state="product" @submit.prevent="">
+        <EditFormField label="Фотография" name="image">
+          <UFileUpload
+            class="w-full"
+            v-model="image"
+            accept="image/*"
+            description="SVG, PNG, JPG or GIF (max. 2MB)"
+            label="Как выглядит твоя баночка"
+            icon="mage:image-upload"
+            :ui="{ description: 'text-muted-foreground' }"
+          />
+        </EditFormField>
 
-          <EditFormField label="Название">
-            <UInput
-              class="w-full"
-              v-model="product.name"
-              type="text"
-              placeholder="Название продукта"
-            />
-          </EditFormField>
+        <EditFormField label="Название" name="name">
+          <UInput
+            class="w-full"
+            v-model="product.name"
+            type="text"
+            placeholder="Название продукта"
+          />
+        </EditFormField>
 
-          <EditFormField label="Бренд" required>
-            <USelectMenu
-              class="w-full"
-              v-model="product.brand"
-              filter
-              create-item
-              :items="brands"
-              placeholder="Выберите бренд"
-              clear
-              :content="{ align: 'start', side: 'right', sideOffset: 8 }"
-              @create="onCreateBrand"
-            />
-          </EditFormField>
+        <EditFormField label="Бренд" name="brand" required>
+          <USelectMenu
+            class="w-full"
+            v-model="product.brand"
+            filter
+            create-item
+            :items="brands"
+            placeholder="Выберите бренд"
+            clear
+            :content="{ align: 'start', side: 'right', sideOffset: 8 }"
+            @create="onCreateBrand"
+          />
+        </EditFormField>
 
-          <EditFormField label="Категория">
-            <USelectMenu
-              class="w-full"
-              v-model="product.category"
-              filter
-              create-item
-              :items="categories"
-              placeholder="Выберите категорию"
-              clear
-              :content="{ align: 'start', side: 'right', sideOffset: 8 }"
-              @create="onCreateCategory"
-            />
-          </EditFormField>
+        <EditFormField label="Категория" name="category">
+          <USelectMenu
+            class="w-full"
+            v-model="product.category"
+            filter
+            create-item
+            :items="categories"
+            placeholder="Выберите категорию"
+            clear
+            :content="{ align: 'start', side: 'right', sideOffset: 8 }"
+            @create="onCreateCategory"
+          />
+        </EditFormField>
 
-          <EditFormField label="Объём" required>
-            <USelectMenu
-              class="w-full"
-              v-model="product.volume"
-              filter
-              create-item
-              :items="volumes"
-              placeholder="Выберите объём"
-              clear
-              :content="{ align: 'start', side: 'right', sideOffset: 8 }"
-              @create="onCreateVolume"
-            />
-          </EditFormField>
+        <EditFormField label="Объём" name="volume" required>
+          <USelectMenu
+            class="w-full"
+            v-model="product.volume"
+            filter
+            create-item
+            :items="volumes"
+            placeholder="Выберите объём"
+            clear
+            :content="{ align: 'start', side: 'right', sideOffset: 8 }"
+            @create="onCreateVolume"
+          />
+        </EditFormField>
 
-          <EditFormField label="Рейтинг">
-            <UInputNumber class="w-full" v-model="product.rating" :max="5" />
-          </EditFormField>
+        <EditFormField label="Рейтинг" name="rating">
+          <UInputNumber class="w-full" v-model="product.rating" :max="5" />
+        </EditFormField>
 
-          <EditFormField label="Рыночная цена">
-            <UInputNumber
-              class="w-full"
-              v-model="product.market_price"
-              orientation="vertical"
-              locale="ru-RU"
-              :min="0"
-              :format-options="{
-                style: 'currency',
-                currency: 'RUB',
-                currencyDisplay: 'symbol',
-                currencySign: 'accounting',
-              }"
-            />
-          </EditFormField>
+        <EditFormField label="Рыночная цена" name="market_price">
+          <UInputNumber
+            class="w-full"
+            v-model="product.market_price"
+            orientation="vertical"
+            locale="ru-RU"
+            :min="0"
+            :format-options="{
+              style: 'currency',
+              currency: 'RUB',
+              currencyDisplay: 'symbol',
+              currencySign: 'accounting',
+            }"
+          />
+        </EditFormField>
 
-          <EditFormField label="Цена покупки" required>
-            <UInputNumber
-              class="w-full"
-              v-model="product.actual_price"
-              orientation="vertical"
-              locale="ru-RU"
-              :min="0"
-              :format-options="{
-                style: 'currency',
-                currency: 'RUB',
-                currencyDisplay: 'symbol',
-                currencySign: 'accounting',
-              }"
-            />
-          </EditFormField>
+        <EditFormField label="Цена покупки" name="actual_price" required>
+          <UInputNumber
+            class="w-full"
+            v-model="product.actual_price"
+            orientation="vertical"
+            locale="ru-RU"
+            :min="0"
+            :format-options="{
+              style: 'currency',
+              currency: 'RUB',
+              currencyDisplay: 'symbol',
+              currencySign: 'accounting',
+            }"
+          />
+        </EditFormField>
 
-          <EditFormField label="Магазин" required>
-            <USelectMenu
-              class="w-full"
-              v-model="product.shop"
-              filter
-              create-item
-              :items="shops"
-              placeholder="Выберите магазин"
-              clear
-              :content="{ align: 'start', side: 'right', sideOffset: 8 }"
-              @create="onCreateShop"
-            />
-          </EditFormField>
+        <EditFormField label="Магазин" name="shop" required>
+          <USelectMenu
+            class="w-full"
+            v-model="product.shop"
+            filter
+            create-item
+            :items="shops"
+            placeholder="Выберите магазин"
+            clear
+            :content="{ align: 'start', side: 'right', sideOffset: 8 }"
+            @create="onCreateShop"
+          />
+        </EditFormField>
 
-          <EditFormField label="Год покупки" required>
-            <UInput
-              v-model="product.year"
-              type="number"
-              :min="1900"
-              :max="new Date().getFullYear() + 1"
-            />
-          </EditFormField>
+        <EditFormField label="Год покупки" name="year" required>
+          <UInput
+            v-model="product.year"
+            type="number"
+            :min="1900"
+            :max="new Date().getFullYear() + 1"
+          />
+        </EditFormField>
 
-          <EditFormField label="Срок годности" help="Ввод с клавиатуры">
-            <UInputDate v-model="expiryDate" locale="ru" />
-          </EditFormField>
+        <EditFormField label="Срок годности" name="expiryDate" help="Ввод с клавиатуры">
+          <UInputDate v-model="expiryDate" locale="ru" />
+        </EditFormField>
 
-          <EditFormField label="Дата открытия" help="Ввод с клавиатуры">
-            <UInputDate v-model="openedAt" locale="ru" />
-          </EditFormField>
+        <EditFormField label="Дата открытия" name="openedAt" help="Ввод с клавиатуры">
+          <UInputDate v-model="openedAt" locale="ru" />
+        </EditFormField>
 
-          <EditFormField label="Дата окончания" help="Ввод с клавиатуры">
-            <UInputDate v-model="finishedAt" locale="ru" />
-          </EditFormField>
+        <EditFormField label="Дата окончания" name="finishedAt" help="Ввод с клавиатуры">
+          <UInputDate v-model="finishedAt" locale="ru" />
+        </EditFormField>
 
-          <EditFormField label="Состав">
-            <UTextarea
-              class="w-full"
-              v-model="product.ingredients"
-              placeholder="ароматизатор, вода..."
-            />
-          </EditFormField>
+        <EditFormField label="Состав" name="ingredients">
+          <UTextarea
+            class="w-full"
+            v-model="product.ingredients"
+            placeholder="ароматизатор, вода..."
+          />
+        </EditFormField>
 
-          <EditFormField label="Заметки">
-            <UTextarea
-              class="w-full"
-              v-model="product.notes"
-              placeholder="Дополнительные заметки"
-            />
-          </EditFormField>
-        </UForm>
-      </div>
+        <EditFormField label="Заметки" name="notes">
+          <UTextarea
+            class="w-full"
+            v-model="product.notes"
+            placeholder="Дополнительные заметки"
+          />
+        </EditFormField>
+      </UForm>
     </template>
 
     <template #footer="{ close }">

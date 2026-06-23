@@ -1,9 +1,15 @@
 <script setup lang="ts">
-const { label, required, help } = defineProps(["label", "required", "help"]);
+const { label, required, help, name } = defineProps([
+  "label",
+  "required",
+  "help",
+  "name",
+]);
 </script>
 
 <template>
   <UFormField
+    :name="name"
     :required="required"
     :help="help"
     class="justify-start w-full mb-2"

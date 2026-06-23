@@ -7,14 +7,8 @@ import Tags from "~/components/ui/Tags.vue";
 const router = useRouter();
 const route = useRoute();
 
-const product = ref<TProduct>();
-
-watchEffect(async () => {
-  const { data } = await useFetch<TProduct>("/api/product", {
-    query: { id: route.params.id },
-  });
-
-  product.value = data.value;
+const { data: product } = await useFetch<TProduct>("/api/product", {
+  query: { id: route.params.id },
 });
 
 const onDeleteProduct = async () => {
