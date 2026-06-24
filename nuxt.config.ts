@@ -8,12 +8,6 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ["./app/stores"],
   },
-  app: {
-    baseURL: "/shelf-life-guard/",
-  },
-  nitro: {
-    preset: "github_pages",
-  },
   appConfig: {
     ui: {
       icons: {
