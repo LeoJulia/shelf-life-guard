@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ["./app/stores"],
   },
+  app: {
+    baseURL: "/shelf-life-guard/",
+  },
   appConfig: {
     ui: {
       icons: {
