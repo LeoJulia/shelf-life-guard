@@ -15,4 +15,14 @@ export default defineNuxtConfig({
       },
     },
   },
+  vite: {
+    optimizeDeps: {
+      include: [
+        "@internationalized/date",
+        "@vue/devtools-core",
+        "@vue/devtools-kit",
+        "browser-image-compression",
+      ],
+    },
+  },
 });
