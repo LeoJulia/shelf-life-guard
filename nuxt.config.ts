@@ -11,7 +11,6 @@ export default defineNuxtConfig({
   app: {
     baseURL: "/shelf-life-guard/",
   },
-  ssr: true,
   nitro: {
     preset: "github_pages",
   },
