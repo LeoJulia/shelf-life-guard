@@ -1,6 +1,6 @@
 <template>
   <UApp>
-    <div class="font-sans antialiased bg-background">
+    <div class="flex flex-col h-screen font-sans antialiased bg-background">
       <Header />
       <NuxtPage />
     </div>
