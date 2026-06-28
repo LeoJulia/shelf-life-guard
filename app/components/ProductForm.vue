@@ -37,7 +37,6 @@ function validate(state: TProduct): FormError[] {
 
   if (!state.brand) errors.push({ name: 'brand', message: 'Обязательно' });
   if (!state.volume) errors.push({ name: 'volume', message: 'Обязательно' });
-  if (!state.actual_price) errors.push({ name: 'actual_price', message: 'Обязательно' });
   if (!state.year) errors.push({ name: 'year', message: 'Обязательно' });
 
   return errors;
@@ -236,7 +235,7 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
           />
         </EditFormField>
 
-        <EditFormField label="Цена покупки" name="actual_price" required>
+        <EditFormField label="Цена покупки" name="actual_price">
           <UInputNumber
             class="w-full"
             v-model="product.actual_price"

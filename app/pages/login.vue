@@ -36,7 +36,7 @@ const onSubmit = async (payload) => {
 </script>
 
 <template>
-  <div class="grow flex flex-col items-center justify-center gap-4 p-4">
+  <div class="flex flex-col items-center justify-center gap-4 p-4">
     <UPageCard class="w-full max-w-md">
       <UAuthForm
         loadingAuto
