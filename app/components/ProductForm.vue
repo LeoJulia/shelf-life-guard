@@ -25,6 +25,7 @@ const expiryDate = shallowRef<DateValue | null>(null);
 const openedAt = shallowRef<DateValue | null>(null);
 const finishedAt = shallowRef<DateValue | null>(null);
 const image = ref<File>();
+const isLoading = ref(false);
 
 const dateFields = [
   ["expiryDate", expiryDate, "expiry_date"],
@@ -102,12 +103,14 @@ const uploadImage = async () => {
 }
 
 const onSave = async (close?: () => void) => {
+  isLoading.value = true;
   if (validate(product.value).length) {
     toast.add({
       title: 'Ошибка сохранения',
       description: 'Перепроверьте обязательные поля',
       color: 'error',
     });
+    isLoading.value = false;
     return;
   };
 
@@ -120,11 +123,13 @@ const onSave = async (close?: () => void) => {
   };
 
   if (product.value.id) {
+    toast.add({ title: 'Обновление продукта' });
     await $fetch(`/api/products/${product.value.id}`, {
       method: "PUT",
       body,
     });
   } else {
+    toast.add({ title: 'Добавление продукта' });
     await $fetch(`/api/products/products`, {
       method: "POST",
       body: {...body, id: undefined},
@@ -132,6 +137,7 @@ const onSave = async (close?: () => void) => {
   }
 
   await refreshNuxtData();
+  isLoading.value = false;
   close?.();
 };
 
@@ -151,7 +157,12 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
     <slot />
 
     <template #body>
-      <UForm :validate="validate" :state="product" @submit.prevent="">
+      <UForm
+        :disabled="isLoading"
+        :validate="validate"
+        :state="product"
+        @submit.prevent=""
+      >
         <EditFormField label="Фотография" name="image">
           <UFileUpload
             class="w-full"
