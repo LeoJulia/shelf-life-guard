@@ -1,3 +1,13 @@
+<script setup lang="ts">
+const supabase = useSupabaseClient();
+
+const onLogout = async () => {
+  await supabase.auth.signOut();
+
+  await navigateTo("/login");
+};
+</script>
+
 <template>
   <header class="border-b border-border bg-card/50 backdrop-blur-sm">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -37,12 +47,18 @@
         </a>
       </nav>
 
-      <ProductForm>
-        <UButton size="sm" class="gap-2">
-          <UIcon name="mage:plus" class="size-6" />
-          Добавить
+      <div>
+        <ProductForm>
+          <UButton size="sm" class="gap-2">
+            <UIcon name="mage:plus" class="size-6" />
+            Добавить
+          </UButton>
+        </ProductForm>
+        <UButton size="sm" class="ml-3 gap-2" @click="onLogout" variant="ghost">
+          <UIcon name="mage:logout" class="size-6" />
+          Выйти
         </UButton>
-      </ProductForm>
+      </div>
     </div>
   </header>
 </template>
