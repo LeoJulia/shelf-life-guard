@@ -27,7 +27,7 @@ const { data, viewMode } = defineProps<{
       <UIcon name="mage:package-box" class="h-12 w-12 text-muted-foreground" />
       <h3 class="mt-4 text-lg font-medium text-foreground">Упс... Нет баночек</h3>
       <p class="mt-1 text-sm text-muted-foreground">
-        Попробуйте настроить свой поиск или добавить новый продукт
+        Попробуйте обновить страницу, настроить свой поиск или добавить новый продукт
       </p>
     </div>
   </div>
