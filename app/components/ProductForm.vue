@@ -316,8 +316,13 @@ const onCreateShop = (item: string) => onCreateItem(shops.value, item, "shop");
     </template>
 
     <template #footer="{ close }">
-      <UButton label="Отменить" variant="outline" @click="close" />
-      <UButton label="Сохранить" type="submit" @click="onSave(close)" />
+      <UButton label="Отменить" variant="outline" @click="close" :disabled="isLoading" />
+      <UButton
+        label="Сохранить"
+        type="submit"
+        @click="onSave(close)"
+        :disabled="isLoading"
+      />
     </template>
   </UModal>
 </template>
