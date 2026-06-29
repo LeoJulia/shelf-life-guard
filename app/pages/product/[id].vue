@@ -112,5 +112,16 @@ const onDeleteProduct = async () => {
         </div>
       </div>
     </div>
+    <div v-else>
+      <div class="mt-12 flex flex-col items-center justify-center text-center">
+        <UIcon name="mage:package-box" class="h-12 w-12 text-muted-foreground" />
+        <h3 class="mt-4 text-lg font-medium text-foreground">Упс... Ошибочка</h3>
+        <p class="mt-1 mb-1 text-sm text-muted-foreground">
+          Возможно это временна ошибка. Или баночки не существовало, а может она была
+          удалена. Попробуйте открыть другую или добавить новую.
+        </p>
+        <NuxtLink to="/dashboard">На главную</NuxtLink>
+      </div>
+    </div>
   </main>
 </template>
