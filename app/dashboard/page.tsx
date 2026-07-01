@@ -1,3 +1,1 @@
-export default function Dashboard() {
-  return <div>test</div>;
-}
+export { Dashboard as default } from "@/pages/dashboard";

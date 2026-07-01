@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Package } from "lucide-react";
 import Link from "next/link";
-import { AuthButton } from "@/components/auth-button";
+import { AuthButton } from "./auth-button";
 
 export const Header = () => (
   <Suspense>
