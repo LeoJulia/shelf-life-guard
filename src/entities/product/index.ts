@@ -1,0 +1,1 @@
+export { getProductList } from "./api";
