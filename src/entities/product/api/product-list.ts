@@ -148,10 +148,6 @@ export const getProductList = async (query: any) => {
   const { data, error } = await request;
 
   if (error) {
-    // throw Error({
-    //   statusCode: 500,
-    //   statusMessage: error.message,
-    // });
     throw new Error("Error on get product list", error);
   }
 

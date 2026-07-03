@@ -1,5 +1,9 @@
 import { Suspense } from "react";
-import { StatisticCards, StatisticCardsSkeleton } from "@/pages/dashboard";
+import {
+  Control,
+  StatisticCards,
+  StatisticCardsSkeleton,
+} from "@/pages/dashboard";
 import "../../styles/globals.css";
 
 export const DashboardLayout = ({
@@ -10,6 +14,9 @@ export const DashboardLayout = ({
   <div className='mx-auto max-w-7xl px-6 py-8'>
     <Suspense fallback={<StatisticCardsSkeleton />}>
       <StatisticCards />
+    </Suspense>
+    <Suspense>
+      <Control />
     </Suspense>
     {children}
   </div>

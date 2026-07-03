@@ -7,11 +7,6 @@ export const getStatistic = async () => {
   const { data: products, error } = await client.from("products").select("*");
 
   if (error) {
-    // throw createError({
-    //   statusCode: 500,
-    //   statusMessage: error.message,
-    // });
-
     throw new Error("Error on get statistic", error);
   }
 

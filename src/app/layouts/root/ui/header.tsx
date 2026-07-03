@@ -11,8 +11,7 @@ export const Header = () => (
           <Package className='size-6 text-white' />
         </div>
         <span className='text-lg font-semibold text-foreground'>
-          {" "}
-          Shelf Life Guard{" "}
+          Shelf Life Guard
         </span>
       </Link>
 

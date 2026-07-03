@@ -1,0 +1,39 @@
+"use client";
+
+import { Search } from "lucide-react";
+import { useDebouncedCallback } from "use-debounce";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+
+export const Control = () => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const handleSearch = useDebouncedCallback((str: string) => {
+    const params = new URLSearchParams(searchParams?.toString());
+
+    if (str) {
+      params.set("query", str);
+    } else {
+      params.delete("query");
+    }
+
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
+
+  return (
+    <div className='mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <div className='relative flex-1 sm:max-w-md'>
+        <Search className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground' />
+        <input
+          className='h-8 w-full pl-10 bg-background border border-border rounded-sm focus:bg-input focus:outline-border'
+          placeholder='Ищи продукты, бренды или теги...'
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          defaultValue={searchParams?.get("query")?.toString()}
+        />
+      </div>
+    </div>
+  );
+};

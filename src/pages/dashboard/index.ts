@@ -3,4 +3,5 @@ export {
   DashboardLoading,
   StatisticCards,
   StatisticCardsSkeleton,
+  Control,
 } from "./ui";
