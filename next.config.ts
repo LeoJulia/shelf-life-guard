@@ -4,7 +4,16 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   images: {
     dangerouslyAllowLocalIP: true,
-    domains: ["zgvolwclxwvboazhskio.supabase.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "zgvolwclxwvboazhskio.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/sign/product-images/**",
+        search: "**",
+      },
+      // new URL("https://zgvolwclxwvboazhskio.supabase.co/**"),
+    ],
   },
 };
 
