@@ -1,8 +1,7 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { cn } from "@/shared/utils";
-import { Header } from "@/widgets/header";
+import { Header } from "./ui/header";
 import "../../styles/globals.css";
-import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -34,7 +33,7 @@ export const RootLayout = ({
   >
     <body className='h-screen antialiased bg-background'>
       <Header />
-      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+      {children}
     </body>
   </html>
 );
