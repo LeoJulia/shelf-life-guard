@@ -9,9 +9,19 @@ import {
 } from "@/shared/ui/card";
 import { Rating } from "./rating";
 import { Tags } from "./tags";
+import { ExpiryBar } from "./expiry-bar";
+import { BadgeRussianRuble, Calendar, Store } from "lucide-react";
 
 export const ProductCard = ({ product }: { product: any }) => {
   const url = `/product/${product.id}`;
+
+  const lastDate = product?.finished_at
+    ? new Date(product.finished_at)
+    : new Date();
+  const costPerDay = product?.opened_at
+    ? (product?.actual_price ?? 0) /
+      ((lastDate.getTime() - new Date(product.opened_at).getTime()) / 8.64e7)
+    : null;
 
   return (
     <Link href={url} key={product.id}>
@@ -34,7 +44,55 @@ export const ProductCard = ({ product }: { product: any }) => {
             <Tags product={product} />
           </div>
         </CardHeader>
-        <CardContent>{product.id}</CardContent>
+        <CardContent>
+          <ExpiryBar product={product} />
+
+          <div className='mt-4 grid grid-cols-3 gap-2'>
+            <div className='rounded-lg bg-[oklch(0.92_0.06_200)] p-2.5'>
+              <div className='flex items-center gap-1 text-[oklch(0.5_0.08_200)]'>
+                <Calendar className='size-4' />
+                <span className='text-[10px] font-medium uppercase tracking-wide'>
+                  Открыт
+                </span>
+              </div>
+              <p className='mt-1 text-xs font-semibold text-[oklch(0.4_0.08_200)]'>
+                {product.opened_at
+                  ? new Date(product.opened_at).toLocaleDateString("ru-RU", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "Баночка еще не открыта"}
+              </p>
+            </div>
+
+            <div className='rounded-lg bg-[oklch(0.9_0.08_165)] p-2.5'>
+              <div className='flex items-center gap-1 text-[oklch(0.45_0.1_165)]'>
+                <Store className='size-4' />
+                <span className='text-[10px] font-medium uppercase tracking-wide'>
+                  Магазин
+                </span>
+              </div>
+              <p className='mt-1 text-xs font-semibold text-[oklch(0.35_0.1_165)]'>
+                {product.shop}
+              </p>
+            </div>
+
+            <div className='rounded-lg bg-[oklch(0.9_0.08_340)] p-2.5'>
+              <div className='flex items-center gap-1 text-[oklch(0.5_0.1_340)]'>
+                <BadgeRussianRuble className='size-4' />
+                <span className='text-[10px] font-medium uppercase tracking-wide'>
+                  Цена за день
+                </span>
+              </div>
+              <p className='mt-1 text-xs font-semibold text-[oklch(0.4_0.12_340)]'>
+                {typeof costPerDay === "number"
+                  ? costPerDay?.toFixed(2)
+                  : "Начни банку, чтобы узнать"}
+              </p>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </Link>
   );

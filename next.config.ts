@@ -10,9 +10,7 @@ const nextConfig: NextConfig = {
         hostname: "zgvolwclxwvboazhskio.supabase.co",
         port: "",
         pathname: "/storage/v1/object/sign/product-images/**",
-        search: "**",
       },
-      // new URL("https://zgvolwclxwvboazhskio.supabase.co/**"),
     ],
   },
 };
