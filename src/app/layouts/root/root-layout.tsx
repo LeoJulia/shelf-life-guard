@@ -33,7 +33,7 @@ export const RootLayout = ({
   >
     <body className='h-screen antialiased bg-background'>
       <Header />
-      {children}
+      <div className='mx-auto max-w-7xl px-6 py-8'>{children}</div>
     </body>
   </html>
 );

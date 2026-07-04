@@ -1,0 +1,1 @@
+export { ProductLayout as default } from "@/app/layouts";

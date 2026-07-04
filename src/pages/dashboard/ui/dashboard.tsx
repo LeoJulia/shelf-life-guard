@@ -48,11 +48,6 @@ export const Dashboard = async ({
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-
-      {/* <Filter :setViewMode :viewMode />  */}
-      {/* <ProductList query={query} /> */}
-      {/* TODO: move to layout */}
-      {/* <SidebarFilter /> */}
     </div>
   );
 };

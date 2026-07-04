@@ -1,3 +1,1 @@
-export default function Page() {
-  return "test";
-}
+export { Product as default } from "@/pages/product";

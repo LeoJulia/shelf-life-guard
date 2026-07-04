@@ -16,7 +16,7 @@ export async function AuthButton() {
       {user ? (
         <LogoutButton />
       ) : (
-        <Button asChild size='sm' variant={"outline"}>
+        <Button asChild size='sm' variant='outline'>
           <Link href='/auth/login'>Вход</Link>
         </Button>
       )}

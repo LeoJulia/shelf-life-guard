@@ -34,6 +34,49 @@ export const Control = () => {
           defaultValue={searchParams?.get("query")?.toString()}
         />
       </div>
+      {/* 
+      <div class="flex items-center gap-2">
+        <UButton
+          variant="outline"
+          size="sm"
+          class="rounded-sm gap-2 text-foreground border-0.5 border-border"
+          :class="showFilter ? 'bg-primary' : ''"
+          @click="onShowFilter"
+        >
+          <UIcon name="mdi:filter-outline" class="size-5" />
+          Фильтр
+        </UButton>
+        <Sort />
+        <div
+          class="ml-2 h-11 flex items-center rounded-sm border border-border bg-secondary/30 p-1"
+        >
+          <button
+            @click="() => setViewMode('grid')"
+            :class="[
+              'h-8 rounded-sm p-1.5 transition-colors',
+              viewMode === 'grid'
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
+          >
+            <UIcon name="mingcute:grid-line" class="size-5" />
+          </button>
+          <button
+            @click="() => setViewMode('list')"
+            :class="[
+              'h-8 rounded-sm p-1.5 transition-colors',
+              viewMode === 'list'
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
+          >
+            <UIcon name="ic:round-list" class="size-5" />
+          </button>
+        </div>
+      </div> 
+      */}
+
+      {/* <SidebarFilter /> */}
     </div>
   );
 };
