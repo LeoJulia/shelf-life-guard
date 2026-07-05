@@ -1,15 +1,19 @@
 "use client";
 
-import { Loader, Search } from "lucide-react";
+import { Filter, Loader, Search } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { Button } from "@/shared/ui/button";
+import { cn } from "@/shared/utils";
 
 export const Control = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  const [showFilter, setShowFilter] = useState(false);
 
   const handleSearch = useDebouncedCallback((str: string) => {
     const params = new URLSearchParams(searchParams?.toString());
@@ -24,6 +28,10 @@ export const Control = () => {
       replace(`${pathname}?${params.toString()}`);
     });
   }, 300);
+
+  const handleShowFilter = () => {
+    setShowFilter((showFilter) => !showFilter);
+  };
 
   return (
     <div className='mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
@@ -42,21 +50,22 @@ export const Control = () => {
           defaultValue={searchParams?.get("query")?.toString()}
         />
       </div>
-      {/* 
-      <div class="flex items-center gap-2">
-        <UButton
-          variant="outline"
-          size="sm"
-          class="rounded-sm gap-2 text-foreground border-0.5 border-border"
-          :class="showFilter ? 'bg-primary' : ''"
-          @click="onShowFilter"
+
+      <div className='flex items-center gap-2'>
+        <Button
+          variant='default'
+          size='sm'
+          className={cn(
+            "rounded-sm gap-2 text-foreground border border-border",
+            showFilter ? "bg-primary" : "bg-transparent",
+          )}
+          onClick={handleShowFilter}
         >
-          <UIcon name="mdi:filter-outline" class="size-5" />
+          <Filter className='size-5' />
           Фильтр
-        </UButton>
-        <Sort />
-      </div> 
-      */}
+        </Button>
+        {/* <Sort /> */}
+      </div>
 
       {/* <SidebarFilter /> */}
     </div>

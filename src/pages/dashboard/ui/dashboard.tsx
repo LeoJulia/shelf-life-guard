@@ -9,7 +9,6 @@ export const Dashboard = async ({
     page?: string;
   }>;
 }) => {
-  // const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const searchParameters = await searchParams;
   const query = searchParameters?.query || "";
 

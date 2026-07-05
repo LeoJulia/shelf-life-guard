@@ -1,6 +1,7 @@
 import { createServerClient } from "@/shared/server";
+import { TProduct } from "../model";
 
-export const getProductList = async (query: any) => {
+export const getProductList = async (query: any): Promise<TProduct[]> => {
   const supabase = await createServerClient();
 
   let request = supabase.from("products").select("*");
