@@ -1,19 +1,11 @@
+"use client";
+
+import { use } from "react";
 import { Package } from "lucide-react";
-import { getProductList, ProductCard } from "@/entities/product";
+import { ProductCard } from "@/entities/product";
 
-export const Dashboard = async ({
-  searchParams,
-}: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
-}) => {
-  // const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const searchParameters = await searchParams;
-  const query = searchParameters?.query || "";
-
-  const products = await getProductList({ searchQuery: query });
+export const ProductList = ({ promise }: { promise: Promise<any[]> }) => {
+  const products = use(promise);
 
   if (!products?.length) {
     return (
@@ -40,7 +32,7 @@ export const Dashboard = async ({
           {products.length} шт
         </span>
       </div>
-      <div className='columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4'>
+      <div className='mt-4 grid gap-4'>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

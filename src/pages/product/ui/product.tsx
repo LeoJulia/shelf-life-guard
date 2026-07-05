@@ -12,6 +12,9 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { notFound } from "next/navigation";
+import { ExpiryBar } from "@/entities/product/ui/expiry-bar";
+import { Rating } from "@/entities/product/ui/rating";
+import { Tags } from "@/entities/product/ui/tags";
 
 export const Product = async ({
   params,
@@ -58,10 +61,11 @@ export const Product = async ({
             </CardTitle>
           </CardHeader>
 
-          {/* <Rating :rating="product.rating" /> */}
-          {/* <Tags :product="product" /> */}
-          {/* <ProgressBar :product="product" /> */}
-
+          <CardContent>
+            <Rating rating={product.rating} />
+            <Tags product={product} />
+            <ExpiryBar product={product} />
+          </CardContent>
           <CardContent className='flex flex-col divide-y mt-4'>
             <ProductRow field='Комментарий' value={product?.notes} />
             <ProductRow field='Состав' value={product?.ingredients} />
@@ -112,9 +116,11 @@ export const Product = async ({
             )}
           </CardContent>
         </div>
+        {/* @ts-ignore */}
         {product.imageUrl && (
           <div className='relative h-auto w-full flex-shrink-0 overflow-hidden rounded-lg bg-input'>
             <Image
+              // @ts-ignore
               src={product.imageUrl}
               alt='product.name'
               fill

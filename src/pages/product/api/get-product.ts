@@ -22,6 +22,7 @@ export const getProduct = async (id: string) => {
       .from("product-images")
       .createSignedUrl(product.image_path, 3600);
 
+    // @ts-ignore
     product.imageUrl = data?.signedUrl;
   }
 

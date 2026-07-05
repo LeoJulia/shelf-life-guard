@@ -1,3 +1,5 @@
+"use server";
+
 import { createServerClient } from "@/shared/server";
 
 export const getStatistic = async () => {

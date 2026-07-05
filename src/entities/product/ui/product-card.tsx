@@ -25,7 +25,7 @@ export const ProductCard = ({ product }: { product: any }) => {
 
   return (
     <Link href={url} key={product.id}>
-      <Card className='group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'>
+      <Card className='break-inside-avoid mb-4 group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'>
         <CardHeader className='flex-row gap-4'>
           <div className='relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input'>
             <Image
