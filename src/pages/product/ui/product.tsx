@@ -3,11 +3,12 @@ import Link from "next/link";
 import { getProduct } from "../api/get-product";
 import { ProductRow } from "./product-row";
 import { Button } from "@/shared/ui/button";
-import { CircleArrowLeft } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
@@ -24,35 +25,17 @@ export const Product = async ({
   const { id } = await params;
 
   const product = await getProduct(id);
+  const editUrl = `/product/${id}/edit`;
 
   if (!product) {
     notFound();
   }
 
   return (
-    <>
-      <div className='flex justify-between pb-2'>
-        <Link href='/dashboard'>
-          <Button color='neutral' variant='ghost'>
-            <CircleArrowLeft className='size-8' />
-            Назад
-          </Button>
-        </Link>
-
-        {/* <UButton color="neutral" variant="ghost" @click="onDeleteProduct">
-          <UIcon name="mage:box-cross" className="size-8" />
-        </UButton> */}
-
-        {/* // <ProductForm :product="product">
-        //   <UButton color="neutral" variant="ghost">
-        //     <UIcon name="mage:edit" className="size-8" />
-        //   </UButton>
-        // </ProductForm>  */}
-      </div>
-
-      <Card className='md:grid md:grid-cols-3 gap-2 group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'>
-        <div className='col-span-2'>
-          <CardHeader className='mb-6'>
+    <Card className='group relative overflow-hidden rounded-xl border border-border bg-card'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-0'>
+        <div className='flex flex-col'>
+          <CardHeader>
             <CardDescription className='text-s font-medium uppercase tracking-wider text-muted-foreground'>
               {product?.brand}
             </CardDescription>
@@ -66,7 +49,7 @@ export const Product = async ({
             <Tags product={product} />
             <ExpiryBar product={product} />
           </CardContent>
-          <CardContent className='flex flex-col divide-y mt-4'>
+          <CardContent className='h-full flex flex-col divide-y'>
             <ProductRow field='Комментарий' value={product?.notes} />
             <ProductRow field='Состав' value={product?.ingredients} />
             <ProductRow
@@ -115,21 +98,33 @@ export const Product = async ({
               />
             )}
           </CardContent>
+          <CardFooter className='flex gap-3 mt-8'>
+            <Link href={editUrl}>
+              <Button>
+                <Edit />
+                Редактировать
+              </Button>
+            </Link>
+            <Button variant='destructive'>
+              <Trash />
+              Удалить
+            </Button>
+          </CardFooter>
         </div>
-        {/* @ts-ignore */}
-        {product.imageUrl && (
-          <div className='relative h-auto w-full flex-shrink-0 overflow-hidden rounded-lg bg-input'>
-            <Image
-              // @ts-ignore
-              src={product.imageUrl}
-              alt='product.name'
-              fill
-              loading='eager'
-              className='object-cover transition-transform duration-300 group-hover:scale-105 h-full'
-            />
-          </div>
-        )}
-      </Card>
-    </>
+        <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
+          {product.imageUrl && (
+            <div className='relative w-full max-w-xs'>
+              <Image
+                src={product.imageUrl}
+                alt={product.name}
+                width={615}
+                height={832}
+                className='w-full h-auto object-contain rounded-2xl'
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
   );
 };

@@ -1,7 +1,8 @@
 import { Field, FieldLabel } from "@/shared/ui/field";
 import { Progress } from "@/shared/ui/progress";
+import { TProduct } from "../model";
 
-export const ExpiryBar = ({ product }: { product: any }) => {
+export const ExpiryBar = ({ product }: { product: TProduct }) => {
   let remaining = 1;
   let total = 90 * 8.64e7;
 

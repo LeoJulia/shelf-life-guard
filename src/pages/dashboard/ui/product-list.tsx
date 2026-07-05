@@ -2,9 +2,9 @@
 
 import { use } from "react";
 import { Package } from "lucide-react";
-import { ProductCard } from "@/entities/product";
+import { ProductCard, TProduct } from "@/entities/product";
 
-export const ProductList = ({ promise }: { promise: Promise<any[]> }) => {
+export const ProductList = ({ promise }: { promise: Promise<TProduct[]> }) => {
   const products = use(promise);
 
   if (!products?.length) {

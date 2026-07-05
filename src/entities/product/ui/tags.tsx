@@ -1,4 +1,6 @@
-export const Tags = ({ product }: { product: any }) => {
+import { TProduct } from "../model";
+
+export const Tags = ({ product }: { product: TProduct }) => {
   return (
     <div className='flex flex-wrap gap-1.5'>
       <span className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_340)] text-[oklch(0.45_0.1_340)]'>

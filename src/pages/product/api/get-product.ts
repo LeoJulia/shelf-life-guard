@@ -1,6 +1,7 @@
 import { createServerClient } from "@/shared/server";
+import { TProduct } from "@/entities/product";
 
-export const getProduct = async (id: string) => {
+export const getProduct = async (id: string): Promise<TProduct> => {
   const supabase = await createServerClient();
 
   if (!id) {
@@ -22,7 +23,6 @@ export const getProduct = async (id: string) => {
       .from("product-images")
       .createSignedUrl(product.image_path, 3600);
 
-    // @ts-ignore
     product.imageUrl = data?.signedUrl;
   }
 

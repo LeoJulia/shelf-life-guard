@@ -7,12 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { TProduct } from "../model";
 import { Rating } from "./rating";
 import { Tags } from "./tags";
 import { ExpiryBar } from "./expiry-bar";
 import { BadgeRussianRuble, Calendar, Store } from "lucide-react";
 
-export const ProductCard = ({ product }: { product: any }) => {
+export const ProductCard = ({ product }: { product: TProduct }) => {
   const url = `/product/${product.id}`;
 
   const lastDate = product?.finished_at
