@@ -1,19 +1,16 @@
 "use client";
 
-import { Filter, Loader, Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { Button } from "@/shared/ui/button";
-import { cn } from "@/shared/utils";
+import { ProductFilter } from "./product-filter";
 
 export const Control = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  const [showFilter, setShowFilter] = useState(false);
 
   const handleSearch = useDebouncedCallback((str: string) => {
     const params = new URLSearchParams(searchParams?.toString());
@@ -28,10 +25,6 @@ export const Control = () => {
       replace(`${pathname}?${params.toString()}`);
     });
   }, 300);
-
-  const handleShowFilter = () => {
-    setShowFilter((showFilter) => !showFilter);
-  };
 
   return (
     <div className='mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
@@ -52,18 +45,7 @@ export const Control = () => {
       </div>
 
       <div className='flex items-center gap-2'>
-        <Button
-          variant='default'
-          size='sm'
-          className={cn(
-            "rounded-sm gap-2 text-foreground border border-border",
-            showFilter ? "bg-primary" : "bg-transparent",
-          )}
-          onClick={handleShowFilter}
-        >
-          <Filter className='size-5' />
-          Фильтр
-        </Button>
+        <ProductFilter />
         {/* <Sort /> */}
       </div>
 
