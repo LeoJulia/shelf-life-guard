@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import * as Popover from "@radix-ui/react-popover";
 import { Check, ChevronDown, Plus } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Popover, PopoverAnchor, PopoverContent } from "@/shared/ui/popover";
 
 interface BrandComboboxProps {
   defaultValue?: string | null;
@@ -72,8 +72,8 @@ export function Combobox({
   };
 
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Anchor asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverAnchor asChild>
         <div className='relative w-full'>
           <Input
             ref={inputRef}
@@ -104,72 +104,62 @@ export function Combobox({
             />
           </Button>
         </div>
-      </Popover.Anchor>
+      </PopoverAnchor>
 
-      <Popover.Portal>
-        <Popover.Content
-          sideOffset={4}
-          align='start'
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          onInteractOutside={(e) => {
-            const target = e.target as Element | null;
-            if (target === inputRef.current) {
-              e.preventDefault();
-            }
-          }}
-          className='z-[200] w-[var(--radix-popover-trigger-width)] max-h-64 overflow-hidden bg-popover rounded-xl border shadow-lg animate-in fade-in-0 zoom-in-95'
-        >
-          <div
-            ref={listRef}
-            role='listbox'
-            className='overflow-y-auto max-h-64 p-1'
-          >
-            {filteredOptions.length === 0 && !showAddOption && (
-              <div className='px-3 py-2 text-sm text-center'>
-                Ничего не найдено
-              </div>
-            )}
+      <PopoverContent
+        sideOffset={4}
+        align='start'
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={(e) => {
+          const target = e.target as Element | null;
+          if (target === inputRef.current) {
+            e.preventDefault();
+          }
+        }}
+        className='z-[200] w-[var(--radix-popover-trigger-width)] max-h-64 overflow-hidden rounded-xl border-border shadow-lg animate-in fade-in-0 zoom-in-95'
+      >
+        <div ref={listRef} role='listbox' className='overflow-y-auto max-h-64'>
+          {filteredOptions.length === 0 && !showAddOption && (
+            <div className='px-3 py-2 text-sm text-center'>
+              Ничего не найдено
+            </div>
+          )}
 
-            {filteredOptions.map((brand) => (
+          {filteredOptions.map((brand) => (
+            <div
+              key={brand}
+              data-combobox-item
+              role='option'
+              aria-selected={brand === value}
+              className='flex items-center gap-2 px-3 py-2 rounded-xl text-sm cursor-pointer transition-colors hover:bg-secondary hover:text-secondary-foreground'
+              onClick={() => handleSelect(brand)}
+            >
+              {brand === value && <Check className='size-4' />}
+              {brand !== value && <span className='w-4 flex-shrink-0' />}
+              <span>{brand}</span>
+            </div>
+          ))}
+
+          {showAddOption && (
+            <>
+              {filteredOptions.length > 0 && <div className='border-t my-1' />}
               <div
-                key={brand}
                 data-combobox-item
                 role='option'
-                aria-selected={brand === value}
+                aria-selected={false}
                 className='flex items-center gap-2 px-3 py-2 rounded-xl text-sm cursor-pointer transition-colors hover:bg-secondary hover:text-secondary-foreground'
-                onClick={() => handleSelect(brand)}
+                onClick={handleAddNew}
               >
-                {brand === value && <Check className='size-4' />}
-                {brand !== value && <span className='w-4 flex-shrink-0' />}
-                <span>{brand}</span>
+                <Plus className='size-4' />
+                <span>
+                  Добавить{" "}
+                  <span className='font-semibold'>«{inputValue?.trim()}»</span>
+                </span>
               </div>
-            ))}
-
-            {showAddOption && (
-              <>
-                {filteredOptions.length > 0 && (
-                  <div className='border-t my-1' />
-                )}
-                <div
-                  data-combobox-item
-                  role='option'
-                  aria-selected={false}
-                  className='flex items-center gap-2 px-3 py-2 rounded-xl text-sm cursor-pointer transition-colors hover:bg-secondary hover:text-secondary-foreground'
-                  onClick={handleAddNew}
-                >
-                  <Plus className='size-4' />
-                  <span>
-                    Добавить{" "}
-                    <span className='font-semibold'>
-                      «{inputValue?.trim()}»
-                    </span>
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+            </>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

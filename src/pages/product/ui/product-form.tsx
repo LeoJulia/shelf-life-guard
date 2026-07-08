@@ -37,11 +37,11 @@ export const ProductForm = ({
         <div className='flex flex-col'>
           <CardHeader>
             <CardTitle className='text-xl font-bold text-foreground'>
-              Редактирование продукта
+              Редактирование баночки
             </CardTitle>
           </CardHeader>
           <Form action={updateProductWithId}>
-            <CardContent className='h-full space-y-4'>
+            <CardContent className='space-y-4'>
               <FieldGroup>
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='brand'>Бренд</FieldLabel>
@@ -119,9 +119,54 @@ export const ProductForm = ({
                     placeholder='Введите или выберите магазин...'
                   />
                 </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='expiry_date'>Срок годности</FieldLabel>
+                  <Input
+                    defaultValue={product.expiry_date ?? undefined}
+                    id='expiry_date'
+                    name='expiry_date'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='opened_at'>Дата открытия</FieldLabel>
+                  <Input
+                    defaultValue={product.opened_at ?? undefined}
+                    id='opened_at'
+                    name='opened_at'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='finished_at'>Дата окончания</FieldLabel>
+                  <Input
+                    defaultValue={product.finished_at ?? undefined}
+                    id='finished_at'
+                    name='finished_at'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='ingredients'>Состав</FieldLabel>
+                  <Input
+                    defaultValue={product.ingredients ?? undefined}
+                    id='ingredients'
+                    name='ingredients'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='notes'>Заметки</FieldLabel>
+                  <Input
+                    defaultValue={product.notes ?? undefined}
+                    id='notes'
+                    name='notes'
+                  />
+                </Field>
               </FieldGroup>
             </CardContent>
-            <CardFooter className='flex gap-3 mt-8'>
+            <CardFooter className='flex gap-3'>
               <Button type='submit'>
                 <Save />
                 Сохранить

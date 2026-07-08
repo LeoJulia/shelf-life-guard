@@ -2,7 +2,7 @@
 
 import { TProduct } from "@/entities/product";
 import { createServerClient } from "@/shared/server";
-import { refresh, revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export const updateProduct = async (id: string, formData: FormData) => {
@@ -23,6 +23,11 @@ export const updateProduct = async (id: string, formData: FormData) => {
       : null,
     shop: formData.get("shop"),
     rating: formData.get("rating") ? Number(formData.get("rating")) : null,
+    expiry_date: formData.get("expiry_date"),
+    opened_at: formData.get("opened_at"),
+    finished_at: formData.get("finished_at"),
+    ingredients: formData.get("ingredients"),
+    notes: formData.get("notes"),
   };
 
   const { error } = await supabase
