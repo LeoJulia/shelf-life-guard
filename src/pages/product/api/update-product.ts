@@ -7,14 +7,13 @@ import { redirect } from "next/navigation";
 
 export const updateProduct = async (id: string, formData: FormData) => {
   console.log("formData", formData);
-  console.log("brand", formData.get("brand"));
   const supabase = await createServerClient();
 
   const updateProduct: TProduct = {
     brand: formData.get("brand"),
     name: formData.get("name"),
     category: formData.get("category"),
-    volume: formData.get("volume") ?? null,
+    volume: formData.get("volume") || null,
     market_price: formData.get("market_price")
       ? Number(formData.get("market_price"))
       : null,
@@ -23,12 +22,14 @@ export const updateProduct = async (id: string, formData: FormData) => {
       : null,
     shop: formData.get("shop"),
     rating: formData.get("rating") ? Number(formData.get("rating")) : null,
-    expiry_date: formData.get("expiry_date"),
-    opened_at: formData.get("opened_at"),
-    finished_at: formData.get("finished_at"),
+    expiry_date: formData.get("expiry_date") || null,
+    opened_at: formData.get("opened_at") || null,
+    finished_at: formData.get("finished_at") || null,
     ingredients: formData.get("ingredients"),
     notes: formData.get("notes"),
   };
+
+  console.log("updateProduct", updateProduct);
 
   const { error } = await supabase
     .from("products")

@@ -15,6 +15,7 @@ import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 import { Combobox } from "./combobox";
 import { RatingInput } from "./rating-input";
+import styles from "./styles.modules.css";
 
 export const ProductForm = ({
   product,
@@ -120,33 +121,42 @@ export const ProductForm = ({
                   />
                 </Field>
 
-                <Field orientation='horizontal'>
-                  <FieldLabel htmlFor='expiry_date'>Срок годности</FieldLabel>
-                  <Input
-                    defaultValue={product.expiry_date ?? undefined}
-                    id='expiry_date'
-                    name='expiry_date'
-                  />
-                </Field>
+                <div className='flex'>
+                  <Field>
+                    <FieldLabel htmlFor='expiry_date'>Срок годности</FieldLabel>
+                    <Input
+                      className='justify-end'
+                      id='expiry_date'
+                      name='expiry_date'
+                      type='date'
+                      defaultValue={product.expiry_date ?? undefined}
+                    />
+                  </Field>
 
-                <Field orientation='horizontal'>
-                  <FieldLabel htmlFor='opened_at'>Дата открытия</FieldLabel>
-                  <Input
-                    defaultValue={product.opened_at ?? undefined}
-                    id='opened_at'
-                    name='opened_at'
-                  />
-                </Field>
+                  <Field>
+                    <FieldLabel htmlFor='opened_at'>Дата открытия</FieldLabel>
+                    <Input
+                      className='justify-end'
+                      type='date'
+                      defaultValue={product.opened_at ?? undefined}
+                      id='opened_at'
+                      name='opened_at'
+                    />
+                  </Field>
 
-                <Field orientation='horizontal'>
-                  <FieldLabel htmlFor='finished_at'>Дата окончания</FieldLabel>
-                  <Input
-                    defaultValue={product.finished_at ?? undefined}
-                    id='finished_at'
-                    name='finished_at'
-                  />
-                </Field>
-
+                  <Field>
+                    <FieldLabel htmlFor='finished_at'>
+                      Дата окончания
+                    </FieldLabel>
+                    <Input
+                      className='justify-end'
+                      type='date'
+                      defaultValue={product.finished_at ?? undefined}
+                      id='finished_at'
+                      name='finished_at'
+                    />
+                  </Field>
+                </div>
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='ingredients'>Состав</FieldLabel>
                   <Input
