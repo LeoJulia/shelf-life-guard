@@ -116,7 +116,7 @@ export function Combobox({
             e.preventDefault();
           }
         }}
-        className='z-[200] w-[var(--radix-popover-trigger-width)] max-h-64 overflow-hidden rounded-xl border-border shadow-lg animate-in fade-in-0 zoom-in-95'
+        className='z-200 w-(--radix-popover-trigger-width) max-h-64 overflow-hidden rounded-xl border-border shadow-lg animate-in fade-in-0 zoom-in-95'
       >
         <div ref={listRef} role='listbox' className='overflow-y-auto max-h-64'>
           {filteredOptions.length === 0 && !showAddOption && (
@@ -135,7 +135,7 @@ export function Combobox({
               onClick={() => handleSelect(brand)}
             >
               {brand === value && <Check className='size-4' />}
-              {brand !== value && <span className='w-4 flex-shrink-0' />}
+              {brand !== value && <span className='w-4 shrink-0' />}
               <span>{brand}</span>
             </div>
           ))}

@@ -44,7 +44,7 @@ export function RatingInput({
                 type='button'
                 onClick={() => handleClick(star)}
                 onMouseEnter={() => setHoverValue(star)}
-                className='transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-300 rounded'
+                className='transition-transform hover:scale-110 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-pink-300 rounded'
                 aria-label={`${star} ${star === 1 ? "звезда" : "звезды"}`}
                 aria-checked={value === star}
                 role='radio'
@@ -61,7 +61,7 @@ export function RatingInput({
           })}
         </div>
 
-        <span className='text-sm text-muted-foreground min-w-[3rem]'>
+        <span className='text-sm text-muted-foreground min-w-12'>
           {value ? `${value} / 5` : "нет оценки"}
         </span>
 
