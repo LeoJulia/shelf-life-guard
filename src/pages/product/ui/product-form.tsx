@@ -1,7 +1,5 @@
-"use client";
-
 import { Save } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Form from "next/form";
 import Image from "next/image";
 import { Button } from "@/shared/ui/button";
 import {
@@ -11,21 +9,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
-import { useCallback, useState } from "react";
-import { EditField } from "./edit-field";
 import { TProduct } from "@/entities/product";
+import { updateProduct } from "../api/update-product";
+import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
+import { Input } from "@/shared/ui/input";
+import { Combobox } from "./combobox";
+import { RatingInput } from "./rating-input";
 
-export const ProductForm = ({ product }: { product: TProduct }) => {
-  const [editedProduct, setEditedProduct] = useState(product ?? {});
-  const router = useRouter();
-
-  const updateField = useCallback(
-    <K extends keyof TProduct>(field: K) =>
-      ({ target }: { target: { value: TProduct[K] } }) => {
-        setEditedProduct((prev) => ({ ...prev, [field]: target.value }));
-      },
-    [],
-  );
+export const ProductForm = ({
+  product,
+  brandsList,
+  categoriesList,
+  volumesList,
+  shopsList,
+}: {
+  product: TProduct;
+  brandsList: string[];
+  categoriesList: string[];
+  volumesList: string[];
+  shopsList: string[];
+}) => {
+  const updateProductWithId = updateProduct.bind(null, product.id);
 
   return (
     <Card className='group relative overflow-hidden rounded-xl border border-border bg-card'>
@@ -36,39 +40,101 @@ export const ProductForm = ({ product }: { product: TProduct }) => {
               Редактирование продукта
             </CardTitle>
           </CardHeader>
-          <CardContent className='h-full space-y-4'>
-            <EditField
-              value={editedProduct.brand}
-              onChange={updateField("brand")}
-            >
-              Бренд
-            </EditField>
-            <EditField
-              value={editedProduct.name}
-              onChange={updateField("name")}
-            >
-              Название
-            </EditField>
-          </CardContent>
-          <CardFooter className='flex gap-3 mt-8'>
-            <Button
-              onClick={() => {
-                console.log(editedProduct);
-              }}
-            >
-              <Save />
-              Сохранить
-            </Button>
-            <Button variant='secondary' onClick={() => router.back()}>
-              Отмена
-            </Button>
-          </CardFooter>
+          <Form action={updateProductWithId}>
+            <CardContent className='h-full space-y-4'>
+              <FieldGroup>
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='brand'>Бренд</FieldLabel>
+                  <Combobox
+                    defaultOptions={brandsList}
+                    defaultValue={product.brand}
+                    name='brand'
+                    id='brand'
+                    placeholder='Введите или выберите бренд...'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='name'>Название</FieldLabel>
+                  <Input
+                    defaultValue={product.name ?? undefined}
+                    id='name'
+                    name='name'
+                  />
+                </Field>
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='rating'>Рейтинг</FieldLabel>
+                  <RatingInput defaultValue={product.rating} name='rating' />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='category'>Категория</FieldLabel>
+                  <Combobox
+                    defaultOptions={categoriesList}
+                    defaultValue={product.category}
+                    name='category'
+                    id='category'
+                    placeholder='Введите или выберите категорию...'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='volume'>Объем</FieldLabel>
+                  <Combobox
+                    defaultOptions={volumesList}
+                    defaultValue={product.volume}
+                    name='volume'
+                    id='volume'
+                    placeholder='Введите или выберите объем...'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='market_price'>Рыночная цена</FieldLabel>
+                  <Input
+                    type='number'
+                    defaultValue={product.market_price ?? undefined}
+                    id='market_price'
+                    name='market_price'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='actual_price'>Цена покупки</FieldLabel>
+                  <Input
+                    type='number'
+                    defaultValue={product.actual_price ?? undefined}
+                    id='actual_price'
+                    name='actual_price'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='shop'>Магазин</FieldLabel>
+                  <Combobox
+                    defaultOptions={shopsList}
+                    defaultValue={product.shop}
+                    name='shop'
+                    id='shop'
+                    placeholder='Введите или выберите магазин...'
+                  />
+                </Field>
+              </FieldGroup>
+            </CardContent>
+            <CardFooter className='flex gap-3 mt-8'>
+              <Button type='submit'>
+                <Save />
+                Сохранить
+              </Button>
+              <Button variant='secondary'>Отмена</Button>
+            </CardFooter>
+          </Form>
         </div>
         <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
           <div className='relative w-full max-w-xs'>
             <Image
-              src={editedProduct.imageUrl ?? ""}
-              alt={editedProduct.name}
+              src={product.imageUrl ?? undefined}
+              alt={product.name}
               width={615}
               height={832}
               className='w-full h-auto object-contain rounded-2xl'

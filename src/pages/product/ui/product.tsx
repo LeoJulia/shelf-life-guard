@@ -25,7 +25,6 @@ export const Product = async ({
   const { id } = await params;
 
   const product = await getProduct(id);
-  const editUrl = `/product/${id}/edit`;
 
   if (!product) {
     notFound();
@@ -99,7 +98,7 @@ export const Product = async ({
             )}
           </CardContent>
           <CardFooter className='flex gap-3 mt-8'>
-            <Link href={editUrl}>
+            <Link href={`/product/${id}/edit`}>
               <Button>
                 <Edit />
                 Редактировать

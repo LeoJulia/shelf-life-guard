@@ -14,8 +14,6 @@ import { ExpiryBar } from "./expiry-bar";
 import { BadgeRussianRuble, Calendar, Store } from "lucide-react";
 
 export const ProductCard = ({ product }: { product: TProduct }) => {
-  const url = `/product/${product.id}`;
-
   const lastDate = product?.finished_at
     ? new Date(product.finished_at)
     : new Date();
@@ -25,7 +23,7 @@ export const ProductCard = ({ product }: { product: TProduct }) => {
     : null;
 
   return (
-    <Link href={url} key={product.id}>
+    <Link href={`/product/${product.id}`} key={product.id}>
       <Card className='break-inside-avoid mb-4 group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'>
         <CardHeader className='flex-row gap-4'>
           <div className='relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input'>
