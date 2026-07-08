@@ -10,12 +10,12 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { TProduct } from "@/entities/product";
-import { updateProduct } from "../api/update-product";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+import { updateProduct } from "../api/update-product";
 import { Combobox } from "./combobox";
 import { RatingInput } from "./rating-input";
-import styles from "./styles.modules.css";
 
 export const ProductForm = ({
   product,
@@ -159,7 +159,7 @@ export const ProductForm = ({
                 </div>
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='ingredients'>Состав</FieldLabel>
-                  <Input
+                  <Textarea
                     defaultValue={product.ingredients ?? undefined}
                     id='ingredients'
                     name='ingredients'
@@ -168,7 +168,7 @@ export const ProductForm = ({
 
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='notes'>Заметки</FieldLabel>
-                  <Input
+                  <Textarea
                     defaultValue={product.notes ?? undefined}
                     id='notes'
                     name='notes'
