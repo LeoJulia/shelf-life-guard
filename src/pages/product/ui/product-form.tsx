@@ -16,6 +16,7 @@ import { Textarea } from "@/shared/ui/textarea";
 import { updateProduct } from "../api/update-product";
 import { Combobox } from "./combobox";
 import { RatingInput } from "./rating-input";
+import { ImageUpload } from "./image-upload";
 
 export const ProductForm = ({
   product,
@@ -34,14 +35,14 @@ export const ProductForm = ({
 
   return (
     <Card className='group relative overflow-hidden rounded-xl border border-border bg-card'>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-0'>
-        <div className='flex flex-col'>
-          <CardHeader>
-            <CardTitle className='text-xl font-bold text-foreground'>
-              Редактирование баночки
-            </CardTitle>
-          </CardHeader>
-          <Form action={updateProductWithId}>
+      <Form action={updateProductWithId}>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-0'>
+          <div className='flex flex-col'>
+            <CardHeader>
+              <CardTitle className='text-xl font-bold text-foreground'>
+                Редактирование баночки
+              </CardTitle>
+            </CardHeader>
             <CardContent className='space-y-4'>
               <FieldGroup>
                 <Field orientation='horizontal'>
@@ -183,20 +184,12 @@ export const ProductForm = ({
               </Button>
               <Button variant='secondary'>Отмена</Button>
             </CardFooter>
-          </Form>
-        </div>
-        <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
-          <div className='relative w-full max-w-xs'>
-            <Image
-              src={product.imageUrl ?? undefined}
-              alt={product.name}
-              width={615}
-              height={832}
-              className='w-full h-auto object-contain rounded-2xl'
-            />
+          </div>
+          <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
+            <ImageUpload name='image' value={product.imageUrl} />
           </div>
         </div>
-      </div>
+      </Form>
     </Card>
   );
 };

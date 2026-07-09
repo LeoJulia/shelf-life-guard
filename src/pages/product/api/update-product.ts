@@ -6,8 +6,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export const updateProduct = async (id: string, formData: FormData) => {
-  console.log("formData", formData);
   const supabase = await createServerClient();
+  const { data } = await supabase.auth.getUser();
 
   const updateProduct: TProduct = {
     brand: formData.get("brand"),
@@ -29,7 +29,39 @@ export const updateProduct = async (id: string, formData: FormData) => {
     notes: formData.get("notes"),
   };
 
-  console.log("updateProduct", updateProduct);
+  const image = formData.get("image");
+
+  if (image && /^data:image\/[^;]+;base64,/.test(image)) {
+    const [header, base64] = image.split(",");
+
+    const contentType = header.match(/data:(.*);base64/)![1];
+
+    const bytes = atob(base64);
+    const array = new Uint8Array(bytes.length);
+
+    for (let i = 0; i < bytes.length; i++) {
+      array[i] = bytes.charCodeAt(i);
+    }
+
+    const blob = new Blob([array], { type: contentType });
+
+    const ext = image.match(/^data:image\/([^;]+);base64,/)?.[1];
+
+    const fileName = `${crypto.randomUUID()}.${ext}`;
+    const path = `${data?.user?.id}/${fileName}`;
+
+    console.log("path", path);
+
+    const { error } = await supabase.storage
+      .from("product-images")
+      .upload(path, blob);
+
+    if (error) {
+      throw error;
+    }
+
+    updateProduct.image_path = path;
+  }
 
   const { error } = await supabase
     .from("products")
