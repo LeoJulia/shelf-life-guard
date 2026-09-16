@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getProduct } from "../api/get-product";
 import { ProductRow } from "./product-row";
+import { DeleteProductDialog } from "./delete-product-dialog";
 import { Button } from "@/shared/ui/button";
 import { Edit, Trash } from "lucide-react";
 import {
@@ -63,11 +64,14 @@ export const Product = async ({
             {product?.opened_at && (
               <ProductRow
                 field='Дата начала использования'
-                value={new Date(product.opened_at).toLocaleDateString("ru-RU", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+                value={new Date(product.opened_at).toLocaleDateString(
+                  "ru-RU",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                )}
               />
             )}
             {product?.finished_at && (
@@ -104,10 +108,16 @@ export const Product = async ({
                 Редактировать
               </Button>
             </Link>
-            <Button variant='destructive'>
-              <Trash />
-              Удалить
-            </Button>
+            <DeleteProductDialog
+              productId={product.id}
+              productName={product.name}
+              trigger={
+                <Button variant='destructive'>
+                  <Trash />
+                  Удалить
+                </Button>
+              }
+            />
           </CardFooter>
         </div>
         <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
