@@ -27,13 +27,10 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imgValue, setImgValue] = useState<string>(value);
-  console.log("imgValue", imgValue);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    console.log("file", file);
 
     // Проверка типа
     if (!file.type.startsWith("image/")) {

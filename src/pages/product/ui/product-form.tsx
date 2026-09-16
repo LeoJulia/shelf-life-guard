@@ -1,6 +1,5 @@
 import { Save } from "lucide-react";
 import Form from "next/form";
-import Image from "next/image";
 import { Button } from "@/shared/ui/button";
 import {
   Card,
@@ -94,7 +93,9 @@ export const ProductForm = ({
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='market_price'>Рыночная цена</FieldLabel>
                   <Input
-                    type='number'
+                    type='text'
+                    inputMode='decimal'
+                    pattern='^\d+([.,]\d{1,2})?$'
                     defaultValue={product.market_price ?? undefined}
                     id='market_price'
                     name='market_price'
@@ -104,7 +105,9 @@ export const ProductForm = ({
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='actual_price'>Цена покупки</FieldLabel>
                   <Input
-                    type='number'
+                    type='text'
+                    inputMode='decimal'
+                    pattern='^\d+([.,]\d{1,2})?$'
                     defaultValue={product.actual_price ?? undefined}
                     id='actual_price'
                     name='actual_price'
@@ -122,7 +125,7 @@ export const ProductForm = ({
                   />
                 </Field>
 
-                <div className='flex'>
+                <div className='lg:flex'>
                   <Field>
                     <FieldLabel htmlFor='expiry_date'>Срок годности</FieldLabel>
                     <Input
@@ -182,7 +185,9 @@ export const ProductForm = ({
                 <Save />
                 Сохранить
               </Button>
-              <Button variant='secondary'>Отмена</Button>
+              <Button type='button' variant='secondary'>
+                Отмена
+              </Button>
             </CardFooter>
           </div>
           <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>

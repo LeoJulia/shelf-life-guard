@@ -5,29 +5,8 @@ import { createServerClient } from "@/shared/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export const updateProduct = async (id: string, formData: FormData) => {
-  const supabase = await createServerClient();
+const uploadImage = async (supabase: any, formData: FormData) => {
   const { data } = await supabase.auth.getUser();
-
-  const updateProduct: TProduct = {
-    brand: formData.get("brand"),
-    name: formData.get("name"),
-    category: formData.get("category"),
-    volume: formData.get("volume") || null,
-    market_price: formData.get("market_price")
-      ? Number(formData.get("market_price"))
-      : null,
-    actual_price: formData.get("actual_price")
-      ? Number(formData.get("actual_price"))
-      : null,
-    shop: formData.get("shop"),
-    rating: formData.get("rating") ? Number(formData.get("rating")) : null,
-    expiry_date: formData.get("expiry_date") || null,
-    opened_at: formData.get("opened_at") || null,
-    finished_at: formData.get("finished_at") || null,
-    ingredients: formData.get("ingredients"),
-    notes: formData.get("notes"),
-  };
 
   const image = formData.get("image");
 
@@ -50,8 +29,6 @@ export const updateProduct = async (id: string, formData: FormData) => {
     const fileName = `${crypto.randomUUID()}.${ext}`;
     const path = `${data?.user?.id}/${fileName}`;
 
-    console.log("path", path);
-
     const { error } = await supabase.storage
       .from("product-images")
       .upload(path, blob);
@@ -60,7 +37,37 @@ export const updateProduct = async (id: string, formData: FormData) => {
       throw error;
     }
 
-    updateProduct.image_path = path;
+    return path;
+  }
+};
+
+export const updateProduct = async (id: string, formData: FormData) => {
+  const supabase = await createServerClient();
+
+  const updateProduct: TProduct = {
+    brand: formData.get("brand"),
+    name: formData.get("name"),
+    category: formData.get("category"),
+    volume: formData.get("volume") || null,
+    market_price: formData.get("market_price")
+      ? Number(formData.get("market_price").replace(",", "."))
+      : null,
+    actual_price: formData.get("actual_price")
+      ? Number(formData.get("actual_price").replace(",", "."))
+      : null,
+    shop: formData.get("shop"),
+    rating: formData.get("rating") ? Number(formData.get("rating")) : null,
+    expiry_date: formData.get("expiry_date") || null,
+    opened_at: formData.get("opened_at") || null,
+    finished_at: formData.get("finished_at") || null,
+    ingredients: formData.get("ingredients"),
+    notes: formData.get("notes"),
+  };
+
+  const imgPath = await uploadImage(supabase, formData);
+
+  if (imgPath) {
+    updateProduct.image_path = imgPath;
   }
 
   const { error } = await supabase
@@ -74,7 +81,12 @@ export const updateProduct = async (id: string, formData: FormData) => {
     throw Error("Update product error", error);
   }
 
-  revalidatePath(`/product/${id}/edit`);
-  revalidatePath(`/product/${id}`);
+  revalidatePath(`/product/${id}/edit`, "page");
+  revalidatePath(`/product/${id}`, "page");
+
+  revalidatePath("/dashboard", "page");
+  revalidatePath("/products", "page");
+  revalidatePath("/", "page");
+
   redirect(`/product/${id}`);
 };
