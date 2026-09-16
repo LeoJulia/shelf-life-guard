@@ -12,10 +12,13 @@ import { TProduct } from "@/entities/product";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
+import { createProduct } from "../api/create-product";
 import { updateProduct } from "../api/update-product";
+import { EMPTY_PRODUCT } from "../utils/empty-product";
 import { Combobox } from "./combobox";
 import { RatingInput } from "./rating-input";
 import { ImageUpload } from "./image-upload";
+import Link from "next/link";
 
 export const ProductForm = ({
   product,
@@ -24,22 +27,29 @@ export const ProductForm = ({
   volumesList,
   shopsList,
 }: {
-  product: TProduct;
+  product?: TProduct;
   brandsList: string[];
   categoriesList: string[];
   volumesList: string[];
   shopsList: string[];
 }) => {
-  const updateProductWithId = updateProduct.bind(null, product.id);
+  const isEditing = !!product;
+  const currentProduct = product ?? EMPTY_PRODUCT;
+
+  const action = isEditing
+    ? updateProduct.bind(null, product!.id)
+    : createProduct;
+
+  const title = isEditing ? "Редактирование баночки" : "Добавление баночки";
 
   return (
     <Card className='group relative overflow-hidden rounded-xl border border-border bg-card'>
-      <Form action={updateProductWithId}>
+      <Form action={action}>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-0'>
           <div className='flex flex-col'>
             <CardHeader>
               <CardTitle className='text-xl font-bold text-foreground'>
-                Редактирование баночки
+                {title}
               </CardTitle>
             </CardHeader>
             <CardContent className='space-y-4'>
@@ -48,7 +58,7 @@ export const ProductForm = ({
                   <FieldLabel htmlFor='brand'>Бренд</FieldLabel>
                   <Combobox
                     defaultOptions={brandsList}
-                    defaultValue={product.brand}
+                    defaultValue={currentProduct.brand ?? undefined}
                     name='brand'
                     id='brand'
                     placeholder='Введите или выберите бренд...'
@@ -58,21 +68,24 @@ export const ProductForm = ({
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='name'>Название</FieldLabel>
                   <Input
-                    defaultValue={product.name ?? undefined}
+                    defaultValue={currentProduct.name ?? undefined}
                     id='name'
                     name='name'
                   />
                 </Field>
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='rating'>Рейтинг</FieldLabel>
-                  <RatingInput defaultValue={product.rating} name='rating' />
+                  <RatingInput
+                    defaultValue={currentProduct.rating}
+                    name='rating'
+                  />
                 </Field>
 
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='category'>Категория</FieldLabel>
                   <Combobox
                     defaultOptions={categoriesList}
-                    defaultValue={product.category}
+                    defaultValue={currentProduct.category ?? undefined}
                     name='category'
                     id='category'
                     placeholder='Введите или выберите категорию...'
@@ -83,7 +96,7 @@ export const ProductForm = ({
                   <FieldLabel htmlFor='volume'>Объем</FieldLabel>
                   <Combobox
                     defaultOptions={volumesList}
-                    defaultValue={product.volume}
+                    defaultValue={currentProduct.volume ?? undefined}
                     name='volume'
                     id='volume'
                     placeholder='Введите или выберите объем...'
@@ -96,7 +109,7 @@ export const ProductForm = ({
                     type='text'
                     inputMode='decimal'
                     pattern='^\d+([.,]\d{1,2})?$'
-                    defaultValue={product.market_price ?? undefined}
+                    defaultValue={currentProduct.market_price ?? undefined}
                     id='market_price'
                     name='market_price'
                   />
@@ -108,7 +121,7 @@ export const ProductForm = ({
                     type='text'
                     inputMode='decimal'
                     pattern='^\d+([.,]\d{1,2})?$'
-                    defaultValue={product.actual_price ?? undefined}
+                    defaultValue={currentProduct.actual_price ?? undefined}
                     id='actual_price'
                     name='actual_price'
                   />
@@ -118,7 +131,7 @@ export const ProductForm = ({
                   <FieldLabel htmlFor='shop'>Магазин</FieldLabel>
                   <Combobox
                     defaultOptions={shopsList}
-                    defaultValue={product.shop}
+                    defaultValue={currentProduct.shop ?? undefined}
                     name='shop'
                     id='shop'
                     placeholder='Введите или выберите магазин...'
@@ -133,7 +146,7 @@ export const ProductForm = ({
                       id='expiry_date'
                       name='expiry_date'
                       type='date'
-                      defaultValue={product.expiry_date ?? undefined}
+                      defaultValue={currentProduct.expiry_date ?? undefined}
                     />
                   </Field>
 
@@ -142,7 +155,7 @@ export const ProductForm = ({
                     <Input
                       className='justify-end'
                       type='date'
-                      defaultValue={product.opened_at ?? undefined}
+                      defaultValue={currentProduct.opened_at ?? undefined}
                       id='opened_at'
                       name='opened_at'
                     />
@@ -155,7 +168,7 @@ export const ProductForm = ({
                     <Input
                       className='justify-end'
                       type='date'
-                      defaultValue={product.finished_at ?? undefined}
+                      defaultValue={currentProduct.finished_at ?? undefined}
                       id='finished_at'
                       name='finished_at'
                     />
@@ -164,7 +177,7 @@ export const ProductForm = ({
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='ingredients'>Состав</FieldLabel>
                   <Textarea
-                    defaultValue={product.ingredients ?? undefined}
+                    defaultValue={currentProduct.ingredients ?? undefined}
                     id='ingredients'
                     name='ingredients'
                   />
@@ -173,7 +186,7 @@ export const ProductForm = ({
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='notes'>Заметки</FieldLabel>
                   <Textarea
-                    defaultValue={product.notes ?? undefined}
+                    defaultValue={currentProduct.notes ?? undefined}
                     id='notes'
                     name='notes'
                   />
@@ -185,13 +198,15 @@ export const ProductForm = ({
                 <Save />
                 Сохранить
               </Button>
-              <Button type='button' variant='secondary'>
-                Отмена
-              </Button>
+              <Link href={isEditing ? `/product/${product!.id}` : "/dashboard"}>
+                <Button type='button' variant='secondary'>
+                  Отмена
+                </Button>
+              </Link>
             </CardFooter>
           </div>
           <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
-            <ImageUpload name='image' value={product.imageUrl} />
+            <ImageUpload name='image' value={currentProduct.imageUrl} />
           </div>
         </div>
       </Form>

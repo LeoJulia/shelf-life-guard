@@ -1,1 +1,1 @@
-export { Product, ProductEdit, NotFoundProduct } from "./ui";
+export { Product, ProductEdit, ProductCreate, NotFoundProduct } from "./ui";

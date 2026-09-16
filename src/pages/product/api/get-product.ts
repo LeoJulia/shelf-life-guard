@@ -1,5 +1,6 @@
 import { createServerClient } from "@/shared/server";
 import { TProduct } from "@/entities/product";
+import { fetchProductImageUrl } from "../utils/get-image-url";
 
 export const getProduct = async (id: string): Promise<TProduct> => {
   const supabase = await createServerClient();
@@ -18,13 +19,7 @@ export const getProduct = async (id: string): Promise<TProduct> => {
     throw new Error("Error during get product", error);
   }
 
-  if (product.image_path) {
-    const { data } = await supabase.storage
-      .from("product-images")
-      .createSignedUrl(product.image_path, 3600);
-
-    product.imageUrl = data?.signedUrl;
-  }
+  product.imageUrl = await fetchProductImageUrl(supabase, product.image_path);
 
   return product;
 };

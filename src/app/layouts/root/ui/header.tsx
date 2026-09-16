@@ -1,7 +1,8 @@
 import { Suspense } from "react";
-import { Package } from "lucide-react";
+import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { AuthButton } from "./auth-button";
+import { Button } from "@/shared/ui/button";
 
 export const Header = () => (
   <header className='border-b border-border bg-card/50 backdrop-blur-sm'>
@@ -43,13 +44,13 @@ export const Header = () => (
       </nav>
 
       <Suspense>
-        <div>
-          {/* <ProductForm>
-          <Button size="sm" className="gap-2">
-            <UIcon name="mage:plus" className="size-6" />
-            Добавить
-          </Button>
-        </ProductForm> */}
+        <div className='flex items-center gap-4'>
+          <Link href='/product/new'>
+            <Button variant='secondary'>
+              <Plus />
+              Добавить
+            </Button>
+          </Link>
           <AuthButton />
         </div>
       </Suspense>
