@@ -1,22 +1,27 @@
 import { Suspense } from "react";
+import { getFilter } from "@/entities/filter";
 import {
   Control,
   StatisticCards,
   StatisticCardsSkeleton,
 } from "@/pages/dashboard";
 
-export const DashboardLayout = ({
+export const DashboardLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) => (
-  <div>
-    <Suspense fallback={<StatisticCardsSkeleton />}>
-      <StatisticCards />
-    </Suspense>
-    <Suspense>
-      <Control />
-    </Suspense>
-    {children}
-  </div>
-);
+}>) => {
+  const filterOptions = await getFilter();
+
+  return (
+    <div>
+      <Suspense fallback={<StatisticCardsSkeleton />}>
+        <StatisticCards />
+      </Suspense>
+      <Suspense>
+        <Control filterOptions={filterOptions} />
+      </Suspense>
+      {children}
+    </div>
+  );
+};

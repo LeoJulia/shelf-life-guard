@@ -6,7 +6,11 @@ import { useTransition } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { ProductFilter } from "./product-filter";
 
-export const Control = () => {
+export const Control = ({
+  filterOptions,
+}: {
+  filterOptions?: any;
+} = {}) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -45,7 +49,7 @@ export const Control = () => {
       </div>
 
       <div className='flex items-center gap-2'>
-        <ProductFilter />
+        <ProductFilter filterOptions={filterOptions} />
         {/* <Sort /> */}
       </div>
 

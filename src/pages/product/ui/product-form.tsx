@@ -15,7 +15,7 @@ import { Textarea } from "@/shared/ui/textarea";
 import { createProduct } from "../api/create-product";
 import { updateProduct } from "../api/update-product";
 import { EMPTY_PRODUCT } from "../utils/empty-product";
-import { Combobox } from "./combobox";
+import { Combobox } from "../../../shared/ui/combobox";
 import { RatingInput } from "./rating-input";
 import { ImageUpload } from "./image-upload";
 import Link from "next/link";
@@ -62,6 +62,7 @@ export const ProductForm = ({
                     name='brand'
                     id='brand'
                     placeholder='Введите или выберите бренд...'
+                    isEditable
                   />
                 </Field>
 
@@ -89,6 +90,7 @@ export const ProductForm = ({
                     name='category'
                     id='category'
                     placeholder='Введите или выберите категорию...'
+                    isEditable
                   />
                 </Field>
 
@@ -100,6 +102,7 @@ export const ProductForm = ({
                     name='volume'
                     id='volume'
                     placeholder='Введите или выберите объем...'
+                    isEditable
                   />
                 </Field>
 
@@ -135,6 +138,7 @@ export const ProductForm = ({
                     name='shop'
                     id='shop'
                     placeholder='Введите или выберите магазин...'
+                    isEditable
                   />
                 </Field>
 

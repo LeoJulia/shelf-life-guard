@@ -10,6 +10,8 @@ export const parseProductFormData = (formData: FormData): TProduct => {
   const actualPriceRaw = formData.get("actual_price");
   const ratingRaw = formData.get("rating");
 
+  console.log("formData", formData);
+
   return {
     brand: toString(formData.get("brand")),
     name: toString(formData.get("name")),
@@ -25,12 +27,10 @@ export const parseProductFormData = (formData: FormData): TProduct => {
         : null,
     shop: toString(formData.get("shop")),
     rating:
-      ratingRaw && typeof ratingRaw === "string"
-        ? Number(ratingRaw)
-        : null,
-    expiry_date: toString(formData.get("expiry_date")),
-    opened_at: toString(formData.get("opened_at")),
-    finished_at: toString(formData.get("finished_at")),
+      ratingRaw && typeof ratingRaw === "string" ? Number(ratingRaw) : null,
+    expiry_date: toString(formData.get("expiry_date")) || null,
+    opened_at: toString(formData.get("opened_at")) || null,
+    finished_at: toString(formData.get("finished_at")) || null,
     ingredients: toString(formData.get("ingredients")),
     notes: toString(formData.get("notes")),
   };
