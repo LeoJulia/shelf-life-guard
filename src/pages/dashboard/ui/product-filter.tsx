@@ -14,10 +14,18 @@ import {
   DrawerTrigger,
 } from "@/shared/ui/drawer";
 import { Combobox } from "@/shared/ui/combobox";
+import { Slider } from "@/shared/ui/slider";
 import Form from "next/form";
+
+const PRICE_MIN = 0;
+const PRICE_MAX = 13000;
 
 export const ProductFilter = ({ filterOptions }: { filterOptions: any }) => {
   const [showFilter, setShowFilter] = useState(false);
+  const [priceRange, setPriceRange] = useState<number[]>([
+    PRICE_MIN,
+    PRICE_MAX,
+  ]);
 
   return (
     <Form action={{}}>
@@ -76,6 +84,24 @@ export const ProductFilter = ({ filterOptions }: { filterOptions: any }) => {
                 placeholder='Введите или выберите магазин...'
                 multiple
               />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor='price'>Стоимость покупки</FieldLabel>
+              <div className='flex flex-col gap-2 pt-2'>
+                <Slider
+                  id='price'
+                  min={PRICE_MIN}
+                  max={PRICE_MAX}
+                  step={100}
+                  value={priceRange}
+                  onValueChange={(value) => setPriceRange(value)}
+                />
+                <div className='flex justify-between text-sm text-muted-foreground'>
+                  <span>{priceRange[0]} ₽</span>
+                  <span>{priceRange[1]} ₽</span>
+                </div>
+              </div>
             </Field>
           </FieldGroup>
           <DrawerFooter>
