@@ -15,8 +15,17 @@ import {
 } from "@/shared/ui/drawer";
 import { Combobox } from "@/shared/ui/combobox";
 import { Slider } from "@/shared/ui/slider";
+import { Switch } from "@/shared/ui/switch";
 import Form from "next/form";
 import type { TFilterOptions } from "@/entities/filter";
+
+const statusFilters = [
+  { id: "opened", label: "Открытые баночки" },
+  { id: "closed", label: "Закрытые баночки" },
+  { id: "finished", label: "Законченные баночки" },
+  { id: "expiring-soon", label: "Срок меньше 30 дней" },
+  { id: "expiring", label: "Срок меньше 90 дней" },
+];
 
 export const ProductFilter = ({
   filterOptions,
@@ -103,6 +112,13 @@ export const ProductFilter = ({
                 </div>
               </div>
             </Field>
+
+            {statusFilters.map(({ id, label }) => (
+              <Field key={id} orientation='horizontal' className='w-fit'>
+                <Switch id={id} name={id} />
+                <FieldLabel htmlFor={id}>{label}</FieldLabel>
+              </Field>
+            ))}
           </FieldGroup>
           <DrawerFooter>
             <Button type='button'>Подтвердить</Button>
