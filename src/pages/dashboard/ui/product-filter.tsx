@@ -16,16 +16,16 @@ import {
 import { Combobox } from "@/shared/ui/combobox";
 import { Slider } from "@/shared/ui/slider";
 import Form from "next/form";
+import type { TFilterOptions } from "@/entities/filter";
 
-const PRICE_MIN = 0;
-const PRICE_MAX = 13000;
-
-export const ProductFilter = ({ filterOptions }: { filterOptions: any }) => {
+export const ProductFilter = ({
+  filterOptions,
+}: {
+  filterOptions: TFilterOptions;
+}) => {
+  const { priceRange: priceBounds } = filterOptions;
   const [showFilter, setShowFilter] = useState(false);
-  const [priceRange, setPriceRange] = useState<number[]>([
-    PRICE_MIN,
-    PRICE_MAX,
-  ]);
+  const [priceRange, setPriceRange] = useState<number[]>(priceBounds);
 
   return (
     <Form action={{}}>
@@ -91,8 +91,8 @@ export const ProductFilter = ({ filterOptions }: { filterOptions: any }) => {
               <div className='flex flex-col gap-2 pt-2'>
                 <Slider
                   id='price'
-                  min={PRICE_MIN}
-                  max={PRICE_MAX}
+                  min={priceBounds[0]}
+                  max={priceBounds[1]}
                   step={100}
                   value={priceRange}
                   onValueChange={(value) => setPriceRange(value)}

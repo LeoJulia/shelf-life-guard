@@ -5,6 +5,7 @@ export type TFilterOptions = {
   categories: string[];
   shops: string[];
   volumes: string[];
+  priceRange: [number, number];
 };
 
 export const getBrandsList = async () => {
@@ -71,7 +72,7 @@ export const getVolumesList = async () => {
   ).filter(Boolean);
 };
 
-const getPriceRange = async () => {
+export const getPriceRange = async () => {
   const supabase = await createServerClient();
 
   // Получаем диапазон цены покупки
@@ -85,7 +86,7 @@ const getPriceRange = async () => {
   return [
     Math.ceil(priceRangeResult.data[0]?.min_price ?? 0),
     Math.ceil(priceRangeResult.data[0]?.max_price ?? 100),
-  ];
+  ] as [number, number];
 };
 
 export const getFilter = async () => ({
