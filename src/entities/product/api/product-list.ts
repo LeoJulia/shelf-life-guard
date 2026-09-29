@@ -1,95 +1,91 @@
 import { createServerClient } from "@/shared/server";
 import { TProduct } from "../model";
 
-export const getProductList = async (query: any): Promise<TProduct[]> => {
+const toList = (value: string | string[] | undefined) =>
+  value === undefined ? [] : Array.isArray(value) ? value : [value];
+
+const isEnabled = (value: string | string[] | undefined) =>
+  toList(value).includes("1");
+
+export const getProductList = async (
+  searchParameters: Record<string, string | string[] | undefined> = {},
+): Promise<TProduct[]> => {
   const supabase = await createServerClient();
 
   let request = supabase.from("products").select("*");
 
-  if (query.brands) {
-    const brands = query.brands
-      ? Array.isArray(query.brands)
-        ? query.brands
-        : [query.brands]
-      : [];
-
+  const brands = toList(searchParameters.brand);
+  if (brands.length) {
     request = request.in("brand", brands);
   }
 
-  if (query.categories) {
-    const categories = query.categories
-      ? Array.isArray(query.categories)
-        ? query.categories
-        : [query.categories]
-      : [];
-
+  const categories = toList(searchParameters.category);
+  if (categories.length) {
     request = request.in("category", categories);
   }
 
-  if (query.shops) {
-    const shops = query.shops
-      ? Array.isArray(query.shops)
-        ? query.shops
-        : [query.shops]
-      : [];
-
+  const shops = toList(searchParameters.shop);
+  if (shops.length) {
     request = request.in("shop", shops);
   }
 
-  if (query.minPrice) {
-    request = request.gte("actual_price", Number(query.minPrice));
+  if (searchParameters.price_min) {
+    request = request.gte("actual_price", Number(searchParameters.price_min));
   }
 
-  if (query.maxPrice) {
-    request = request.lte("actual_price", Number(query.maxPrice));
+  if (searchParameters.price_max) {
+    request = request.lte("actual_price", Number(searchParameters.price_max));
   }
 
-  if (query.shop) {
-    request = request.in("shop", query.shop as string[]);
+  const statusFilters: string[] = [];
+
+  if (isEnabled(searchParameters.opened)) {
+    statusFilters.push("and(opened_at.not.is.null,finished_at.is.null)");
   }
 
-  if (query.searchQuery) {
+  if (isEnabled(searchParameters.closed)) {
+    statusFilters.push("opened_at.is.null");
+  }
+
+  if (isEnabled(searchParameters.finished)) {
+    statusFilters.push("finished_at.not.is.null");
+  }
+
+  if (statusFilters.length) {
+    request = request.or(statusFilters.join(","));
+  }
+
+  const expiringDays = isEnabled(searchParameters.expiring)
+    ? 90
+    : isEnabled(searchParameters["expiring-soon"])
+      ? 30
+      : 0;
+
+  if (expiringDays) {
+    const today = new Date().toISOString().slice(0, 10);
+    const limit = new Date(Date.now() + expiringDays * 86400000)
+      .toISOString()
+      .slice(0, 10);
+
+    request = request.gte("expiry_date", today).lte("expiry_date", limit);
+  }
+
+  const query = toList(searchParameters.query)[0];
+
+  if (query) {
     request = request.or(
       [
-        `name.ilike.%${query.searchQuery}%`,
-        `brand.ilike.%${query.searchQuery}%`,
-        `category.ilike.%${query.searchQuery}%`,
+        `name.ilike.%${query}%`,
+        `brand.ilike.%${query}%`,
+        `category.ilike.%${query}%`,
       ].join(","),
     );
   }
 
-  if (query.isOpenProducts === "true") {
-    if (query.isFinishedProducts === "true") {
-      request = request.not("opened_at", "is", null);
-    } else {
-      request = request.not("opened_at", "is", null).is("finished_at", null);
-    }
-  } else if (query.isFinishedProducts === "true") {
-    request = request.not("finished_at", "is", null);
-  }
+  const sort = toList(searchParameters.sort)[0];
 
-  if (query.isCloseProducts === "true") {
-    request = request.is("opened_at", null);
-  }
-
-  if (
-    query.isTermLessThan30Days === "true" ||
-    query.isTermLessThan90Days === "true"
-  ) {
-    const days = query.isTermLessThan90Days === "true" ? 90 : 30;
-
-    request = request
-      .gte("expiry_date", new Date().toISOString().slice(0, 10))
-      .lte(
-        "expiry_date",
-        new Date(Date.now() + days * 24 * 60 * 60 * 1000)
-          .toISOString()
-          .slice(0, 10),
-      );
-  }
-
-  if (query.sort) {
-    switch (query.sort) {
+  if (sort) {
+    switch (sort) {
       case "actual_price_asc":
         request = request.order("actual_price");
         break;
@@ -149,7 +145,7 @@ export const getProductList = async (query: any): Promise<TProduct[]> => {
   const { data, error } = await request;
 
   if (error) {
-    throw new Error("Error on get product list", error);
+    throw new Error("Error on get product list", { cause: error });
   }
 
   const products = await Promise.all(

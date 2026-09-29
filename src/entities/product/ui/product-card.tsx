@@ -14,14 +14,6 @@ import { ExpiryBar } from "./expiry-bar";
 import { BadgeRussianRuble, Calendar, Store } from "lucide-react";
 
 export const ProductCard = ({ product }: { product: TProduct }) => {
-  const lastDate = product?.finished_at
-    ? new Date(product.finished_at)
-    : new Date();
-  const costPerDay = product?.opened_at
-    ? (product?.actual_price ?? 0) /
-      ((lastDate.getTime() - new Date(product.opened_at).getTime()) / 8.64e7)
-    : null;
-
   return (
     <div className='group relative'>
       <Link href={`/product/${product.id}`} key={product.id} className='block'>
@@ -80,13 +72,11 @@ export const ProductCard = ({ product }: { product: TProduct }) => {
                 <div className='flex items-center gap-1 text-[oklch(0.5_0.1_340)]'>
                   <BadgeRussianRuble className='size-4' />
                   <span className='text-[10px] font-medium uppercase tracking-wide'>
-                    Цена за день
+                    Покупка
                   </span>
                 </div>
                 <p className='mt-1 text-xs font-semibold text-[oklch(0.5_0.1_340)]'>
-                  {typeof costPerDay === "number"
-                    ? costPerDay?.toFixed(2)
-                    : "Начни банку, чтобы узнать"}
+                  {product?.actual_price?.toFixed(2)}
                 </p>
               </div>
             </div>

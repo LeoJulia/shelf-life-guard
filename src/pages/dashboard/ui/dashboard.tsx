@@ -4,15 +4,11 @@ import { getProductList, ProductCard } from "@/entities/product";
 export const Dashboard = async ({
   searchParams,
 }: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) => {
-  const searchParameters = await searchParams;
-  const query = searchParameters?.query || "";
+  const parameters = await searchParams;
 
-  const products = await getProductList({ searchQuery: query });
+  const products = await getProductList(parameters);
 
   if (!products?.length) {
     return (

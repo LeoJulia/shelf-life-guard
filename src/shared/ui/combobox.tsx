@@ -10,6 +10,8 @@ import { cn } from "@/shared/utils";
 type ComboboxDefaultValue = string | string[] | null;
 
 interface ComboboxProps {
+  value?: string[];
+  onValueChange?: (value: string[]) => void;
   defaultValue?: ComboboxDefaultValue;
   defaultOptions: string[];
   multiple?: boolean;
@@ -34,6 +36,8 @@ const toSelectedValues = (
 };
 
 export function Combobox({
+  value,
+  onValueChange,
   defaultOptions,
   defaultValue,
   multiple = false,
@@ -43,9 +47,16 @@ export function Combobox({
   isEditable = false,
 }: ComboboxProps) {
   const isMultiple = multiple || Array.isArray(defaultValue);
-  const [selectedValues, setSelectedValues] = useState<string[]>(() =>
+  const [internalValues, setInternalValues] = useState<string[]>(() =>
     toSelectedValues(defaultValue),
   );
+  const selectedValues = value ?? internalValues;
+
+  const setSelectedValues = (nextValues: string[]) => {
+    if (value === undefined) setInternalValues(nextValues);
+    onValueChange?.(nextValues);
+  };
+
   const [options, setOptions] = useState(defaultOptions);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -68,7 +79,7 @@ export function Combobox({
     (option) => option.toLowerCase() === normalizedInput,
   );
   const alreadySelected = selectedValues.some(
-    (value) => value.toLowerCase() === normalizedInput,
+    (item) => item.toLowerCase() === normalizedInput,
   );
 
   const showAddOption =
@@ -114,7 +125,7 @@ export function Combobox({
   const handleSelect = (option: string) => {
     if (isMultiple) {
       const nextValues = selectedValues.includes(option)
-        ? selectedValues.filter((value) => value !== option)
+        ? selectedValues.filter((item) => item !== option)
         : [...selectedValues, option];
 
       setSelectedValues(nextValues);
@@ -183,6 +194,7 @@ export function Combobox({
             id={id}
           />
           {isMultiple &&
+            name &&
             selectedValues.map((selectedValue) => (
               <Input
                 key={`${name ?? "value"}-${selectedValue}`}
