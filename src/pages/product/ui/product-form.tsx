@@ -210,7 +210,7 @@ export const ProductForm = ({
             </CardFooter>
           </div>
           <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
-            <ImageUpload name='image' value={currentProduct.imageUrl} />
+            <ImageUpload name='image' value={currentProduct.imageUrl ?? ""} />
           </div>
         </div>
       </Form>

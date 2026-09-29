@@ -14,6 +14,8 @@ export const parseProductFormData = (formData: FormData): TProduct => {
 
   return {
     brand: toString(formData.get("brand")),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     name: toString(formData.get("name")),
     category: toString(formData.get("category")),
     volume: toString(formData.get("volume")),

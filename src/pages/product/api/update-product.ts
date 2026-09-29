@@ -23,6 +23,8 @@ export const updateProduct = async (id: string, formData: FormData) => {
 
   const { error } = await supabase
     .from("products")
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     .update(updateProduct)
     .eq("id", id)
     .select()

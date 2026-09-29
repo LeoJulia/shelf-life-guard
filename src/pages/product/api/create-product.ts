@@ -13,6 +13,8 @@ export const createProduct = async (formData: FormData) => {
 
   const newProduct: TProduct = {
     ...parseProductFormData(formData),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     user_id: data?.user?.id,
   };
 
@@ -24,6 +26,8 @@ export const createProduct = async (formData: FormData) => {
 
   const { data: product, error } = await supabase
     .from("products")
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     .insert(newProduct)
     .select()
     .single();

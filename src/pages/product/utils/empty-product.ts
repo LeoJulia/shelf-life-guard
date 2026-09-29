@@ -1,6 +1,6 @@
 import { TProduct } from "@/entities/product";
 
-export const EMPTY_PRODUCT: TProduct = {
+export const EMPTY_PRODUCT: Omit<TProduct, "user_id"> = {
   id: "",
   brand: "",
   name: "",
@@ -17,6 +17,5 @@ export const EMPTY_PRODUCT: TProduct = {
   notes: null,
   image_path: null,
   created_at: null,
-  user_id: null,
   year: null,
 };
