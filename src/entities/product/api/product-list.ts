@@ -57,7 +57,7 @@ export const getProductList = async (
 
   const expiringDays = isEnabled(searchParameters.expiring)
     ? 90
-    : isEnabled(searchParameters["expiring-soon"])
+    : isEnabled(searchParameters.expiringSoon)
       ? 30
       : 0;
 

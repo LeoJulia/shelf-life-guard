@@ -6,7 +6,6 @@ import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/utils";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -29,12 +28,21 @@ const statusFilters = [
 
 type TListKey = "brand" | "category" | "shop";
 
+const filterParamKeys = [
+  "brand",
+  "category",
+  "shop",
+  "price_min",
+  "price_max",
+  ...statusFilters.map(({ id }) => id),
+];
+
 const readList = (params: URLSearchParams, key: TListKey) =>
   params.getAll(key).filter(Boolean);
 
-const readStatus = (params: URLSearchParams) =>
+const readStatus = (params?: URLSearchParams) =>
   Object.fromEntries(
-    statusFilters.map(({ id }) => [id, params.get(id) === "1"]),
+    statusFilters.map(({ id }) => [id, params?.get(id) === "1"]),
   ) as Record<string, boolean>;
 
 const readPriceRange = (
@@ -74,15 +82,21 @@ export const ProductFilter = ({
     readStatus(currentParams),
   );
 
-  const handleConfirm = () => {
+  const getParamsWithoutFilters = () => {
     const params = new URLSearchParams(searchParams?.toString());
+    filterParamKeys.forEach((key) => params.delete(key));
 
-    params.delete("brand");
-    params.delete("category");
-    params.delete("shop");
-    params.delete("price_min");
-    params.delete("price_max");
-    statusFilters.forEach(({ id }) => params.delete(id));
+    return params;
+  };
+
+  const navigate = (params: URLSearchParams) => {
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname);
+    setShowFilter(false);
+  };
+
+  const handleConfirm = () => {
+    const params = getParamsWithoutFilters();
 
     brands.forEach((brand) => params.append("brand", brand));
     categories.forEach((category) => params.append("category", category));
@@ -99,9 +113,17 @@ export const ProductFilter = ({
       if (status[id]) params.set(id, "1");
     });
 
-    const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname);
-    setShowFilter(false);
+    navigate(params);
+  };
+
+  const handleReset = () => {
+    setBrands([]);
+    setCategories([]);
+    setShops([]);
+    setPriceRange(priceBounds);
+    setStatus(readStatus());
+
+    navigate(getParamsWithoutFilters());
   };
 
   return (
@@ -199,11 +221,9 @@ export const ProductFilter = ({
           <Button type='button' onClick={handleConfirm}>
             Подтвердить
           </Button>
-          <DrawerClose asChild>
-            <Button type='button' variant='destructive'>
-              Сбросить
-            </Button>
-          </DrawerClose>
+          <Button type='button' variant='destructive' onClick={handleReset}>
+            Сбросить
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
