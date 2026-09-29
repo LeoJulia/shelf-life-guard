@@ -1,0 +1,1 @@
+export { ProductCreate as default } from "@/pages/product";
