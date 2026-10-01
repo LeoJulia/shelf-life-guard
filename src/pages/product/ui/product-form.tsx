@@ -1,6 +1,4 @@
-import { Save } from "lucide-react";
 import Form from "next/form";
-import { Button } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
@@ -18,7 +16,7 @@ import { EMPTY_PRODUCT } from "../utils/empty-product";
 import { Combobox } from "../../../shared/ui/combobox";
 import { RatingInput } from "./rating-input";
 import { ImageUpload } from "./image-upload";
-import Link from "next/link";
+import { ProductFormFooter } from "./product-form-footer";
 
 export const ProductForm = ({
   product,
@@ -197,16 +195,10 @@ export const ProductForm = ({
                 </Field>
               </FieldGroup>
             </CardContent>
-            <CardFooter className='flex gap-3'>
-              <Button type='submit'>
-                <Save />
-                Сохранить
-              </Button>
-              <Link href={isEditing ? `/product/${product!.id}` : "/dashboard"}>
-                <Button type='button' variant='secondary'>
-                  Отмена
-                </Button>
-              </Link>
+            <CardFooter>
+              <ProductFormFooter
+                cancelHref={isEditing ? `/product/${product!.id}` : "/dashboard"}
+              />
             </CardFooter>
           </div>
           <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
