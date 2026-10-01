@@ -64,6 +64,9 @@ export const ProductFilter = ({
   const searchParams = useSearchParams();
 
   const currentParams = new URLSearchParams(searchParams?.toString());
+  const hasActiveFilters = filterParamKeys.some((key) =>
+    currentParams.has(key),
+  );
 
   const [showFilter, setShowFilter] = useState(false);
   const [brands, setBrands] = useState<string[]>(() =>
@@ -133,12 +136,15 @@ export const ProductFilter = ({
           variant='default'
           size='sm'
           className={cn(
-            "rounded-sm gap-2 text-foreground border border-border",
+            "relative rounded-sm gap-2 text-foreground border border-border",
             showFilter ? "bg-primary" : "bg-transparent",
           )}
         >
           <Filter className='size-5' />
           Фильтр
+          {hasActiveFilters && (
+            <span className='absolute -right-1 -top-1 size-2.5 rounded-full bg-primary ring-2 ring-background' />
+          )}
         </Button>
       </DrawerTrigger>
       <DrawerContent className='flex flex-col overflow-hidden'>
