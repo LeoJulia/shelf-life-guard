@@ -1,6 +1,6 @@
 import { Filter } from "lucide-react";
 import { useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/utils";
@@ -55,13 +55,13 @@ const readPriceRange = (
 
 export const ProductFilter = ({
   filterOptions,
+  onNavigate,
 }: {
   filterOptions: TFilterOptions;
+  onNavigate: (params: URLSearchParams) => void;
 }) => {
   const { priceRange: priceBounds } = filterOptions;
   const searchParams = useSearchParams();
-  const pathname = usePathname() ?? "";
-  const router = useRouter();
 
   const currentParams = new URLSearchParams(searchParams?.toString());
 
@@ -90,8 +90,7 @@ export const ProductFilter = ({
   };
 
   const navigate = (params: URLSearchParams) => {
-    const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname);
+    onNavigate(params);
     setShowFilter(false);
   };
 

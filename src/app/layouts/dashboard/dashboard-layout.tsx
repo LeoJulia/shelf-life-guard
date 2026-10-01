@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getFilter } from "@/entities/filter";
 import {
-  Control,
+  DashboardSearch,
   StatisticCards,
   StatisticCardsSkeleton,
 } from "@/pages/dashboard";
@@ -19,9 +19,10 @@ export const DashboardLayout = async ({
         <StatisticCards />
       </Suspense>
       <Suspense>
-        <Control filterOptions={filterOptions} />
+        <DashboardSearch filterOptions={filterOptions}>
+          {children}
+        </DashboardSearch>
       </Suspense>
-      {children}
     </div>
   );
 };

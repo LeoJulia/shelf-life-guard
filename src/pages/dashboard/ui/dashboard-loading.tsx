@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 
 export const DashboardLoading = () => (
-  <div className='mt-12 h-full flex flex-col items-center justify-center text-center'>
+  <div className='mt-12 flex flex-col items-center justify-center text-center'>
     <h3 className='mb-10 text-lg font-medium text-foreground'>Поиск баночек</h3>
-    <div className='flex animate-pulse w-200'>
+    <div className='flex animate-pulse'>
       <Star className='h-12 w-12 text-muted-foreground' />
       <Droplets className='h-12 w-12 text-muted-foreground' />
       <Package className='h-12 w-12 text-muted-foreground' />
