@@ -1,22 +1,20 @@
-import { TProduct } from "@/entities/product";
+import { TProductFormValues } from "@/entities/product";
 
 const toString = (v: FormDataEntryValue | null): string | null => {
   if (v === null || v === undefined) return null;
   return typeof v === "string" ? v : null;
 };
 
-export const parseProductFormData = (formData: FormData): TProduct => {
+export const parseProductFormData = (
+  formData: FormData,
+): TProductFormValues => {
   const marketPriceRaw = formData.get("market_price");
   const actualPriceRaw = formData.get("actual_price");
   const ratingRaw = formData.get("rating");
 
-  console.log("formData", formData);
-
   return {
     brand: toString(formData.get("brand")),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    name: toString(formData.get("name")),
+    name: toString(formData.get("name")) ?? "",
     category: toString(formData.get("category")),
     volume: toString(formData.get("volume")),
     market_price:

@@ -19,9 +19,8 @@ export const getProduct = async (id: string): Promise<TProduct> => {
     throw new Error("Error during get product", error);
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  product.imageUrl = await fetchProductImageUrl(supabase, product.image_path);
-
-  return product;
+  return {
+    ...product,
+    imageUrl: await fetchProductImageUrl(supabase, product.image_path),
+  };
 };

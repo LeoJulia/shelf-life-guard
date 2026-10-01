@@ -4,13 +4,14 @@ import { Loader, Search } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 import { useTransition } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import type { TFilterOptions } from "@/entities/filter";
 import { ProductFilter } from "./product-filter";
 
 export const Control = ({
   filterOptions,
 }: {
-  filterOptions?: any;
-} = {}) => {
+  filterOptions: TFilterOptions;
+}) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();

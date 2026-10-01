@@ -1,6 +1,6 @@
 "use server";
 
-import { TProduct } from "@/entities/product";
+import { TablesUpdate } from "@/shared/model";
 import { createServerClient } from "@/shared/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -11,7 +11,7 @@ import { revalidateProductLists } from "../utils/revalidate";
 export const updateProduct = async (id: string, formData: FormData) => {
   const supabase = await createServerClient();
 
-  const updateProduct: TProduct = {
+  const updateProduct: TablesUpdate<"products"> = {
     ...parseProductFormData(formData),
   };
 
@@ -23,8 +23,6 @@ export const updateProduct = async (id: string, formData: FormData) => {
 
   const { error } = await supabase
     .from("products")
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     .update(updateProduct)
     .eq("id", id)
     .select()

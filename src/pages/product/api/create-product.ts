@@ -1,6 +1,6 @@
 "use server";
 
-import { TProduct } from "@/entities/product";
+import { TablesInsert } from "@/shared/model";
 import { createServerClient } from "@/shared/server";
 import { redirect } from "next/navigation";
 import { uploadImage } from "../utils/upload-image";
@@ -11,11 +11,13 @@ export const createProduct = async (formData: FormData) => {
   const supabase = await createServerClient();
   const { data } = await supabase.auth.getUser();
 
-  const newProduct: TProduct = {
+  if (!data.user) {
+    throw new Error("Create product error: user is not authenticated");
+  }
+
+  const newProduct: TablesInsert<"products"> = {
     ...parseProductFormData(formData),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    user_id: data?.user?.id,
+    user_id: data.user.id,
   };
 
   const imgPath = await uploadImage(supabase, formData);
@@ -26,8 +28,6 @@ export const createProduct = async (formData: FormData) => {
 
   const { data: product, error } = await supabase
     .from("products")
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     .insert(newProduct)
     .select()
     .single();
