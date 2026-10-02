@@ -1,7 +1,7 @@
 import { getProductList } from "@/entities/product";
 import { ProductList } from "@/widgets/product-list";
 
-export const Dashboard = async ({
+export const Products = async ({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

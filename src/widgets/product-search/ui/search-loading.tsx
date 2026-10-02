@@ -9,7 +9,7 @@ import {
   Store,
 } from "lucide-react";
 
-export const DashboardLoading = () => (
+export const SearchLoading = () => (
   <div className='mt-12 flex flex-col items-center justify-center text-center'>
     <h3 className='mb-10 text-lg font-medium text-foreground'>Поиск баночек</h3>
     <div className='flex animate-pulse'>

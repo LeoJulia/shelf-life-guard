@@ -5,9 +5,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import type { TFilterOptions } from "@/entities/filter";
 import { Control } from "./control";
-import { DashboardLoading } from "./dashboard-loading";
+import { SearchLoading } from "./search-loading";
 
-export const DashboardSearch = ({
+export const ProductSearch = ({
   filterOptions,
   children,
 }: {
@@ -69,7 +69,7 @@ export const DashboardSearch = ({
         {children}
         {isSearching ? (
           <div className='absolute -inset-x-6 -inset-y-2 z-10 bg-background'>
-            <DashboardLoading />
+            <SearchLoading />
           </div>
         ) : null}
       </div>

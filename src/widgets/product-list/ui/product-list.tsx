@@ -1,12 +1,7 @@
-"use client";
-
-import { use } from "react";
 import { Package } from "lucide-react";
-import { ProductCard, TProduct } from "@/entities/product";
+import { ProductCard, type TProduct } from "@/entities/product";
 
-export const ProductList = ({ promise }: { promise: Promise<TProduct[]> }) => {
-  const products = use(promise);
-
+export const ProductList = ({ products }: { products: TProduct[] }) => {
   if (!products?.length) {
     return (
       <div className='mt-6'>
@@ -32,7 +27,7 @@ export const ProductList = ({ promise }: { promise: Promise<TProduct[]> }) => {
           {products.length} шт
         </span>
       </div>
-      <div className='mt-4 grid gap-4'>
+      <div className='columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4'>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

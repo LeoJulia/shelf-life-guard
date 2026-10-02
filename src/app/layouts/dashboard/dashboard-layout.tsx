@@ -1,10 +1,7 @@
 import { Suspense } from "react";
 import { getFilter } from "@/entities/filter";
-import {
-  DashboardSearch,
-  StatisticCards,
-  StatisticCardsSkeleton,
-} from "@/pages/dashboard";
+import { ProductSearch } from "@/widgets/product-search";
+import { StatisticCards, StatisticCardsSkeleton } from "@/pages/dashboard";
 
 export const DashboardLayout = async ({
   children,
@@ -19,9 +16,9 @@ export const DashboardLayout = async ({
         <StatisticCards />
       </Suspense>
       <Suspense>
-        <DashboardSearch filterOptions={filterOptions}>
+        <ProductSearch filterOptions={filterOptions}>
           {children}
-        </DashboardSearch>
+        </ProductSearch>
       </Suspense>
     </div>
   );

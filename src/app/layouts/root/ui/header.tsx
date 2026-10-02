@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { AuthButton } from "./auth-button";
+import { HeaderNav } from "./header-nav";
 import { Button } from "@/shared/ui/button";
 
 export const Header = () => (
@@ -16,32 +17,7 @@ export const Header = () => (
         </span>
       </Link>
 
-      <nav className='hidden items-center gap-6 md:flex'>
-        <a
-          href='#'
-          className='text-sm font-medium text-foreground transition-colors hover:text-primary'
-        >
-          Главная
-        </a>
-        <a
-          href='#'
-          className='text-sm text-muted-foreground transition-colors hover:text-foreground'
-        >
-          Продукты
-        </a>
-        <a
-          href='#'
-          className='text-sm text-muted-foreground transition-colors hover:text-foreground'
-        >
-          Рутина
-        </a>
-        <a
-          href='#'
-          className='text-sm text-muted-foreground transition-colors hover:text-foreground'
-        >
-          Аналитика
-        </a>
-      </nav>
+      <HeaderNav />
 
       <Suspense>
         <div className='flex items-center gap-4'>
