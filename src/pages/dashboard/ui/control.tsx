@@ -4,6 +4,7 @@ import { Loader, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import type { TFilterOptions } from "@/entities/filter";
 import { ProductFilter } from "./product-filter";
+import { Sort } from "./sort";
 
 export const Control = ({
   filterOptions,
@@ -37,8 +38,8 @@ export const Control = ({
       </div>
 
       <div className='flex items-center gap-2'>
+        <Sort onNavigate={onNavigate} />
         <ProductFilter filterOptions={filterOptions} onNavigate={onNavigate} />
-        {/* <Sort /> */}
       </div>
 
       {/* <SidebarFilter /> */}
