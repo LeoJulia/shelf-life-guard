@@ -11,7 +11,7 @@ import { TProduct } from "../model";
 import { Rating } from "./rating";
 import { Tags } from "./tags";
 import { ExpiryBar } from "./expiry-bar";
-import { BadgeRussianRuble, Calendar, Store } from "lucide-react";
+import { BadgeRussianRuble, Calendar, ImageIcon, Store } from "lucide-react";
 
 export const ProductCard = ({ product }: { product: TProduct }) => {
   return (
@@ -19,14 +19,18 @@ export const ProductCard = ({ product }: { product: TProduct }) => {
       <Link href={`/product/${product.id}`} key={product.id} className='block'>
         <Card className='break-inside-avoid mb-4 group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'>
           <CardHeader className='flex-row gap-4'>
-            <div className='relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input'>
-              <Image
-                width={240}
-                height={240}
-                src={product.imageUrl ?? ""}
-                alt='product.name'
-                className='object-cover transition-transform duration-300 group-hover:scale-105 h-full'
-              />
+            <div className='relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-input flex items-center justify-center'>
+              {product.imageUrl ? (
+                <Image
+                  width={240}
+                  height={240}
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className='object-cover transition-transform duration-300 group-hover:scale-105 h-full'
+                />
+              ) : (
+                <ImageIcon className='size-8 text-muted-foreground' />
+              )}
             </div>
             <div className='flex flex-1 flex-col'>
               <CardDescription>{product.brand}</CardDescription>

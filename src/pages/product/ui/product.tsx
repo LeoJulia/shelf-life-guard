@@ -4,7 +4,7 @@ import { getProduct } from "../api/get-product";
 import { ProductRow } from "./product-row";
 import { DeleteProductDialog } from "./delete-product-dialog";
 import { Button } from "@/shared/ui/button";
-import { Edit, Trash } from "lucide-react";
+import { Edit, ImageIcon, Trash } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -121,7 +121,7 @@ export const Product = async ({
           </CardFooter>
         </div>
         <div className='bg-muted flex items-center justify-center p-8 lg:p-12 min-h-[400px]'>
-          {product.imageUrl && (
+          {product.imageUrl ? (
             <div className='relative w-full max-w-xs'>
               <Image
                 src={product.imageUrl}
@@ -130,6 +130,11 @@ export const Product = async ({
                 height={832}
                 className='w-full h-auto object-contain rounded-2xl'
               />
+            </div>
+          ) : (
+            <div className='text-muted-foreground flex flex-col items-center gap-2'>
+              <ImageIcon className='size-16' />
+              <span className='text-sm'>Нет изображения</span>
             </div>
           )}
         </div>
