@@ -5,6 +5,7 @@ export type TFilterOptions = {
   categories: string[];
   shops: string[];
   volumes: string[];
+  tags: string[];
   priceRange: [number, number];
 };
 
@@ -89,10 +90,33 @@ export const getPriceRange = async () => {
   ] as [number, number];
 };
 
+export const getTagsOptions = async (): Promise<string[]> => {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("tags")
+    .select("name")
+    .eq("user_id", user.id);
+
+  if (error) {
+    throw new Error("Error get tags", { cause: error });
+  }
+
+  return data.map(({ name }) => name).filter(Boolean);
+};
+
 export const getFilter = async () => ({
   brands: await getBrandsList(),
   categories: await getCategoriesList(),
   shops: await getShopsList(),
   volumes: await getVolumesList(),
+  tags: await getTagsOptions(),
   priceRange: await getPriceRange(),
 });

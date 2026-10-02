@@ -26,12 +26,13 @@ const statusFilters = [
   { id: "expiring", label: "Срок меньше 90 дней" },
 ];
 
-type TListKey = "brand" | "category" | "shop";
+type TListKey = "brand" | "category" | "shop" | "tag";
 
 const filterParamKeys = [
   "brand",
   "category",
   "shop",
+  "tag",
   "price_min",
   "price_max",
   ...statusFilters.map(({ id }) => id),
@@ -78,6 +79,9 @@ export const ProductFilter = ({
   const [shops, setShops] = useState<string[]>(() =>
     readList(currentParams, "shop"),
   );
+  const [tags, setTags] = useState<string[]>(() =>
+    readList(currentParams, "tag"),
+  );
   const [priceRange, setPriceRange] = useState<[number, number]>(() =>
     readPriceRange(currentParams, priceBounds),
   );
@@ -103,6 +107,7 @@ export const ProductFilter = ({
     brands.forEach((brand) => params.append("brand", brand));
     categories.forEach((category) => params.append("category", category));
     shops.forEach((shop) => params.append("shop", shop));
+    tags.forEach((tag) => params.append("tag", tag));
 
     if (priceRange[0] > priceBounds[0]) {
       params.set("price_min", String(priceRange[0]));
@@ -122,6 +127,7 @@ export const ProductFilter = ({
     setBrands([]);
     setCategories([]);
     setShops([]);
+    setTags([]);
     setPriceRange(priceBounds);
     setStatus(readStatus());
 
@@ -185,6 +191,18 @@ export const ProductFilter = ({
               onValueChange={setShops}
               id='shop'
               placeholder='Введите или выберите магазин...'
+              multiple
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor='tag'>Теги</FieldLabel>
+            <Combobox
+              defaultOptions={filterOptions.tags}
+              value={tags}
+              onValueChange={setTags}
+              id='tag'
+              placeholder='Выберите теги...'
               multiple
             />
           </Field>

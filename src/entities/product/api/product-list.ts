@@ -1,4 +1,5 @@
 import { createServerClient } from "@/shared/server";
+import { TProductTag } from "@/shared/model";
 import { TProduct } from "../model";
 
 const toList = (value: string | string[] | undefined) =>
@@ -7,12 +8,23 @@ const toList = (value: string | string[] | undefined) =>
 const isEnabled = (value: string | string[] | undefined) =>
   toList(value).includes("1");
 
+type TProductRowWithTags = {
+  product_tags?: { tags?: TProductTag | null }[] | null;
+};
+
+const extractTags = (row: TProductRowWithTags): TProductTag[] =>
+  (row.product_tags ?? [])
+    .map((link) => link?.tags)
+    .filter((tag): tag is TProductTag => Boolean(tag?.name));
+
 export const getProductList = async (
   searchParameters: Record<string, string | string[] | undefined> = {},
 ): Promise<TProduct[]> => {
   const supabase = await createServerClient();
 
-  let request = supabase.from("products").select("*");
+  let request = supabase
+    .from("products")
+    .select("*, product_tags(tags(name, color))");
 
   const brands = toList(searchParameters.brand);
   if (brands.length) {
@@ -142,6 +154,46 @@ export const getProductList = async (
     }
   }
 
+  const tagNames = toList(searchParameters.tag);
+
+  if (tagNames.length) {
+    const { data: tagRows, error: tagError } = await supabase
+      .from("tags")
+      .select("id")
+      .in("name", tagNames);
+
+    if (tagError) {
+      throw new Error("Error on get tags for filter", { cause: tagError });
+    }
+
+    const tagIds = tagRows.map(({ id }) => id);
+
+    if (tagIds.length === 0) {
+      return [];
+    }
+
+    const { data: linkRows, error: linkError } = await supabase
+      .from("product_tags")
+      .select("product_id")
+      .in("tag_id", tagIds);
+
+    if (linkError) {
+      throw new Error("Error on get product tags for filter", {
+        cause: linkError,
+      });
+    }
+
+    const productIds = Array.from(
+      new Set(linkRows.map(({ product_id }) => product_id)),
+    );
+
+    if (productIds.length === 0) {
+      return [];
+    }
+
+    request = request.in("id", productIds);
+  }
+
   const { data, error } = await request;
 
   if (error) {
@@ -150,10 +202,13 @@ export const getProductList = async (
 
   const products = await Promise.all(
     data.map(async (product) => {
+      const tags = extractTags(product as TProductRowWithTags);
+
       if (!product.image_path) {
         return {
           ...product,
           imageUrl: null,
+          tags,
         };
       }
 
@@ -164,6 +219,7 @@ export const getProductList = async (
       return {
         ...product,
         imageUrl: data?.signedUrl,
+        tags,
       };
     }),
   );

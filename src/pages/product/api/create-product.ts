@@ -2,9 +2,10 @@
 
 import { TablesInsert } from "@/shared/model";
 import { createServerClient } from "@/shared/server";
+import { syncProductTags } from "@/entities/tag";
 import { redirect } from "next/navigation";
 import { uploadImage } from "../utils/upload-image";
-import { parseProductFormData } from "../utils/parse-form-data";
+import { parseProductFormData, parseProductTags } from "../utils/parse-form-data";
 import { revalidateProductLists } from "../utils/revalidate";
 
 export const createProduct = async (formData: FormData) => {
@@ -35,6 +36,8 @@ export const createProduct = async (formData: FormData) => {
   if (error) {
     throw Error("Create product error", error);
   }
+
+  await syncProductTags(product.id, parseProductTags(formData));
 
   revalidateProductLists();
 

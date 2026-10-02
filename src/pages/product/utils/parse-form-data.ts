@@ -35,3 +35,10 @@ export const parseProductFormData = (
     notes: toString(formData.get("notes")),
   };
 };
+
+export const parseProductTags = (formData: FormData): string[] =>
+  formData
+    .getAll("tags")
+    .filter((value): value is string => typeof value === "string")
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);

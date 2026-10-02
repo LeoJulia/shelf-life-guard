@@ -2,10 +2,11 @@
 
 import { TablesUpdate } from "@/shared/model";
 import { createServerClient } from "@/shared/server";
+import { syncProductTags } from "@/entities/tag";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { uploadImage } from "../utils/upload-image";
-import { parseProductFormData } from "../utils/parse-form-data";
+import { parseProductFormData, parseProductTags } from "../utils/parse-form-data";
 import { revalidateProductLists } from "../utils/revalidate";
 
 export const updateProduct = async (id: string, formData: FormData) => {
@@ -31,6 +32,8 @@ export const updateProduct = async (id: string, formData: FormData) => {
   if (error) {
     throw Error("Update product error", error);
   }
+
+  await syncProductTags(id, parseProductTags(formData));
 
   revalidatePath(`/product/${id}/edit`, "page");
   revalidatePath(`/product/${id}`, "page");

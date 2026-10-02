@@ -1,6 +1,9 @@
+import { darkenHex } from "@/shared/utils";
 import { TProduct } from "../model";
 
 export const Tags = ({ product }: { product: TProduct }) => {
+  const tags = product?.tags ?? [];
+
   return (
     <div className='flex flex-wrap gap-1.5'>
       <span className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_340)] text-[oklch(0.45_0.1_340)]'>
@@ -10,14 +13,27 @@ export const Tags = ({ product }: { product: TProduct }) => {
         {product?.volume}
       </span>
       <span className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_165)] text-[oklch(0.4_0.1_165)]'>
-        {product?.year}
+        {product?.year} г.
       </span>
-      <span className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.92_0.08_80)] text-[oklch(0.45_0.12_80)]'>
+      {/* <span className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.92_0.08_80)] text-[oklch(0.45_0.12_80)]'>
         placeholder
       </span>
       <span className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-[oklch(0.9_0.08_280)] text-[oklch(0.45_0.1_280)]'>
         placeholder
-      </span>
+      </span> */}
+      {tags.map((tag) => (
+        <span
+          key={tag.name}
+          className='rounded-full px-2.5 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground'
+          style={
+            tag.color
+              ? { backgroundColor: tag.color, color: darkenHex(tag.color) }
+              : undefined
+          }
+        >
+          {tag.name}
+        </span>
+      ))}
     </div>
   );
 };

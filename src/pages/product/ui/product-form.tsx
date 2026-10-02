@@ -24,12 +24,14 @@ export const ProductForm = ({
   categoriesList,
   volumesList,
   shopsList,
+  tagsList,
 }: {
   product?: TProduct;
   brandsList: string[];
   categoriesList: string[];
   volumesList: string[];
   shopsList: string[];
+  tagsList: string[];
 }) => {
   const isEditing = !!product;
   const currentProduct = product ?? EMPTY_PRODUCT;
@@ -52,6 +54,21 @@ export const ProductForm = ({
             </CardHeader>
             <CardContent className='space-y-4'>
               <FieldGroup>
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='tags'>Теги</FieldLabel>
+                  <Combobox
+                    defaultOptions={tagsList}
+                    defaultValue={
+                      currentProduct.tags?.map((tag) => tag.name) ?? []
+                    }
+                    name='tags'
+                    id='tags'
+                    placeholder='Выберите или создайте теги...'
+                    multiple
+                    isEditable
+                  />
+                </Field>
+
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='brand'>Бренд</FieldLabel>
                   <Combobox
@@ -197,7 +214,9 @@ export const ProductForm = ({
             </CardContent>
             <CardFooter>
               <ProductFormFooter
-                cancelHref={isEditing ? `/product/${product!.id}` : "/dashboard"}
+                cancelHref={
+                  isEditing ? `/product/${product!.id}` : "/dashboard"
+                }
               />
             </CardFooter>
           </div>

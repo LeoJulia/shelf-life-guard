@@ -4,3 +4,4 @@ export type {
   TablesInsert,
   TablesUpdate,
 } from "./database.types";
+export type { TProductTag } from "./tag";

@@ -42,15 +42,15 @@ export type Database = {
       product_tags: {
         Row: {
           product_id: string;
-          tag_id: number;
+          tag_id: string;
         };
         Insert: {
           product_id: string;
-          tag_id: number;
+          tag_id: string;
         };
         Update: {
           product_id?: string;
-          tag_id?: number;
+          tag_id?: string;
         };
         Relationships: [
           {
@@ -136,21 +136,21 @@ export type Database = {
         Row: {
           color: string | null;
           created_at: string;
-          id: number;
+          id: string;
           name: string;
           user_id: string | null;
         };
         Insert: {
           color?: string | null;
           created_at?: string;
-          id?: number;
+          id?: string;
           name: string;
           user_id?: string | null;
         };
         Update: {
           color?: string | null;
           created_at?: string;
-          id?: number;
+          id?: string;
           name?: string;
           user_id?: string | null;
         };
