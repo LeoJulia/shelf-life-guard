@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getProduct } from "../api/get-product";
-import { ProductRow } from "./product-row";
+import { formatProductDate } from "../utils/format-date";
+import { ProductRow, ProductValue } from "./product-row";
 import { DeleteProductDialog } from "./delete-product-dialog";
 import { Button } from "@/shared/ui/button";
 import { Edit, ImageIcon, Trash } from "lucide-react";
@@ -13,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { Field, FieldLabel } from "@/shared/ui/field";
 import { notFound } from "next/navigation";
 import { ExpiryBar } from "@/entities/product/ui/expiry-bar";
 import { Rating } from "@/entities/product/ui/rating";
@@ -49,57 +51,42 @@ export const Product = async ({
             <Tags product={product} />
             <ExpiryBar product={product} />
           </CardContent>
-          <CardContent className='h-full flex flex-col divide-y'>
-            <ProductRow field='Комментарий' value={product?.notes} />
-            <ProductRow field='Состав' value={product?.ingredients} />
+          <CardContent className='h-full flex flex-col gap-3'>
+            <ProductRow field='Категория' value={product?.category} />
+            <ProductRow field='Объем' value={product?.volume} />
+            <ProductRow field='Рыночная цена' value={product?.market_price} />
+            <ProductRow field='Цена покупки' value={product?.actual_price} />
+            <ProductRow field='Магазин' value={product?.shop} />
+            <div className='lg:flex gap-2'>
+              <Field>
+                <FieldLabel>Срок годности</FieldLabel>
+                <ProductValue>
+                  {formatProductDate(product?.expiry_date)}
+                </ProductValue>
+              </Field>
+              <Field>
+                <FieldLabel>Дата открытия</FieldLabel>
+                <ProductValue>
+                  {formatProductDate(product?.opened_at)}
+                </ProductValue>
+              </Field>
+              <Field>
+                <FieldLabel>Дата окончания</FieldLabel>
+                <ProductValue>
+                  {formatProductDate(product?.finished_at)}
+                </ProductValue>
+              </Field>
+            </div>
             <ProductRow
-              field='Рыночная стоимость'
-              value={product?.market_price}
+              field='Состав'
+              value={product?.ingredients}
+              collapsable
             />
             <ProductRow
-              field='Стоимость покупки'
-              value={product?.actual_price}
+              field='Комментарий'
+              value={product?.notes}
+              collapsable
             />
-            <ProductRow field='Магазин покупки' value={product?.shop} />
-            {product?.opened_at && (
-              <ProductRow
-                field='Дата начала использования'
-                value={new Date(product.opened_at).toLocaleDateString(
-                  "ru-RU",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  },
-                )}
-              />
-            )}
-            {product?.finished_at && (
-              <ProductRow
-                field='Дата окончания использования'
-                value={new Date(product.finished_at).toLocaleDateString(
-                  "ru-RU",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  },
-                )}
-              />
-            )}
-            {product?.expiry_date && (
-              <ProductRow
-                field='Срок годности'
-                value={new Date(product.expiry_date).toLocaleDateString(
-                  "ru-RU",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  },
-                )}
-              />
-            )}
           </CardContent>
           <CardFooter className='flex gap-3 mt-8'>
             <Link href={`/product/${id}/edit`}>

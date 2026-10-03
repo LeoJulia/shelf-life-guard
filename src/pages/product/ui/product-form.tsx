@@ -7,15 +7,15 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { TProduct } from "@/entities/product";
-import { Field, FieldGroup, FieldLabel } from "@/shared/ui/field";
+import { Field, FieldContent, FieldGroup, FieldLabel } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
 import { createProduct } from "../api/create-product";
 import { updateProduct } from "../api/update-product";
 import { EMPTY_PRODUCT } from "../utils/empty-product";
 import { Combobox } from "../../../shared/ui/combobox";
 import { RatingInput } from "./rating-input";
 import { ImageUpload } from "./image-upload";
+import { CollapsibleTextarea } from "./collapsible-textarea";
 import { ProductFormFooter } from "./product-form-footer";
 
 export const ProductForm = ({
@@ -55,21 +55,6 @@ export const ProductForm = ({
             <CardContent className='space-y-4'>
               <FieldGroup>
                 <Field orientation='horizontal'>
-                  <FieldLabel htmlFor='tags'>Теги</FieldLabel>
-                  <Combobox
-                    defaultOptions={tagsList}
-                    defaultValue={
-                      currentProduct.tags?.map((tag) => tag.name) ?? []
-                    }
-                    name='tags'
-                    id='tags'
-                    placeholder='Выберите или создайте теги...'
-                    multiple
-                    isEditable
-                  />
-                </Field>
-
-                <Field orientation='horizontal'>
                   <FieldLabel htmlFor='brand'>Бренд</FieldLabel>
                   <Combobox
                     defaultOptions={brandsList}
@@ -89,11 +74,27 @@ export const ProductForm = ({
                     name='name'
                   />
                 </Field>
+
                 <Field orientation='horizontal'>
                   <FieldLabel htmlFor='rating'>Рейтинг</FieldLabel>
                   <RatingInput
                     defaultValue={currentProduct.rating}
                     name='rating'
+                  />
+                </Field>
+
+                <Field orientation='horizontal'>
+                  <FieldLabel htmlFor='tags'>Теги</FieldLabel>
+                  <Combobox
+                    defaultOptions={tagsList}
+                    defaultValue={
+                      currentProduct.tags?.map((tag) => tag.name) ?? []
+                    }
+                    name='tags'
+                    id='tags'
+                    placeholder='Выберите или создайте теги...'
+                    multiple
+                    isEditable
                   />
                 </Field>
 
@@ -194,21 +195,29 @@ export const ProductForm = ({
                   </Field>
                 </div>
                 <Field orientation='horizontal'>
-                  <FieldLabel htmlFor='ingredients'>Состав</FieldLabel>
-                  <Textarea
-                    defaultValue={currentProduct.ingredients ?? undefined}
-                    id='ingredients'
-                    name='ingredients'
-                  />
+                  <FieldLabel htmlFor='ingredients' className='pt-2'>
+                    Состав
+                  </FieldLabel>
+                  <FieldContent>
+                    <CollapsibleTextarea
+                      id='ingredients'
+                      name='ingredients'
+                      defaultValue={currentProduct.ingredients}
+                    />
+                  </FieldContent>
                 </Field>
 
                 <Field orientation='horizontal'>
-                  <FieldLabel htmlFor='notes'>Заметки</FieldLabel>
-                  <Textarea
-                    defaultValue={currentProduct.notes ?? undefined}
-                    id='notes'
-                    name='notes'
-                  />
+                  <FieldLabel htmlFor='notes' className='pt-2'>
+                    Комментарий
+                  </FieldLabel>
+                  <FieldContent>
+                    <CollapsibleTextarea
+                      id='notes'
+                      name='notes'
+                      defaultValue={currentProduct.notes}
+                    />
+                  </FieldContent>
                 </Field>
               </FieldGroup>
             </CardContent>
