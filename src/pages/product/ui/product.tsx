@@ -19,6 +19,7 @@ import { notFound } from "next/navigation";
 import { ExpiryBar } from "@/entities/product/ui/expiry-bar";
 import { Rating } from "@/entities/product/ui/rating";
 import { Tags } from "@/entities/product/ui/tags";
+import { CopyIngredientsButton } from "@/entities/product";
 
 export const Product = async ({
   params,
@@ -35,6 +36,7 @@ export const Product = async ({
 
   return (
     <Card className='group relative overflow-hidden rounded-xl border border-border bg-card'>
+      <CopyIngredientsButton product={product} />
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-0'>
         <div className='flex flex-col'>
           <CardHeader>

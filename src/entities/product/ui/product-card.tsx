@@ -11,11 +11,16 @@ import { TProduct } from "../model";
 import { Rating } from "./rating";
 import { Tags } from "./tags";
 import { ExpiryBar } from "./expiry-bar";
+import { CopyIngredientsButton } from "./copy-ingredients-button";
 import { BadgeRussianRuble, Calendar, ImageIcon, Store } from "lucide-react";
 
 export const ProductCard = ({ product }: { product: TProduct }) => {
   return (
     <div className='group relative'>
+      <CopyIngredientsButton
+        product={product}
+        className='top-1.5 right-1.5 size-7 [&_svg]:size-3.5'
+      />
       <Link href={`/product/${product.id}`} key={product.id} className='block'>
         <Card className='break-inside-avoid mb-4 group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5'>
           <CardHeader className='flex-row gap-4'>

@@ -1,3 +1,3 @@
 export { getProductList } from "./api";
-export { ProductCard } from "./ui";
+export { ProductCard, CopyIngredientsButton } from "./ui";
 export * from "./model";
