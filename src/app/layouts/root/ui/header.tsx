@@ -3,6 +3,7 @@ import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { AuthButton } from "./auth-button";
 import { HeaderNav } from "./header-nav";
+import { MobileMenu } from "./mobile-menu";
 import { Button } from "@/shared/ui/button";
 
 export const Header = () => (
@@ -19,17 +20,28 @@ export const Header = () => (
 
       <HeaderNav />
 
-      <Suspense>
-        <div className='flex items-center gap-4'>
-          <Link href='/product/new'>
-            <Button variant='secondary'>
-              <Plus />
-              Добавить
-            </Button>
-          </Link>
-          <AuthButton />
-        </div>
-      </Suspense>
+      <div className='flex items-center gap-2 sm:gap-4'>
+        <Link href='/product/new'>
+          <Button variant='secondary'>
+            <Plus />
+            <span className='hidden sm:inline'>Добавить</span>
+          </Button>
+        </Link>
+
+        <Suspense>
+          <div className='hidden md:block'>
+            <AuthButton />
+          </div>
+        </Suspense>
+
+        <MobileMenu
+          auth={
+            <Suspense>
+              <AuthButton />
+            </Suspense>
+          }
+        />
+      </div>
     </div>
   </header>
 );

@@ -3,12 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/shared/utils";
-
-const navLinks = [
-  { href: "/dashboard", label: "Главная" },
-  { href: "/products", label: "Продукты" },
-  { href: "/analytics", label: "Аналитика" },
-];
+import { isNavLinkActive, navLinks } from "../nav-links";
 
 export const HeaderNav = () => {
   const pathname = usePathname() ?? "";
@@ -16,31 +11,23 @@ export const HeaderNav = () => {
   return (
     <nav className='hidden items-center gap-6 md:flex'>
       {navLinks.map(({ href, label }) => {
-        const isActive =
-          pathname === href || pathname.startsWith(`${href}/`);
+        const className = cn(
+          "text-sm transition-colors",
+          isNavLinkActive(pathname, href)
+            ? "font-medium text-foreground hover:text-primary"
+            : "text-muted-foreground hover:text-foreground",
+        );
 
-        return (
-          <Link
-            key={href}
-            className={cn(
-              "text-sm transition-colors",
-              isActive
-                ? "font-medium text-foreground hover:text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-            href={href}
-          >
+        return href === "#" ? (
+          <a key={label} className={className} href={href}>
+            {label}
+          </a>
+        ) : (
+          <Link key={href} className={className} href={href}>
             {label}
           </Link>
         );
       })}
-
-      <a
-        href='#'
-        className='text-sm text-muted-foreground transition-colors hover:text-foreground'
-      >
-        Рутина
-      </a>
     </nav>
   );
 };
