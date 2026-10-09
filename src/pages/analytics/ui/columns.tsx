@@ -7,8 +7,9 @@ import {
 import { ProductStatusIcon } from "@/entities/product/ui";
 import { type TTableFeatures } from "../config/table";
 import { formatMoney } from "../lib/format-money";
+import { formatDuration } from "../lib/format-duration";
 import { pricePerDays } from "../lib/price-per-days";
-import { getShelfDays, getUsedDays } from "../lib/product-days";
+import { getUsageDays, getUsedDays } from "../lib/product-days";
 import { ruTextSort } from "../lib/ru-text-sort";
 
 const helper = createColumnHelper<TTableFeatures, TProduct>();
@@ -32,6 +33,21 @@ export const columns = helper.columns([
     sortFn: ruTextSort,
     meta: { wide: true },
   }),
+  helper.accessor((product) => getUsageDays(product), {
+    id: "used_days",
+    header: "Срок использования",
+    sortUndefined: "last",
+    meta: { numeric: true, narrow: true },
+    cell: (context) => {
+      const product = context.row.original;
+
+      if (!product.opened_at || !product.finished_at) {
+        return "—";
+      }
+
+      return formatDuration(product.opened_at, product.finished_at);
+    },
+  }),
   helper.accessor((product) => product.market_price ?? undefined, {
     id: "market_price",
     header: "Рыночная стоимость",
@@ -47,7 +63,7 @@ export const columns = helper.columns([
     cell: (context) => formatMoney(context.getValue()),
   }),
   helper.accessor(
-    (product) => pricePerDays(product.market_price, getShelfDays(product), 1),
+    (product) => pricePerDays(product.market_price, getUsedDays(product), 1),
     {
       id: "market_per_day",
       header: "Цена за 1 день (рыночная)",
@@ -62,12 +78,12 @@ export const columns = helper.columns([
       id: "actual_per_day",
       header: "Цена за 1 день (фактическая)",
       sortUndefined: "last",
-      meta: { numeric: true },
+      meta: { numeric: true, narrow: true },
       cell: (context) => formatMoney(context.getValue()),
     },
   ),
   helper.accessor(
-    (product) => pricePerDays(product.market_price, getShelfDays(product), 30),
+    (product) => pricePerDays(product.market_price, getUsedDays(product), 30),
     {
       id: "market_per_30_days",
       header: "Цена за 30 дней (рыночная)",

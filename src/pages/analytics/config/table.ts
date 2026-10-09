@@ -11,6 +11,7 @@ export const PAGE_SIZE = 10;
 export type TColumnMeta = {
   numeric?: boolean;
   wide?: boolean;
+  narrow?: boolean;
 };
 
 export const features = tableFeatures({

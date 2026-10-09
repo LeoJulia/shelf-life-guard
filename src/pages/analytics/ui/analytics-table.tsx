@@ -74,9 +74,11 @@ export const AnalyticsTable = ({ products }: { products: TProduct[] }) => {
                       "align-top whitespace-normal",
                       column.columnDef.meta?.wide
                         ? "min-w-72"
-                        : column.columnDef.meta?.numeric
-                          ? "text-right min-w-24"
-                          : "min-w-20",
+                        : column.columnDef.meta?.narrow
+                          ? "text-right min-w-20"
+                          : column.columnDef.meta?.numeric
+                            ? "text-right min-w-24"
+                            : "min-w-20",
                     )}
                   >
                     <button
@@ -84,6 +86,8 @@ export const AnalyticsTable = ({ products }: { products: TProduct[] }) => {
                       className={cn(
                         "inline-flex items-center gap-1 hover:text-foreground",
                         sorted ? "text-primary" : "text-muted-foreground",
+                        column.columnDef.meta?.narrow &&
+                          "max-w-24 [overflow-wrap:anywhere]",
                       )}
                       onClick={column.getToggleSortingHandler()}
                     >
