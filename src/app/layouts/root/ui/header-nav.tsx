@@ -7,6 +7,7 @@ import { cn } from "@/shared/utils";
 const navLinks = [
   { href: "/dashboard", label: "Главная" },
   { href: "/products", label: "Продукты" },
+  { href: "/analytics", label: "Аналитика" },
 ];
 
 export const HeaderNav = () => {
@@ -39,12 +40,6 @@ export const HeaderNav = () => {
         className='text-sm text-muted-foreground transition-colors hover:text-foreground'
       >
         Рутина
-      </a>
-      <a
-        href='#'
-        className='text-sm text-muted-foreground transition-colors hover:text-foreground'
-      >
-        Аналитика
       </a>
     </nav>
   );
