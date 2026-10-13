@@ -19,7 +19,7 @@ import { notFound } from "next/navigation";
 import { ExpiryBar } from "@/entities/product/ui/expiry-bar";
 import { Rating } from "@/entities/product/ui/rating";
 import { Tags } from "@/entities/product/ui/tags";
-import { CopyIngredientsButton } from "@/entities/product";
+import { CopyIngredientsButton, MarkTodayButtons } from "@/entities/product";
 
 export const Product = async ({
   params,
@@ -97,11 +97,12 @@ export const Product = async ({
                 Редактировать
               </Button>
             </Link>
+            <MarkTodayButtons product={product} />
             <DeleteProductDialog
               productId={product.id}
               productName={product.name}
               trigger={
-                <Button variant='destructive'>
+                <Button variant='destructive' className='ml-auto'>
                   <Trash />
                   Удалить
                 </Button>
