@@ -72,9 +72,9 @@ export type Database = {
       products: {
         Row: {
           actual_price: number | null;
-          brand: string | null;
+          brand: string;
           category: string | null;
-          created_at: string | null;
+          created_at: string;
           expiry_date: string | null;
           finished_at: string | null;
           id: string;
@@ -92,9 +92,9 @@ export type Database = {
         };
         Insert: {
           actual_price?: number | null;
-          brand?: string | null;
+          brand: string;
           category?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           expiry_date?: string | null;
           finished_at?: string | null;
           id?: string;
@@ -112,9 +112,9 @@ export type Database = {
         };
         Update: {
           actual_price?: number | null;
-          brand?: string | null;
+          brand?: string;
           category?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           expiry_date?: string | null;
           finished_at?: string | null;
           id?: string;

@@ -63,6 +63,7 @@ export const ProductForm = ({
                     id='brand'
                     placeholder='Введите или выберите бренд...'
                     isEditable
+                    required
                   />
                 </Field>
 

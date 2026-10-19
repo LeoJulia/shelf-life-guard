@@ -7,4 +7,5 @@ export type TProduct = Tables<"products"> & {
 
 export type TProductFormValues = TablesUpdate<"products"> & {
   name: string;
+  brand: string;
 };

@@ -16,6 +16,6 @@ export const EMPTY_PRODUCT: Omit<TProduct, "user_id"> = {
   ingredients: null,
   notes: null,
   image_path: null,
-  created_at: null,
+  created_at: "",
   year: null,
 };

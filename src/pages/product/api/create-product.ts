@@ -19,6 +19,7 @@ export const createProduct = async (formData: FormData) => {
   const newProduct: TablesInsert<"products"> = {
     ...parseProductFormData(formData),
     user_id: data.user.id,
+    year: new Date().getFullYear(),
   };
 
   const imgPath = await uploadImage(supabase, formData);

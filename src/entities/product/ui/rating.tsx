@@ -1,10 +1,17 @@
 import { Star } from "lucide-react";
+import { cn } from "@/shared/utils";
 
-export const Rating = ({ rating }: { rating?: number | null }) => {
+export const Rating = ({
+  rating,
+  className,
+}: {
+  rating?: number | null;
+  className?: string;
+}) => {
   const stars = new Array(5).fill("");
 
   return (
-    <div className='mt-1.5 mb-2 flex items-center gap-1'>
+    <div className={cn("mt-1.5 mb-2 flex items-center gap-1", className)}>
       {stars.map((i, index) => (
         <Star
           key={index}

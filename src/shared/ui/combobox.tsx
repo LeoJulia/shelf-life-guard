@@ -19,6 +19,7 @@ interface ComboboxProps {
   id?: string;
   placeholder?: string;
   isEditable?: boolean;
+  required?: boolean;
 }
 
 const toSelectedValues = (
@@ -45,6 +46,7 @@ export function Combobox({
   id,
   placeholder,
   isEditable = false,
+  required = false,
 }: ComboboxProps) {
   const isMultiple = multiple || Array.isArray(defaultValue);
   const [internalValues, setInternalValues] = useState<string[]>(() =>
@@ -191,6 +193,7 @@ export function Combobox({
             aria-autocomplete='list'
             autoComplete='off'
             name={isMultiple ? undefined : name}
+            required={isMultiple ? undefined : required}
             id={id}
           />
           {isMultiple &&

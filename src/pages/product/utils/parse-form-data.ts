@@ -13,7 +13,7 @@ export const parseProductFormData = (
   const ratingRaw = formData.get("rating");
 
   return {
-    brand: toString(formData.get("brand")),
+    brand: toString(formData.get("brand")) ?? "",
     name: toString(formData.get("name")) ?? "",
     category: toString(formData.get("category")),
     volume: toString(formData.get("volume")),
