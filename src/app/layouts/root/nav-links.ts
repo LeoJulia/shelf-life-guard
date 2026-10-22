@@ -7,8 +7,8 @@ export const navLinks: TNavLink[] = [
   { href: "/dashboard", label: "Главная" },
   { href: "/products", label: "Продукты" },
   { href: "/analytics", label: "Аналитика" },
-  { href: "#", label: "Рутина" },
+  { href: "/routine", label: "Рутина" },
 ];
 
 export const isNavLinkActive = (pathname: string, href: string) =>
-  href !== "#" && (pathname === href || pathname.startsWith(`${href}/`));
+  pathname === href || pathname.startsWith(`${href}/`);

@@ -132,6 +132,154 @@ export type Database = {
         };
         Relationships: [];
       };
+      routine_items: {
+        Row: {
+          created_at: string;
+          fri: boolean;
+          id: string;
+          is_constant: boolean;
+          mon: boolean;
+          position: number;
+          product_id: string;
+          routine_id: string;
+          sat: boolean;
+          sun: boolean;
+          thu: boolean;
+          time_of_day: string;
+          tue: boolean;
+          user_id: string;
+          wed: boolean;
+        };
+        Insert: {
+          created_at?: string;
+          fri?: boolean;
+          id?: string;
+          is_constant?: boolean;
+          mon?: boolean;
+          position?: number;
+          product_id: string;
+          routine_id: string;
+          sat?: boolean;
+          sun?: boolean;
+          thu?: boolean;
+          time_of_day?: string;
+          tue?: boolean;
+          user_id?: string;
+          wed?: boolean;
+        };
+        Update: {
+          created_at?: string;
+          fri?: boolean;
+          id?: string;
+          is_constant?: boolean;
+          mon?: boolean;
+          position?: number;
+          product_id?: string;
+          routine_id?: string;
+          sat?: boolean;
+          sun?: boolean;
+          thu?: boolean;
+          time_of_day?: string;
+          tue?: boolean;
+          user_id?: string;
+          wed?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "routine_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "routine_items_routine_id_fkey";
+            columns: ["routine_id"];
+            isOneToOne: false;
+            referencedRelation: "routines";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      routine_photos: {
+        Row: {
+          created_at: string;
+          id: string;
+          image_path: string;
+          routine_id: string;
+          series: string;
+          slot: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          image_path: string;
+          routine_id: string;
+          series: string;
+          slot: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          image_path?: string;
+          routine_id?: string;
+          series?: string;
+          slot?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "routine_photos_routine_id_fkey";
+            columns: ["routine_id"];
+            isOneToOne: false;
+            referencedRelation: "routines";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      routines: {
+        Row: {
+          copied_from: string | null;
+          created_at: string;
+          end_date: string | null;
+          id: string;
+          name: string | null;
+          notes: string | null;
+          start_date: string;
+          user_id: string;
+        };
+        Insert: {
+          copied_from?: string | null;
+          created_at?: string;
+          end_date?: string | null;
+          id?: string;
+          name?: string | null;
+          notes?: string | null;
+          start_date: string;
+          user_id?: string;
+        };
+        Update: {
+          copied_from?: string | null;
+          created_at?: string;
+          end_date?: string | null;
+          id?: string;
+          name?: string | null;
+          notes?: string | null;
+          start_date?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "routines_copied_from_fkey";
+            columns: ["copied_from"];
+            isOneToOne: false;
+            referencedRelation: "routines";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       tags: {
         Row: {
           color: string | null;
