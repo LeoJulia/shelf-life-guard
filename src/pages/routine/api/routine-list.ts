@@ -3,9 +3,9 @@ import { byActiveFirst, type TRoutine } from "@/entities/routine";
 import { mapRoutineRow, type TRoutineRow } from "../lib/map-routine";
 
 /**
- * Список рутин без подписанных URL изображений и без данных средств: карточке
- * нужны только названия, статус и счётчики, поэтому `products(...)` здесь не
- * выбирается — каждый лишний вложенный join это запрос к Storage и БД.
+ * Список рутин без подписанных URL изображений: карточке нужны названия,
+ * статус и счётчики, а блоку «на сегодня» — названия средств. `image_path`
+ * не выбирается, поэтому каждый вложенный join обходится без запросов к Storage.
  *
  * Порядок: активные сверху, затем запланированные, затем завершённые;
  * внутри группы — по убыванию даты начала (sort стабилен).
@@ -13,7 +13,8 @@ import { mapRoutineRow, type TRoutineRow } from "../lib/map-routine";
 export const getRoutineList = async (): Promise<TRoutine[]> => {
   const supabase = await createServerClient();
 
-  const select = "*, routine_items(*), routine_photos(id, series, slot)";
+  const select =
+    "*, routine_items(*, products(id, name, brand)), routine_photos(id, series, slot)";
 
   const { data, error } = await supabase
     .from("routines")

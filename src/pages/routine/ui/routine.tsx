@@ -2,11 +2,13 @@ import Link from "next/link";
 import { CalendarDays, Plus } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
-import { RoutineCard } from "@/entities/routine";
+import { getTodayRoutines, RoutineCard } from "@/entities/routine";
 import { getRoutineList } from "../api/routine-list";
+import { TodayRoutines } from "./today-routines";
 
 export const Routine = async () => {
   const routines = await getRoutineList();
+  const today = getTodayRoutines(routines);
 
   return (
     <div className='flex flex-col gap-5'>
@@ -24,6 +26,8 @@ export const Routine = async () => {
           </Button>
         </Link>
       </div>
+
+      <TodayRoutines {...today} />
 
       {routines.length === 0 ? (
         <Card className='rounded-xl border-border bg-card'>
