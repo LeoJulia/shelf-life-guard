@@ -1,7 +1,8 @@
 import { createServerClient } from "@/shared/server";
 import { TProduct } from "@/entities/product";
 import { getProductTags } from "@/entities/tag";
-import { fetchProductImageUrl } from "../utils/get-image-url";
+import { fetchSignedImageUrl } from "@/shared/lib/signed-image-url";
+import { PRODUCT_IMAGES_BUCKET } from "@/shared/lib/buckets";
 
 export const getProduct = async (id: string): Promise<TProduct> => {
   const supabase = await createServerClient();
@@ -21,7 +22,11 @@ export const getProduct = async (id: string): Promise<TProduct> => {
 
   return {
     ...product,
-    imageUrl: await fetchProductImageUrl(supabase, product.image_path),
+    imageUrl: await fetchSignedImageUrl(
+      supabase,
+      PRODUCT_IMAGES_BUCKET,
+      product.image_path,
+    ),
     tags,
   };
 };

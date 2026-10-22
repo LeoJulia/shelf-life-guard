@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getProduct } from "../api/get-product";
-import { formatProductDate } from "../utils/format-date";
-import { ProductRow, ProductValue } from "./product-row";
+import { formatDate } from "@/shared/lib/format-date";
+import { ProductRow, ProductValue } from "@/shared/ui/product-row";
 import { DeleteProductDialog } from "./delete-product-dialog";
 import { Button } from "@/shared/ui/button";
 import { ImageIcon, Trash } from "lucide-react";
@@ -15,9 +15,12 @@ import {
 } from "@/shared/ui/card";
 import { Field, FieldLabel } from "@/shared/ui/field";
 import { notFound } from "next/navigation";
-import { ExpiryBar } from "@/entities/product/ui/expiry-bar";
-import { Tags } from "@/entities/product/ui/tags";
-import { CopyIngredientsButton, MarkTodayButtons } from "@/entities/product";
+import {
+  CopyIngredientsButton,
+  ExpiryBar,
+  MarkTodayButtons,
+  Tags,
+} from "@/entities/product";
 import {
   RatingEditProvider,
   RatingField,
@@ -67,19 +70,17 @@ export const Product = async ({
                 <Field>
                   <FieldLabel>Срок годности</FieldLabel>
                   <ProductValue>
-                    {formatProductDate(product?.expiry_date)}
+                    {formatDate(product?.expiry_date)}
                   </ProductValue>
                 </Field>
                 <Field>
                   <FieldLabel>Дата открытия</FieldLabel>
-                  <ProductValue>
-                    {formatProductDate(product?.opened_at)}
-                  </ProductValue>
+                  <ProductValue>{formatDate(product?.opened_at)}</ProductValue>
                 </Field>
                 <Field>
                   <FieldLabel>Дата окончания</FieldLabel>
                   <ProductValue>
-                    {formatProductDate(product?.finished_at)}
+                    {formatDate(product?.finished_at)}
                   </ProductValue>
                 </Field>
               </div>

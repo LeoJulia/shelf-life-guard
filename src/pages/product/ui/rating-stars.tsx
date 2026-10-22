@@ -33,7 +33,7 @@ export function RatingStars({ value, onChange }: RatingStarsProps) {
             type='button'
             onClick={() => handleClick(star)}
             onMouseEnter={() => setHoverValue(star)}
-            className='transition-transform hover:scale-110 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-pink-300 rounded'
+            className='transition-transform hover:scale-110 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded'
             aria-label={`${star} ${star === 1 ? "звезда" : "звезды"}`}
             aria-checked={value === star}
             role='radio'

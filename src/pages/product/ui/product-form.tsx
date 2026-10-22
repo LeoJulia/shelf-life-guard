@@ -12,10 +12,10 @@ import { Input } from "@/shared/ui/input";
 import { createProduct } from "../api/create-product";
 import { updateProduct } from "../api/update-product";
 import { EMPTY_PRODUCT } from "../utils/empty-product";
-import { Combobox } from "../../../shared/ui/combobox";
+import { Combobox } from "@/shared/ui/combobox";
 import { RatingInput } from "./rating-input";
 import { ImageUpload } from "./image-upload";
-import { CollapsibleTextarea } from "./collapsible-textarea";
+import { CollapsibleTextarea } from "@/shared/ui/collapsible-textarea";
 import { ProductFormFooter } from "./product-form-footer";
 
 export const ProductForm = ({

@@ -9,3 +9,8 @@ export type TProductFormValues = TablesUpdate<"products"> & {
   name: string;
   brand: string;
 };
+
+export type TProductOption = {
+  id: string;
+  label: string;
+};

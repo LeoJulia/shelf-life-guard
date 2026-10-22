@@ -1,5 +1,7 @@
 import { createServerClient } from "@/shared/server";
 import { TProductTag } from "@/shared/model";
+import { fetchSignedImageUrl } from "@/shared/lib/signed-image-url";
+import { PRODUCT_IMAGES_BUCKET } from "@/shared/lib/buckets";
 import { TProduct } from "../model";
 
 const toList = (value: string | string[] | undefined) =>
@@ -204,21 +206,15 @@ export const getProductList = async (
     data.map(async (product) => {
       const tags = extractTags(product as TProductRowWithTags);
 
-      if (!product.image_path) {
-        return {
-          ...product,
-          imageUrl: null,
-          tags,
-        };
-      }
-
-      const { data } = await supabase.storage
-        .from("product-images")
-        .createSignedUrl(product.image_path, 3600);
+      const imageUrl = await fetchSignedImageUrl(
+        supabase,
+        PRODUCT_IMAGES_BUCKET,
+        product.image_path,
+      );
 
       return {
         ...product,
-        imageUrl: data?.signedUrl,
+        imageUrl: imageUrl ?? null,
         tags,
       };
     }),

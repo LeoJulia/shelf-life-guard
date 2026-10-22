@@ -18,8 +18,7 @@ export const markProductDate = async (
 
   const supabase = await createServerClient();
 
-  const update: TablesUpdate<"products"> =
-    action === "opened" ? { opened_at: date } : { finished_at: date };
+  const update: TablesUpdate<"products"> = { [field]: date };
 
   const { error } = await supabase
     .from("products")

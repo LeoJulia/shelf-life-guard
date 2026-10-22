@@ -4,15 +4,12 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { RatingStars } from "./rating-stars";
 
-interface InteractiveStarRatingProps {
+interface RatingInputProps {
   defaultValue?: number | null;
   name?: string;
 }
 
-export function RatingInput({
-  defaultValue,
-  name,
-}: InteractiveStarRatingProps) {
+export function RatingInput({ defaultValue, name }: RatingInputProps) {
   const [value, setValue] = useState<number | undefined | null>(defaultValue);
 
   return (

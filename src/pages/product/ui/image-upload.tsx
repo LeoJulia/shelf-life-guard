@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Trash2, Upload, Image as ImageIcon } from "lucide-react";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import { compressImage } from "../utils/compress-image";
+import { compressImage } from "@/shared/lib/compress-image";
 
 interface ImageUploadProps {
   /** Base64 или URL текущего изображения */

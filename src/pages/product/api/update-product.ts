@@ -5,7 +5,8 @@ import { createServerClient } from "@/shared/server";
 import { syncProductTags } from "@/entities/tag";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { uploadImage } from "../utils/upload-image";
+import { uploadBase64Image } from "@/shared/lib/upload-image";
+import { PRODUCT_IMAGES_BUCKET } from "@/shared/lib/buckets";
 import { parseProductFormData, parseProductTags } from "../utils/parse-form-data";
 import { revalidateProductLists } from "../utils/revalidate";
 
@@ -16,7 +17,11 @@ export const updateProduct = async (id: string, formData: FormData) => {
     ...parseProductFormData(formData),
   };
 
-  const imgPath = await uploadImage(supabase, formData);
+  const imgPath = await uploadBase64Image(
+    supabase,
+    PRODUCT_IMAGES_BUCKET,
+    formData,
+  );
 
   if (imgPath) {
     updateProduct.image_path = imgPath;

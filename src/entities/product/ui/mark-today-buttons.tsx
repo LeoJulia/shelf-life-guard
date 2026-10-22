@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/shared/ui/tooltip";
-import { toLocalDateString } from "../lib/local-date";
+import { toLocalDateString } from "@/shared/lib/local-date";
 import {
   markTodayDescriptions,
   markTodayLabels,
