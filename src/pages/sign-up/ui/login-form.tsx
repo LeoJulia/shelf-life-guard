@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { cn } from "@/shared/utils";
 import { createClient } from "@/shared/api";
 import { Button } from "@/shared/ui/button";
@@ -9,7 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 
-export function LoginForm({
+export function LoginForm(props: React.ComponentPropsWithoutRef<"div">) {
+  return (
+    <Suspense>
+      <LoginFormInner {...props} />
+    </Suspense>
+  );
+}
+
+function LoginFormInner({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
@@ -18,6 +27,11 @@ export function LoginForm({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams()!;
+  const linkError =
+    searchParams.get("error") === "invalid-link"
+      ? "Ссылка недействительна или истекла — запросите новую"
+      : null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +63,9 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className='flex flex-col gap-6'>
+              {linkError && (
+                <p className='text-sm text-destructive'>{linkError}</p>
+              )}
               <div className='grid gap-2'>
                 <Label htmlFor='email'>Почта</Label>
                 <Input
@@ -76,6 +93,12 @@ export function LoginForm({
               <Button type='submit' className='w-full' disabled={isLoading}>
                 {isLoading ? "Вход..." : "Вход"}
               </Button>
+              <Link
+                href='/auth/forgot-password'
+                className='text-center text-sm text-muted-foreground underline-offset-4 hover:underline'
+              >
+                Забыли пароль?
+              </Link>
             </div>
           </form>
         </CardContent>

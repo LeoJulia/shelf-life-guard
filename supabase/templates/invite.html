@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <body style="margin:0; padding:24px; background:#f4f4f5; font-family:Arial, Helvetica, sans-serif; color:#18181b;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px; background:#ffffff; border:1px solid #e4e4e7; border-radius:12px; padding:32px;">
+            <tr>
+              <td>
+                <h1 style="margin:0 0 16px; font-size:22px;">Приглашение в Shelf Life Guard</h1>
+                <p style="margin:0 0 16px; font-size:15px; line-height:1.6;">
+                  Вас пригласили в приложение для контроля сроков годности.
+                  Нажмите кнопку ниже, чтобы задать пароль и войти в личный кабинет.
+                </p>
+                <p style="margin:0 0 24px;">
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite"
+                     style="display:inline-block; padding:12px 24px; background:#18181b; color:#ffffff; text-decoration:none; border-radius:8px; font-size:15px;">
+                    Принять приглашение
+                  </a>
+                </p>
+                <p style="margin:0 0 8px; font-size:13px; color:#52525b; line-height:1.5;">
+                  Ссылка действительна около часа и одноразовая. Если она не работает —
+                  попросите владельца выслать приглашение заново.
+                </p>
+                <p style="margin:0; font-size:13px; color:#52525b; line-height:1.5;">
+                  Если кнопка не нажимается, скопируйте ссылку в браузер:<br />
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite" style="color:#3f3f46; word-break:break-all;">{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite</a>
+                </p>
+              </td>
+            </tr>
+          </table>
+          <p style="max-width:520px; font-size:12px; color:#71717a; line-height:1.5;">
+            Письмо отправлено автоматически встроенной почтой Supabase.
+            Если вы не ждали приглашения — просто игнорируйте это письмо.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

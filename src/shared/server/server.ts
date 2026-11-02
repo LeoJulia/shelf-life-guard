@@ -11,8 +11,10 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
+    // Те же NEXT_PUBLIC_-имена, что в src/shared/api/client.ts: ключ публичный,
+    // а разные имена для клиента и сервера означали бы два разных проекта.
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
         getAll() {
