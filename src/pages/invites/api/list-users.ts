@@ -1,5 +1,5 @@
-import { createAdminClient, createServerClient } from "@/shared/server";
-import { isInviteAdminEmail } from "@/shared/lib/invite-admin";
+import { createAdminClient } from "@/shared/server";
+import { isCurrentUserInviteAdmin } from "./is-current-invite-admin";
 
 export type TInviteListEntry = {
   email: string;
@@ -7,9 +7,7 @@ export type TInviteListEntry = {
 };
 
 export async function listInvitedUsers(): Promise<TInviteListEntry[] | null> {
-  const supabase = await createServerClient();
-  const { data } = await supabase.auth.getUser();
-  if (!isInviteAdminEmail(data.user?.email)) {
+  if (!(await isCurrentUserInviteAdmin())) {
     return null;
   }
 

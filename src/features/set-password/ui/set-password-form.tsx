@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/shared/utils";
 import { createClient } from "@/shared/api";
+import { usePendingAction } from "@/shared/lib/use-pending-action";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
@@ -17,13 +18,13 @@ export function SetPasswordForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { error, setError, isLoading, run } = usePendingAction({
+    fallbackMessage: "Не удалось сохранить пароль",
+  });
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (password.length < MIN_PASSWORD_LENGTH) {
       setError(`Пароль должен быть не короче ${MIN_PASSWORD_LENGTH} символов`);
@@ -35,18 +36,12 @@ export function SetPasswordForm({
     }
 
     const supabase = createClient();
-    setIsLoading(true);
-    try {
+
+    void run(async () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       router.replace("/dashboard");
-    } catch (error: unknown) {
-      setError(
-        error instanceof Error ? error.message : "Не удалось сохранить пароль",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (

@@ -1,14 +1,11 @@
 import { Card, CardContent } from "@/shared/ui/card";
-import { createServerClient } from "@/shared/server";
-import { isInviteAdminEmail } from "@/shared/lib/invite-admin";
+import { isCurrentUserInviteAdmin } from "../api/is-current-invite-admin";
 import { listInvitedUsers } from "../api/list-users";
 import { InviteForm } from "./invite-form";
 import { InviteList } from "./invite-list";
 
 export const Invites = async () => {
-  const supabase = await createServerClient();
-  const { data } = await supabase.auth.getUser();
-  if (!isInviteAdminEmail(data.user?.email)) {
+  if (!(await isCurrentUserInviteAdmin())) {
     return (
       <Card>
         <CardContent className='pt-6'>

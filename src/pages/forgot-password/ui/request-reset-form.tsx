@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/shared/utils";
 import { createClient } from "@/shared/api";
+import { usePendingAction } from "@/shared/lib/use-pending-action";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
@@ -11,39 +12,38 @@ import { Label } from "@/shared/ui/label";
 const RATE_LIMIT_HINT =
   "Слишком много запросов — попробуйте позже (лимит ≈ 2 письма в час)";
 
+const mapResetError = (cause: unknown, fallbackMessage: string): string => {
+  const text = cause instanceof Error ? cause.message : "";
+  if (text.includes("rate limit")) {
+    return RATE_LIMIT_HINT;
+  }
+  return text || fallbackMessage;
+};
+
 export function RequestResetForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { error, isLoading, run } = usePendingAction({
+    fallbackMessage: "Не удалось отправить письмо",
+    mapError: mapResetError,
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
     setMessage(null);
 
-    try {
+    void run(async () => {
       // Без redirectTo: ссылку на /auth/confirm строит наш шаблон письма.
       const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) throw error;
       setMessage(
         "Письмо отправлено — проверьте почту и папку Спам (лимит ≈ 2 письма в час)",
       );
-    } catch (error: unknown) {
-      const text = error instanceof Error ? error.message : "";
-      setError(
-        text.includes("rate limit")
-          ? RATE_LIMIT_HINT
-          : text || "Не удалось отправить письмо",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (

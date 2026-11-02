@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createAdminClient, createServerClient } from "@/shared/server";
-import { isInviteAdminEmail } from "@/shared/lib/invite-admin";
+import { createAdminClient } from "@/shared/server";
+import { isCurrentUserInviteAdmin } from "./is-current-invite-admin";
 
 export type TInviteFormState = { message: string | null };
 
@@ -12,9 +12,7 @@ export const sendInvite = async (
   _prevState: TInviteFormState,
   formData: FormData,
 ): Promise<TInviteFormState> => {
-  const supabase = await createServerClient();
-  const { data } = await supabase.auth.getUser();
-  if (!isInviteAdminEmail(data.user?.email)) {
+  if (!(await isCurrentUserInviteAdmin())) {
     return { message: "Недостаточно прав" };
   }
 

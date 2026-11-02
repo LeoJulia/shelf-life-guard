@@ -37,3 +37,10 @@ export async function createClient() {
     },
   );
 }
+
+/** Есть ли у текущего запроса активная сессия Supabase. */
+export async function hasSession(): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  return Boolean(data.user);
+}

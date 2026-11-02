@@ -2,9 +2,8 @@ export function isInviteAdminEmail(email: string | null | undefined): boolean {
   if (!email) {
     return false;
   }
-  const admins = (process.env.INVITE_ADMIN_EMAILS ?? "")
+  const target = email.toLowerCase();
+  return (process.env.INVITE_ADMIN_EMAILS ?? "")
     .split(",")
-    .map((value) => value.trim().toLowerCase())
-    .filter(Boolean);
-  return admins.includes(email.toLowerCase());
+    .some((value) => value.trim().toLowerCase() === target);
 }

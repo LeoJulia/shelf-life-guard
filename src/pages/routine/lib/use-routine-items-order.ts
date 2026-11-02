@@ -46,8 +46,16 @@ export const useRoutineItemsOrder = ({
     );
   }, [items, orderedIds]);
 
+  // Рефы дублируют isStale и ids: flush дебаунса может сработать до
+  // ре-рендера (pagehide сразу после клика), и persist обязан видеть свежие
+  // значения, а не состояние из последнего рендера.
   const isStaleRef = useRef(false);
   const idsRef = useRef(orderedItems.map((item) => item.id));
+
+  const setStale = (value: boolean) => {
+    isStaleRef.current = value;
+    setIsStale(value);
+  };
 
   // объявлен до дебаунса: его cleanup отрабатывает раньше flush при unmount,
   // поэтому сохранение «на выходе» не дёргает refresh уже размонтированной страницы
@@ -70,8 +78,7 @@ export const useRoutineItemsOrder = ({
       return;
     }
 
-    isStaleRef.current = false;
-    setIsStale(false);
+    setStale(false);
 
     // сетевой сбой или 500 — это reject, а не текст ошибки: без catch порядок
     // остался бы помеченным сохранённым и потерялся бы
@@ -84,8 +91,7 @@ export const useRoutineItemsOrder = ({
     }
 
     if (message) {
-      isStaleRef.current = true;
-      setIsStale(true);
+      setStale(true);
       setError(message);
 
       return;
@@ -125,8 +131,7 @@ export const useRoutineItemsOrder = ({
     [ids[index], ids[target]] = [ids[target], ids[index]];
 
     idsRef.current = ids;
-    isStaleRef.current = true;
-    setIsStale(true);
+    setStale(true);
     setError(null);
     setOrderedIds(ids);
     schedulePersist();
