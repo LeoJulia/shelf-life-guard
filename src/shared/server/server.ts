@@ -1,6 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { Database } from "@/shared/model";
+import {
+  getSupabasePublishableKey,
+  getSupabaseUrl,
+} from "@/shared/lib/supabase-env";
 
 /**
  * Especially important if using Fluid compute: Don't put this client in a
@@ -11,10 +15,8 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
-    // Те же NEXT_PUBLIC_-имена, что в src/shared/api/client.ts: ключ публичный,
-    // а разные имена для клиента и сервера означали бы два разных проекта.
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    getSupabaseUrl(),
+    getSupabasePublishableKey(),
     {
       cookies: {
         getAll() {

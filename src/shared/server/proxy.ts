@@ -2,6 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { hasEnvVars } from "@/shared/utils";
 import { Database } from "@/shared/model";
+import {
+  getSupabasePublishableKey,
+  getSupabaseUrl,
+} from "@/shared/lib/supabase-env";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -17,10 +21,10 @@ export async function updateSession(request: NextRequest) {
   // With Fluid compute, don't put this client in a global environment
   // variable. Always create a new one on each request.
   const supabase = createServerClient<Database>(
-    // Имена NEXT_PUBLIC_* — как в src/shared/server/server.ts: middleware и
-    // браузер должны читать один и тот же проект.
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    // Middleware и браузер должны читать один и тот же проект; имена env —
+    // см. src/shared/lib/supabase-env.ts.
+    getSupabaseUrl(),
+    getSupabasePublishableKey(),
     {
       cookies: {
         getAll() {

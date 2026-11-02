@@ -6,8 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // This check can be removed, it is just for tutorial purposes
-// Имена с NEXT_PUBLIC_: только такие переменные Next.js вообще отдаёт браузеру
-// (см. комментарий в src/shared/api/client.ts).
-export const hasEnvVars =
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+// Оба имени (NEXT_PUBLIC_* локально и без префикса на Vercel) — см.
+// src/shared/lib/supabase-env.ts.
+export const hasEnvVars = Boolean(
+  (process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL) &&
+  (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.SUPABASE_PUBLISHABLE_KEY),
+);

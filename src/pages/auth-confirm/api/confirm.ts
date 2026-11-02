@@ -1,6 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { Database } from "@/shared/model";
+import {
+  getSupabasePublishableKey,
+  getSupabaseUrl,
+} from "@/shared/lib/supabase-env";
 
 const ALLOWED_TYPES = ["invite", "recovery"] as const;
 type ConfirmType = (typeof ALLOWED_TYPES)[number];
@@ -29,8 +33,8 @@ export async function GET(request: NextRequest) {
     type === "recovery" ? "/auth/reset" : "/auth/invite",
   );
   const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    getSupabaseUrl(),
+    getSupabasePublishableKey(),
     {
       cookies: {
         getAll: () => request.cookies.getAll(),

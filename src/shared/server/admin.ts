@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/shared/model";
+import { getSupabaseUrl } from "@/shared/lib/supabase-env";
 
 // Импортировать только из серверного кода ("use server" / route handlers /
 // Server Components): SUPABASE_SECRET_KEY обходит RLS и никогда не должен
@@ -10,11 +11,7 @@ export function createAdminClient() {
     throw new Error("Не задан SUPABASE_SECRET_KEY");
   }
 
-  return createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    secretKey,
-    {
-      auth: { persistSession: false, autoRefreshToken: false },
-    },
-  );
+  return createClient<Database>(getSupabaseUrl(), secretKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 }
