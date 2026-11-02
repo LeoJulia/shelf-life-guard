@@ -14,8 +14,8 @@ import {
   type TWeekdayFlags,
   type TWeekdayKey,
 } from "@/entities/routine";
-import { setRoutineItemsOrder } from "../api/set-routine-items-order";
 import { upsertRoutineItem } from "../api/upsert-routine-item";
+import { useRoutineItemsOrder } from "../lib/use-routine-items-order";
 import { RoutineItemRow } from "./routine-item-row";
 import { TimeOfDayToggle } from "./time-of-day-toggle";
 import { WeekdayPicker } from "./weekday-picker";
@@ -36,6 +36,19 @@ export const RoutineItemsEditor = ({
   const [label, setLabel] = useState<string | null>(null);
   const [timeOfDay, setTimeOfDay] = useState<TTimeOfDay>("both");
   const [days, setDays] = useState<TWeekdayFlags>(ALL_WEEKDAYS);
+
+  // Порядок сознательно не проходит через run(): запись в БД отложена хуком, а
+  // transition + refresh на каждый клик блокировали бы стрелки до ответа сервера.
+  const {
+    orderedItems,
+    isStale: isOrderStale,
+    error: orderError,
+    move,
+  } = useRoutineItemsOrder({
+    routineId,
+    items,
+    onSaved: () => router.refresh(),
+  });
 
   const usedIds = new Set(items.map((item) => item.product?.id));
   const options = productOptions.filter((option) => !usedIds.has(option.id));
@@ -86,19 +99,6 @@ export const RoutineItemsEditor = ({
     setDays({ ...days, [key]: !days[key] });
   };
 
-  const handleMove = (index: number, direction: -1 | 1) => {
-    const ids = items.map((item) => item.id);
-    const target = index + direction;
-
-    if (target < 0 || target >= ids.length) {
-      return;
-    }
-
-    [ids[index], ids[target]] = [ids[target], ids[index]];
-
-    run(() => setRoutineItemsOrder(routineId, ids));
-  };
-
   return (
     <div className='flex flex-col gap-3'>
       <div className='border-border rounded-xl border border-dashed p-3'>
@@ -139,22 +139,34 @@ export const RoutineItemsEditor = ({
         </div>
       </div>
 
-      {items.length === 0 ? (
+      {orderedItems.length === 0 ? (
         <p className='text-muted-foreground text-sm'>
           В рутине пока нет средств.
         </p>
       ) : (
         <ul className='flex flex-col gap-2'>
-          {items.map((item, index) => (
+          {orderedItems.map((item, index) => (
             <RoutineItemRow
               key={item.id}
               item={item}
               index={index}
-              count={items.length}
-              onMove={handleMove}
+              count={orderedItems.length}
+              onMove={move}
             />
           ))}
         </ul>
+      )}
+
+      {isOrderStale && (
+        <p className='text-muted-foreground text-xs'>
+          Новый порядок сохранится автоматически — можно продолжать его менять.
+        </p>
+      )}
+
+      {orderError && (
+        <p role='alert' className='text-destructive text-sm'>
+          {orderError}
+        </p>
       )}
     </div>
   );
