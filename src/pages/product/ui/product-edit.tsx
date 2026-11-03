@@ -1,5 +1,6 @@
 import { getProduct } from "../api/get-product";
 import { getProductFormLists } from "../utils/get-form-lists";
+import { updateProduct } from "../api/update-product";
 import { ProductForm } from "./product-form";
 
 export const ProductEdit = async ({
@@ -14,5 +15,11 @@ export const ProductEdit = async ({
     getProductFormLists(),
   ]);
 
-  return <ProductForm product={product} {...lists} />;
+  return (
+    <ProductForm
+      action={updateProduct.bind(null, product.id)}
+      product={product}
+      {...lists}
+    />
+  );
 };
