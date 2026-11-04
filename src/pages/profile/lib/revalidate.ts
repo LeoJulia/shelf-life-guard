@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
  * тега нужно инвалидировать и списки продуктов, и сам кабинет.
  */
 export const revalidateTags = () => {
-  revalidatePath("/profile");
+  revalidatePath("/profile/tags");
   revalidatePath("/dashboard", "page");
   revalidatePath("/products", "page");
   revalidatePath("/", "page");

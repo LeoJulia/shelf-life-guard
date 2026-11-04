@@ -1,16 +1,13 @@
 import { Suspense } from "react";
-import { StatisticCards, StatisticCardsSkeleton } from "@/widgets/statistic-cards";
-import { getTagsWithColors } from "@/entities/tag";
+import {
+  StatisticCards,
+  StatisticCardsSkeleton,
+} from "@/widgets/statistic-cards";
 import { createServerClient } from "@/shared/server";
 import { isCurrentUserInviteAdmin } from "../api/is-current-invite-admin";
-import { listInvitedUsers } from "../api/list-users";
 import { AccountCard } from "./account-card";
 import { ChangePasswordForm } from "./change-password-form";
 import { DeleteAccountCard } from "./delete-account-card";
-import { InviteForm } from "./invite-form";
-import { InviteList } from "./invite-list";
-import { SessionsCard } from "./sessions-card";
-import { TagsCard } from "./tags-card";
 
 const EMAIL_BANNERS: Record<string, string> = {
   pending:
@@ -18,7 +15,7 @@ const EMAIL_BANNERS: Record<string, string> = {
   changed: "Почта успешно изменена",
 };
 
-export const Profile = async ({
+export const AccountSection = async ({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -36,15 +33,11 @@ export const Profile = async ({
     return null;
   }
 
-  const [tags, isInviteAdmin, invitedEntries] = await Promise.all([
-    getTagsWithColors(),
-    isCurrentUserInviteAdmin(),
-    listInvitedUsers(),
-  ]);
+  const isInviteAdmin = await isCurrentUserInviteAdmin();
 
   return (
     <div className='flex flex-col gap-6'>
-      <h1 className='text-2xl font-bold'>Кабинет</h1>
+      <h1 className='text-2xl font-bold'>Аккаунт</h1>
 
       {emailBanner && (
         <div className='rounded-lg border bg-card p-3 text-sm text-foreground'>
@@ -65,19 +58,7 @@ export const Profile = async ({
         </Suspense>
       </section>
 
-      <TagsCard tags={tags} />
-
       <ChangePasswordForm email={user.email ?? ""} />
-
-      <SessionsCard />
-
-      {isInviteAdmin && (
-        <section className='flex flex-col gap-3'>
-          <h2 className='text-xl font-semibold'>Приглашения</h2>
-          <InviteForm />
-          <InviteList entries={invitedEntries ?? []} />
-        </section>
-      )}
 
       <DeleteAccountCard />
     </div>
