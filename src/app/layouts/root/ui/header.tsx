@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AuthButton } from "./auth-button";
 import { HeaderNav } from "./header-nav";
 import { MobileMenu } from "./mobile-menu";
+import { ThemeToggle } from "./theme-toggle";
 import { Button } from "@/shared/ui/button";
 
 export const Header = () => (
@@ -27,6 +28,8 @@ export const Header = () => (
             <span className='hidden sm:inline'>Добавить</span>
           </Button>
         </Link>
+
+        <ThemeToggle />
 
         <Suspense>
           <div className='hidden md:block'>

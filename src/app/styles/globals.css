@@ -98,30 +98,45 @@
     --sidebar-ring: oklch(0.78 0.1 340);
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Поверхности — глубокие, с розово-сиреневым подтоном (hue 320),
+       чтобы тёмная тема совпадала по стилю со светлой (hue 320/340). */
+    --background: oklch(0.16 0.025 320);
+    --foreground: oklch(0.95 0.012 320);
+    --card: oklch(0.2 0.028 320);
+    --card-foreground: oklch(0.95 0.012 320);
+    --popover: oklch(0.2 0.028 320);
+    --popover-foreground: oklch(0.95 0.012 320);
+
+    /* Primary — роза (hue 340), как в светлой теме. */
+    --primary: oklch(0.72 0.15 340);
+    --primary-foreground: oklch(0.98 0.01 340);
+
+    /* Secondary — синий (hue 200), как в светлой теме. */
+    --secondary: oklch(0.27 0.045 200);
+    --secondary-foreground: oklch(0.92 0.03 200);
+
+    /* Muted — сиреневый (hue 280), как в светлой теме. */
+    --muted: oklch(0.26 0.035 280);
+    --muted-foreground: oklch(0.71 0.035 280);
+
+    /* Accent — бирюзовый (hue 165), как в светлой теме. */
+    --accent: oklch(0.29 0.055 165);
+    --accent-foreground: oklch(0.93 0.04 165);
+
+    /* Destructive — красный (hue 15). */
+    --destructive: oklch(0.63 0.21 15);
+    --destructive-foreground: oklch(0.98 0.012 15);
+
+    --border: oklch(0.3 0.035 320);
+    --input: oklch(0.26 0.03 320);
+    --ring: oklch(0.72 0.13 340);
+
+    /* Chart — те же hue, что в светлой теме, подобраны под тёмный фон. */
+    --chart-1: oklch(0.72 0.15 340);
+    --chart-2: oklch(0.75 0.12 200);
+    --chart-3: oklch(0.78 0.12 165);
+    --chart-4: oklch(0.8 0.13 80);
+    --chart-5: oklch(0.72 0.13 280);
   }
 }
 

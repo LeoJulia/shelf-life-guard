@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { cn } from "@/shared/utils";
 import { Header } from "./ui/header";
+import { ThemeProvider } from "./ui/theme-provider";
 import "../../styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -22,6 +23,7 @@ export const RootLayout = ({
 }>) => (
   <html
     lang='en'
+    suppressHydrationWarning
     className={cn(
       "h-screen",
       "antialiased",
@@ -32,8 +34,10 @@ export const RootLayout = ({
     )}
   >
     <body className='h-screen antialiased bg-background'>
-      <Header />
-      <div className='mx-auto max-w-7xl px-6 py-8'>{children}</div>
+      <ThemeProvider>
+        <Header />
+        <div className='mx-auto max-w-7xl px-6 py-8'>{children}</div>
+      </ThemeProvider>
     </body>
   </html>
 );
