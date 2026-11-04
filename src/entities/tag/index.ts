@@ -1,2 +1,8 @@
-export { getTagsList, getProductTags, syncProductTags } from "./api";
+export {
+  getTagsList,
+  getProductTags,
+  getTagsWithColors,
+  syncProductTags,
+  generatePastelColor,
+} from "./api";
 export * from "./model";

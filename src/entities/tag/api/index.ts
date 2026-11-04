@@ -1,2 +1,2 @@
-export { getTagsList, getProductTags } from "./get-tags";
-export { syncProductTags } from "./sync-product-tags";
+export { getTagsList, getProductTags, getTagsWithColors } from "./get-tags";
+export { syncProductTags, generatePastelColor } from "./sync-product-tags";

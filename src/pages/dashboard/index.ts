@@ -1,1 +1,1 @@
-export { Dashboard, StatisticCards, StatisticCardsSkeleton } from "./ui";
+export { Dashboard } from "./ui";

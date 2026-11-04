@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getFilter } from "@/entities/filter";
 import { ProductSearch } from "@/widgets/product-search";
-import { StatisticCards, StatisticCardsSkeleton } from "@/pages/dashboard";
+import { StatisticCards, StatisticCardsSkeleton } from "@/widgets/statistic-cards";
 
 export const DashboardLayout = async ({
   children,

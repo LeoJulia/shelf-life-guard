@@ -43,13 +43,13 @@ export const sendInvite = async (
           : error.message,
       };
     }
-    revalidatePath("/invites");
+    revalidatePath("/profile");
     return {
       message: `Приглашение для ${email} создано, но письмо не отправлено — почтовый лимит исчерпан, повторите позже`,
     };
   }
 
-  revalidatePath("/invites");
+  revalidatePath("/profile");
   return { message: `Приглашение отправлено на ${email}` };
 };
 

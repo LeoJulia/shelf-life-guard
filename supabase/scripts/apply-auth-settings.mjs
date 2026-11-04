@@ -69,6 +69,11 @@ const patchBody = {
     join(supabaseDir, "templates", "recovery.html"),
     "utf8",
   ),
+  mailer_subjects_email_change: "Смена почты Shelf Life Guard",
+  mailer_templates_email_change_content: readFileSync(
+    join(supabaseDir, "templates", "email-change.html"),
+    "utf8",
+  ),
 };
 
 const patch = await fetch(authUrl, {
@@ -87,9 +92,12 @@ const ok =
   check.site_url === SITE_URL &&
   check.uri_allow_list === URI_ALLOW_LIST &&
   check.mailer_templates_invite_content.includes("/auth/confirm?token_hash=") &&
-  check.mailer_templates_recovery_content.includes("/auth/confirm?token_hash=");
+  check.mailer_templates_recovery_content.includes("/auth/confirm?token_hash=") &&
+  check.mailer_templates_email_change_content.includes(
+    "/auth/confirm?token_hash=",
+  );
 console.log(
   ok
-    ? "Применено и проверено: site_url, uri_allow_list, шаблоны invite/recovery."
+    ? "Применено и проверено: site_url, uri_allow_list, шаблоны invite/recovery/email_change."
     : "ВНИМАНИЕ: ответ не совпал с ожидаемым, проверьте auth-settings-backup.json",
 );

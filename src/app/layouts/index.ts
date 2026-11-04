@@ -4,4 +4,4 @@ export { ProductLayout } from "./product";
 export { ProductsLayout } from "./products";
 export { AnalyticsLayout } from "./analytics";
 export { RoutineLayout } from "./routine";
-export { InvitesLayout } from "./invites";
+export { ProfileLayout } from "./profile";

@@ -28,7 +28,7 @@ const hslToHex = (h: number, s: number, l: number): string => {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 };
 
-const generatePastelColor = (): string =>
+export const generatePastelColor = (): string =>
   hslToHex(Math.floor(Math.random() * 360), 75, 85);
 
 export const syncProductTags = async (

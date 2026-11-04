@@ -6,7 +6,7 @@ import {
   getSupabaseUrl,
 } from "@/shared/lib/supabase-env";
 
-const ALLOWED_TYPES = ["invite", "recovery"] as const;
+const ALLOWED_TYPES = ["invite", "recovery", "email_change"] as const;
 type ConfirmType = (typeof ALLOWED_TYPES)[number];
 
 function isAllowedType(value: string | null): value is ConfirmType {
@@ -27,11 +27,16 @@ export async function GET(request: NextRequest) {
     return redirectTo("/auth/login?error=invalid-link");
   }
 
-  // Cookie обязательно пишутся на тот же response-объект, который возвращается:
+  // Cookie обязательно пишутся на тот response-объект, который возвращается:
   // иначе сессия теряется и приглашённый попадает на /auth/invite без сессии.
-  const response = redirectTo(
-    type === "recovery" ? "/auth/reset" : "/auth/invite",
-  );
+  // Для email_change путь редиректа зависит от результата verifyOtp, поэтому
+  // cookies копятся и применяются к финальному response.
+  const pendingCookies: {
+    name: string;
+    value: string;
+    options: Parameters<NextResponse["cookies"]["set"]>[2];
+  }[] = [];
+
   const supabase = createServerClient<Database>(
     getSupabaseUrl(),
     getSupabasePublishableKey(),
@@ -42,9 +47,7 @@ export async function GET(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          );
+          pendingCookies.push(...cookiesToSet);
         },
       },
     },
@@ -57,6 +60,22 @@ export async function GET(request: NextRequest) {
   if (error) {
     return redirectTo("/auth/login?error=invalid-link");
   }
+
+  let path: string;
+  if (type === "email_change") {
+    // Double confirmation: new_email остаётся, пока не подтверждён второй ящик.
+    const { data } = await supabase.auth.getUser();
+    path = data.user?.new_email
+      ? "/profile?email=pending"
+      : "/profile?email=changed";
+  } else {
+    path = type === "recovery" ? "/auth/reset" : "/auth/invite";
+  }
+
+  const response = redirectTo(path);
+  pendingCookies.forEach(({ name, value, options }) =>
+    response.cookies.set(name, value, options),
+  );
 
   return response;
 }

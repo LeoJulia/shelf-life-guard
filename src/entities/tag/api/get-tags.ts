@@ -1,5 +1,5 @@
 import { createServerClient } from "@/shared/server";
-import { TProductTag } from "../model";
+import { TProductTag, TTagSummary } from "../model";
 
 export const getTagsList = async (): Promise<string[]> => {
   const supabase = await createServerClient();
@@ -21,6 +21,29 @@ export const getTagsList = async (): Promise<string[]> => {
   }
 
   return data.map(({ name }) => name).filter(Boolean);
+};
+
+export const getTagsWithColors = async (): Promise<TTagSummary[]> => {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("tags")
+    .select("id, name, color")
+    .eq("user_id", user.id)
+    .order("name");
+
+  if (error) {
+    throw new Error("Error get tags with colors", { cause: error });
+  }
+
+  return data;
 };
 
 export const getProductTags = async (

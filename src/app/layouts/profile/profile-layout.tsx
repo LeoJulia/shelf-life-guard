@@ -1,4 +1,4 @@
-export const InvitesLayout = ({
+export const ProfileLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
