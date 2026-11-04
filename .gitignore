@@ -43,3 +43,8 @@ supabase/access-token
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local agent tooling (не код проекта)
+/.agents/
+/.aider-desk/
+/skills-lock.json
