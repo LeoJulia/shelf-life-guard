@@ -9,8 +9,8 @@ import { revalidateRoutine } from "../lib/revalidate";
  * Вызывается из useRoutineItemsOrder отложенно, поэтому полный список id
  * уходит один раз на пачку перестановок, а не на каждый клик по стрелке.
  *
- * Каждая строка дополнительно фильтруется по routine_id, чтобы чужая позиция
- * не могла попасть в чужую рутину через подменённый список id.
+ * RPC проверяет принадлежность всех позиций рутине и меняет порядок
+ * целиком в одной транзакции.
  *
  * @returns текст ошибки или null при успехе
  */
@@ -20,17 +20,16 @@ export const setRoutineItemsOrder = async (
 ): Promise<string | null> => {
   const supabase = await createServerClient();
 
-  const results = await Promise.all(
-    orderedIds.map((id, index) =>
-      supabase
-        .from("routine_items")
-        .update({ position: index })
-        .eq("id", id)
-        .eq("routine_id", routineId),
-    ),
-  );
+  try {
+    const { error } = await supabase.rpc("set_routine_items_order", {
+      p_routine_id: routineId,
+      p_ordered_ids: orderedIds,
+    });
 
-  if (results.some((result) => result.error)) {
+    if (error) {
+      return "Не удалось изменить порядок";
+    }
+  } catch {
     return "Не удалось изменить порядок";
   }
 

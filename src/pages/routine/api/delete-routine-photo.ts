@@ -1,7 +1,9 @@
 "use server";
 
-import { createServerClient } from "@/shared/server";
-import { ROUTINE_PHOTOS_BUCKET } from "@/shared/lib/buckets";
+import {
+  createServerClient,
+  scheduleStorageMaintenance,
+} from "@/shared/server";
 import { revalidateRoutine } from "../lib/revalidate";
 
 /**
@@ -12,20 +14,22 @@ export const deleteRoutinePhoto = async (
 ): Promise<string | null> => {
   const supabase = await createServerClient();
 
-  const { data, error } = await supabase
-    .from("routine_photos")
-    .delete()
-    .eq("id", photoId)
-    .select("routine_id, image_path")
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from("routine_photos")
+      .delete()
+      .eq("id", photoId)
+      .select("routine_id")
+      .single();
 
-  if (error) {
-    return "Не удалось удалить фото";
+    if (error) {
+      return "Не удалось удалить фото";
+    }
+
+    revalidateRoutine(data.routine_id);
+
+    return null;
+  } finally {
+    scheduleStorageMaintenance();
   }
-
-  await supabase.storage.from(ROUTINE_PHOTOS_BUCKET).remove([data.image_path]);
-
-  revalidateRoutine(data.routine_id);
-
-  return null;
 };

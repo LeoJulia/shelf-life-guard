@@ -59,6 +59,18 @@ function LoginFormInner({
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className='flex flex-col gap-6'>
+              {searchParams.get("account") === "deleting" && (
+                <p className='text-sm text-muted-foreground' role='status'>
+                  Запрос на удаление принят. Аккаунт заблокирован для изменений;
+                  очистка данных продолжится при следующих обращениях к
+                  приложению.
+                </p>
+              )}
+              {searchParams.get("account") === "deleted" && (
+                <p className='text-sm text-muted-foreground' role='status'>
+                  Аккаунт и загруженные файлы удалены.
+                </p>
+              )}
               {linkError && (
                 <p className='text-sm text-destructive'>{linkError}</p>
               )}

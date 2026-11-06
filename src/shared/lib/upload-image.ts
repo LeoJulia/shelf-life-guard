@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/shared/model";
 
 const BASE64_IMAGE_RE = /^data:image\/([^;]+);base64,/;
 
@@ -18,7 +19,7 @@ const BASE64_IMAGE_RE = /^data:image\/([^;]+);base64,/;
  * @returns путь объекта в бакете или null, если файла в форме не было
  */
 export const uploadBase64Image = async (
-  supabase: SupabaseClient,
+  supabase: SupabaseClient<Database>,
   bucket: string,
   formData: FormData,
   fieldName = "image",
@@ -26,11 +27,7 @@ export const uploadBase64Image = async (
 ): Promise<string | null> => {
   const image = formData.get(fieldName);
 
-  if (
-    !image ||
-    typeof image !== "string" ||
-    !BASE64_IMAGE_RE.test(image)
-  ) {
+  if (!image || typeof image !== "string" || !BASE64_IMAGE_RE.test(image)) {
     return null;
   }
 
@@ -56,11 +53,20 @@ export const uploadBase64Image = async (
   const fileName = `${crypto.randomUUID()}.${ext}`;
   const path = [data.user.id, ...folders, fileName].join("/");
 
-  const { error } = await supabase.storage.from(bucket).upload(path, blob);
+  const { error: reserveError } = await supabase.rpc("reserve_image_upload", {
+    p_bucket: bucket,
+    p_path: path,
+  });
+  if (reserveError) throw reserveError;
 
-  if (error) {
-    throw error;
-  }
+  const { error } = await supabase.storage.from(bucket).upload(path, blob);
+  if (error) throw error;
+
+  const { error: settleError } = await supabase.rpc("settle_image_upload", {
+    p_bucket: bucket,
+    p_path: path,
+  });
+  if (settleError) throw settleError;
 
   return path;
 };

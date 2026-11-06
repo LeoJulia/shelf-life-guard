@@ -2,7 +2,7 @@ export {
   getTagsList,
   getProductTags,
   getTagsWithColors,
-  syncProductTags,
+  buildProductTags,
   generatePastelColor,
 } from "./api";
 export * from "./model";

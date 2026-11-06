@@ -22,11 +22,12 @@ export function DeleteAccountCard() {
 
   const handleDelete = () => {
     void run(async () => {
-      await deleteAccount();
-      // После deleteUser cookies остаются — обязателен клиентский signOut.
+      const completed = await deleteAccount();
       const supabase = createClient();
       await supabase.auth.signOut();
-      router.replace("/auth/login?account=deleted");
+      router.replace(
+        `/auth/login?account=${completed ? "deleted" : "deleting"}`,
+      );
     });
   };
 

@@ -1,7 +1,11 @@
 "use server";
 
 import type { TablesInsert } from "@/shared/model";
-import { createServerClient } from "@/shared/server";
+import {
+  createServerClient,
+  releaseUploadedImage,
+  scheduleStorageMaintenance,
+} from "@/shared/server";
 import { uploadBase64Image } from "@/shared/lib/upload-image";
 import { ROUTINE_PHOTOS_BUCKET } from "@/shared/lib/buckets";
 import { isPhotoSeries, isPhotoSlot } from "@/entities/routine";
@@ -18,7 +22,7 @@ const BASE64_IMAGE_RE = /^data:image\/[^;]+;base64,/;
  * формой дали бы около 9 МБ.
  *
  * Каждый объект получает свежий uuid-путь, поэтому в Storage нет upsert:
- * старый объект удаляется после успешной перезаписи строки.
+ * триггер БД ставит старый объект в очередь очистки при перезаписи строки.
  *
  * @returns текст ошибки или null при успехе
  */
@@ -57,14 +61,6 @@ export const uploadRoutinePhoto = async (
     return "Рутина не найдена";
   }
 
-  const { data: existing } = await supabase
-    .from("routine_photos")
-    .select("id, image_path")
-    .eq("routine_id", routineId)
-    .eq("series", seriesRaw)
-    .eq("slot", slotRaw)
-    .maybeSingle();
-
   const path = await uploadBase64Image(
     supabase,
     ROUTINE_PHOTOS_BUCKET,
@@ -77,27 +73,27 @@ export const uploadRoutinePhoto = async (
     return "Не удалось загрузить изображение";
   }
 
-  const row: TablesInsert<"routine_photos"> = {
-    routine_id: routineId,
-    user_id: data.user.id,
-    series: seriesRaw,
-    slot: slotRaw,
-    image_path: path,
-  };
+  try {
+    const row: TablesInsert<"routine_photos"> = {
+      routine_id: routineId,
+      user_id: data.user.id,
+      series: seriesRaw,
+      slot: slotRaw,
+      image_path: path,
+    };
 
-  const { error } = await supabase
-    .from("routine_photos")
-    .upsert(row, { onConflict: "routine_id,series,slot" });
+    const { error } = await supabase
+      .from("routine_photos")
+      .upsert(row, { onConflict: "routine_id,series,slot" });
 
-  if (error) {
-    await supabase.storage.from(ROUTINE_PHOTOS_BUCKET).remove([path]);
+    if (error) {
+      throw error;
+    }
+  } catch {
+    await releaseUploadedImage(supabase, ROUTINE_PHOTOS_BUCKET, path);
     return "Не удалось сохранить фото";
-  }
-
-  if (existing) {
-    await supabase.storage
-      .from(ROUTINE_PHOTOS_BUCKET)
-      .remove([existing.image_path]);
+  } finally {
+    scheduleStorageMaintenance();
   }
 
   revalidateRoutine(routineId);

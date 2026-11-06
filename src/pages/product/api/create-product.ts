@@ -1,12 +1,18 @@
 "use server";
 
-import { TablesInsert } from "@/shared/model";
-import { createServerClient } from "@/shared/server";
-import { syncProductTags } from "@/entities/tag";
+import {
+  createServerClient,
+  releaseUploadedImage,
+  scheduleStorageMaintenance,
+} from "@/shared/server";
+import { buildProductTags } from "@/entities/tag";
 import { redirect } from "next/navigation";
 import { uploadBase64Image } from "@/shared/lib/upload-image";
 import { PRODUCT_IMAGES_BUCKET } from "@/shared/lib/buckets";
-import { parseProductFormData, parseProductTags } from "../utils/parse-form-data";
+import {
+  parseProductFormData,
+  parseProductTags,
+} from "../utils/parse-form-data";
 import { revalidateProductLists } from "../utils/revalidate";
 
 export const createProduct = async (formData: FormData) => {
@@ -17,9 +23,8 @@ export const createProduct = async (formData: FormData) => {
     throw new Error("Create product error: user is not authenticated");
   }
 
-  const newProduct: TablesInsert<"products"> = {
+  const newProduct = {
     ...parseProductFormData(formData),
-    user_id: data.user.id,
     year: new Date().getFullYear(),
   };
 
@@ -29,23 +34,36 @@ export const createProduct = async (formData: FormData) => {
     formData,
   );
 
-  if (imgPath) {
-    newProduct.image_path = imgPath;
+  let productId: string;
+
+  try {
+    const { data: savedProductId, error } = await supabase.rpc(
+      "save_product_with_tags",
+      {
+        p_values: {
+          ...newProduct,
+          ...(imgPath ? { image_path: imgPath } : {}),
+        },
+        p_tags: buildProductTags(parseProductTags(formData)),
+      },
+    );
+
+    if (error || !savedProductId) {
+      throw new Error("Create product error", { cause: error });
+    }
+
+    productId = savedProductId;
+  } catch (error) {
+    if (imgPath) {
+      await releaseUploadedImage(supabase, PRODUCT_IMAGES_BUCKET, imgPath);
+    }
+
+    throw error;
+  } finally {
+    scheduleStorageMaintenance();
   }
-
-  const { data: product, error } = await supabase
-    .from("products")
-    .insert(newProduct)
-    .select()
-    .single();
-
-  if (error) {
-    throw Error("Create product error", error);
-  }
-
-  await syncProductTags(product.id, parseProductTags(formData));
 
   revalidateProductLists();
 
-  redirect(`/product/${product.id}`);
+  redirect(`/product/${productId}`);
 };
