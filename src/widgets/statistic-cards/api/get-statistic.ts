@@ -1,6 +1,7 @@
 "use server";
 
 import { createServerClient } from "@/shared/server";
+import { isExpiringSoon, isSpentInYear } from "@/entities/product";
 
 export const getStatistic = async () => {
   const client = await createServerClient();
@@ -23,8 +24,7 @@ export const getStatistic = async () => {
   }
 
   const now = new Date();
-  const yearStart = new Date(now.getFullYear(), 0, 1);
-  const thirtyDaysFromNow = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+  const year = now.getFullYear();
 
   let total = 0;
   let spentYear = 0;
@@ -35,25 +35,17 @@ export const getStatistic = async () => {
     // Общее количество
     total++;
 
-    // Потрачено за год - продукт открыт и дата окончания в этом году или раньше
-    if (product.opened_at && product.year) {
-      const openedDate = new Date(product.opened_at);
-
-      if (openedDate >= yearStart && product.year <= now.getFullYear()) {
-        spentYear += product.actual_price ?? 0;
-      }
+    // Потрачено за год — покупки, добавленные в этом году (год учёта)
+    if (isSpentInYear(product, year)) {
+      spentYear += product.actual_price ?? 0;
     }
 
-    // Истекает срок годности через 60 дней - дата окончания между сегодня и +60 дней
-    if (product.expiry_date && !product.finished_at) {
-      const expiryDate = new Date(product.expiry_date);
-
-      if (expiryDate >= now && expiryDate <= thirtyDaysFromNow) {
-        expiring30Days++;
-      }
+    // Скоро просрок — истекает в ближайшие 30 календарных дней, включая сегодня
+    if (isExpiringSoon(product, now)) {
+      expiring30Days++;
     }
 
-    // Всего открыто - есть дата открытия
+    // Всего открыто — есть дата открытия
     if (product.opened_at && !product.finished_at) {
       openedTotal++;
     }
@@ -61,7 +53,7 @@ export const getStatistic = async () => {
 
   return {
     total,
-    spentYear,
+    spentYear: Math.round(spentYear * 100) / 100,
     expiring30Days,
     openedTotal,
   };

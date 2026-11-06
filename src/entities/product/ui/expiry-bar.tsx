@@ -1,30 +1,14 @@
 import { Field, FieldLabel } from "@/shared/ui/field";
 import { Progress } from "@/shared/ui/progress";
 import { TProduct } from "../model";
+import { getExpiryProgress } from "../lib/expiry";
 
 export const ExpiryBar = ({ product }: { product: TProduct }) => {
-  let remaining = 1;
-  let total = 90 * 8.64e7;
-
-  if (product?.expiry_date) {
-    remaining = new Date(product?.expiry_date).getTime() - new Date().getTime();
-  }
-
-  if (product?.expiry_date && product?.created_at) {
-    total =
-      new Date(product?.expiry_date).getTime() -
-      new Date(product?.opened_at ?? product?.created_at).getTime();
-  }
-
-  const progress = product?.expiry_date
-    ? Math.round(
-        Math.max(0, Math.min(100, Math.round((remaining / total) * 100))),
-      )
-    : 0;
-
   if (!(product?.expiry_date && !product.finished_at)) {
     return null;
   }
+
+  const progress = getExpiryProgress(product);
 
   return (
     <Field className='mt-4'>
