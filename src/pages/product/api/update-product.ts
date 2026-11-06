@@ -20,18 +20,28 @@ export const updateProduct = async (id: string, formData: FormData) => {
   const supabase = await createServerClient();
   const updateProduct = parseProductFormData(formData);
 
+  const rawImage = formData.get("image");
+
   const imgPath = await uploadBase64Image(
     supabase,
     PRODUCT_IMAGES_BUCKET,
     formData,
   );
 
+  // Три состояния поля: base64 (замена — уже загружена), непустая строка
+  // (URL текущего фото — оставить), пустая строка (фото удалено кнопкой).
+  const imagePatch = imgPath
+    ? { image_path: imgPath }
+    : rawImage === ""
+      ? { image_path: null }
+      : {};
+
   try {
     const { error } = await supabase.rpc("save_product_with_tags", {
       p_product_id: id,
       p_values: {
         ...updateProduct,
-        ...(imgPath ? { image_path: imgPath } : {}),
+        ...imagePatch,
       },
       p_tags: buildProductTags(parseProductTags(formData)),
     });
