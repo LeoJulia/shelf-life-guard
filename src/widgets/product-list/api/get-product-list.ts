@@ -21,6 +21,7 @@ const extractTags = (row: TProductRowWithTags): TProductTag[] =>
 
 export const getProductList = async (
   searchParameters: Record<string, string | string[] | undefined> = {},
+  { withImages = true }: { withImages?: boolean } = {},
 ): Promise<TProduct[]> => {
   const supabase = await createServerClient();
 
@@ -217,11 +218,15 @@ export const getProductList = async (
     data.map(async (product) => {
       const tags = extractTags(product as TProductRowWithTags);
 
-      const imageUrl = await fetchSignedImageUrl(
-        supabase,
-        PRODUCT_IMAGES_BUCKET,
-        product.image_path,
-      );
+      // Аналитике картинки не нужны: withImages=false пропускает подпись
+      // каждого кадра (отдельный запрос к Storage на продукт).
+      const imageUrl = withImages
+        ? await fetchSignedImageUrl(
+            supabase,
+            PRODUCT_IMAGES_BUCKET,
+            product.image_path,
+          )
+        : undefined;
 
       return {
         ...product,

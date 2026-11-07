@@ -8,7 +8,8 @@ export const Analytics = async ({
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) => {
   const params = await searchParams;
-  const products = await getProductList(params);
+  // Таблица аналитики не показывает изображения — не подписываем их.
+  const products = await getProductList(params, { withImages: false });
 
   // порядок по умолчанию: сначала законченные баночки
   const orderedProducts = params?.sort
