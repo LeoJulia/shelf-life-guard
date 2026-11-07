@@ -2,9 +2,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 import {
   getProductStatus,
   productStatusRanks,
+  ProductStatusIcon,
   type TProduct,
-} from "@/entities/product/model";
-import { ProductStatusIcon } from "@/entities/product/ui";
+} from "@/entities/product";
 import { type TTableFeatures } from "../config/table";
 import { formatMoney } from "../lib/format-money";
 import { formatDuration } from "../lib/format-duration";

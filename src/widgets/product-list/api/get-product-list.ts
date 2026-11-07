@@ -2,7 +2,7 @@ import { createServerClient } from "@/shared/server";
 import { TProductTag } from "@/shared/model";
 import { fetchSignedImageUrl } from "@/shared/lib/signed-image-url";
 import { PRODUCT_IMAGES_BUCKET } from "@/shared/lib/buckets";
-import { TProduct } from "../model";
+import type { TProduct } from "@/entities/product";
 
 const toList = (value: string | string[] | undefined) =>
   value === undefined ? [] : Array.isArray(value) ? value : [value];

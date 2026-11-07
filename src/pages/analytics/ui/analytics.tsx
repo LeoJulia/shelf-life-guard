@@ -1,4 +1,5 @@
-import { byFinishedFirst, getProductList } from "@/entities/product";
+import { byFinishedFirst } from "@/entities/product";
+import { getProductList } from "@/widgets/product-list";
 import { AnalyticsTable } from "./analytics-table";
 
 export const Analytics = async ({

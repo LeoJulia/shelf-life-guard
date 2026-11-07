@@ -16,7 +16,7 @@ import {
   markTodayLabels,
   type TMarkTodayAction,
 } from "../config/mark-today";
-import { markProductDate } from "../api/mark-product-date";
+import { markProductDate } from "../api";
 import type { TProduct } from "../model";
 
 const actionViews: Record<

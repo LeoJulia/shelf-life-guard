@@ -1,5 +1,5 @@
 import { createServerClient } from "@/shared/server";
-import type { TProductOption } from "../model";
+import type { TProductOption } from "@/entities/product";
 
 /**
  * Лёгкий список баночек для выбора в формах: только id и подпись.

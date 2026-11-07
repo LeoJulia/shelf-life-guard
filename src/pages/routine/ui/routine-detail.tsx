@@ -18,8 +18,8 @@ import {
   getRoutineTitle,
   RoutineStatusChip,
 } from "@/entities/routine";
-import { getProductOptions } from "@/entities/product";
 import { getRoutine } from "../api/get-routine";
+import { getProductOptions } from "../api/get-product-options";
 import { DeleteRoutineDialog } from "./delete-routine-dialog";
 import { DuplicateRoutineButton } from "./duplicate-routine-button";
 import { FinishRoutineButton } from "./finish-routine-button";

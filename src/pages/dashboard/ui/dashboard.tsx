@@ -1,5 +1,4 @@
-import { getProductList } from "@/entities/product";
-import { ProductList } from "@/widgets/product-list";
+import { getProductList, ProductList } from "@/widgets/product-list";
 
 export const Dashboard = async ({
   searchParams,

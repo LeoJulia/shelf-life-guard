@@ -11,9 +11,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Edit, Pencil, Save } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-// Клиентский компонент: импорт из сегмента ui, а не из бареля entity,
-// который реэкспортирует серверный api (next/headers).
-import { Rating } from "@/entities/product/ui";
+import { Rating } from "@/entities/product";
 import { RatingStars } from "./rating-stars";
 import { updateProductRating } from "../api/update-product-rating";
 
