@@ -1,7 +1,14 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { Barcode, Camera, CameraOff, Loader2, Search, Upload } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Barcode,
+  Camera,
+  CameraOff,
+  Loader2,
+  Search,
+  Upload,
+} from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import {
@@ -57,12 +64,25 @@ export function BarcodeScanner({ onFound }: BarcodeScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const scannerRef = useRef<Scanner | null>(null);
+  // Поколение запуска: stopCamera и размонтирование инвалидируют незавершённые
+  // startCamera, чтобы поздно созданный сканер не включил камеру после закрытия.
+  const startIdRef = useRef(0);
 
   const stopCamera = useCallback(() => {
+    startIdRef.current++;
     scannerRef.current?.stop();
     scannerRef.current = null;
     setCameraOn(false);
   }, []);
+
+  useEffect(
+    () => () => {
+      startIdRef.current++;
+      scannerRef.current?.stop();
+      scannerRef.current = null;
+    },
+    [],
+  );
 
   const handleCode = useCallback(
     async (rawCode: string) => {
@@ -105,19 +125,30 @@ export function BarcodeScanner({ onFound }: BarcodeScannerProps) {
   );
 
   const startCamera = useCallback(async () => {
+    const startId = ++startIdRef.current;
     setMessage(null);
     try {
       const scanner = await createScanner();
+      // Закрыли/перезапустили, пока создавался сканер — не включаем камеру.
+      if (startId !== startIdRef.current) {
+        scanner.stop();
+        return;
+      }
       scannerRef.current = scanner;
       setCameraOn(true);
       if (videoRef.current) {
-        await scanner.startLive(videoRef.current, (r) => void handleCode(r.code));
+        await scanner.startLive(
+          videoRef.current,
+          (r) => void handleCode(r.code),
+        );
       }
     } catch {
-      setCameraOn(false);
-      setMessage("Не удалось включить камеру. Введите код вручную.");
+      if (startId === startIdRef.current) {
+        stopCamera();
+        setMessage("Не удалось включить камеру. Введите код вручную.");
+      }
     }
-  }, [handleCode]);
+  }, [handleCode, stopCamera]);
 
   const handleManual = useCallback(() => {
     if (!busy) void handleCode(manualCode);
@@ -246,7 +277,11 @@ export function BarcodeScanner({ onFound }: BarcodeScannerProps) {
               disabled={busy}
               onClick={handleManual}
             >
-              {busy ? <Loader2 className='size-4 animate-spin' /> : <Search className='size-4' />}
+              {busy ? (
+                <Loader2 className='size-4 animate-spin' />
+              ) : (
+                <Search className='size-4' />
+              )}
               Найти
             </Button>
           </div>

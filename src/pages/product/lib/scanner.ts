@@ -1,6 +1,9 @@
 "use client";
 
-import type { BrowserMultiFormatReader, IScannerControls } from "@zxing/browser";
+import type {
+  BrowserMultiFormatReader,
+  IScannerControls,
+} from "@zxing/browser";
 import type { Result } from "@zxing/library";
 import { BARCODE_FORMATS } from "../config/barcode";
 
@@ -8,7 +11,10 @@ export type ScanResult = { code: string };
 
 export interface Scanner {
   /** Запускает распознавание с камеры в <video>. Резолвится, когда поток готов. */
-  startLive(video: HTMLVideoElement, onCode: (r: ScanResult) => void): Promise<void>;
+  startLive(
+    video: HTMLVideoElement,
+    onCode: (r: ScanResult) => void,
+  ): Promise<void>;
   /** Останавливает камеру/декодер. */
   stop(): void;
   /** Распознаёт штрих-код из файла-изображения. null — если кода нет. */
@@ -18,7 +24,9 @@ export interface Scanner {
 /* ---------- Нативный BarcodeDetector (Chrome/Edge/Android) ---------- */
 
 type NativeBarcode = { rawValue: string; format: string };
-type NativeDetector = { detect: (source: CanvasImageSource) => Promise<NativeBarcode[]> };
+type NativeDetector = {
+  detect: (source: CanvasImageSource) => Promise<NativeBarcode[]>;
+};
 type NativeDetectorCtor = {
   new (opts?: { formats?: string[] }): NativeDetector;
   getSupportedFormats(): Promise<string[]>;
@@ -49,12 +57,27 @@ class NativeScanner implements Scanner {
   constructor(private readonly detector: NativeDetector) {}
 
   async startLive(video: HTMLVideoElement, onCode: (r: ScanResult) => void) {
-    this.stream = await navigator.mediaDevices.getUserMedia({
+    this.stopped = false;
+    const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "environment" },
     });
-    video.srcObject = this.stream;
-    await video.play();
-    this.stopped = false;
+
+    // stop() мог сработать, пока ждали разрешение камеры: поздний поток
+    // останавливаем сразу, иначе камера осталась бы включённой навсегда.
+    if (this.stopped) {
+      stream.getTracks().forEach((t) => t.stop());
+      return;
+    }
+
+    this.stream = stream;
+    video.srcObject = stream;
+    try {
+      await video.play();
+    } catch (error) {
+      this.stop();
+      throw error;
+    }
+    if (this.stopped) return;
 
     const loop = async () => {
       if (this.stopped) return;
@@ -95,6 +118,7 @@ class NativeScanner implements Scanner {
 class ZxingScanner implements Scanner {
   private reader?: BrowserMultiFormatReader;
   private controls?: IScannerControls;
+  private stopped = false;
 
   private async getReader(): Promise<BrowserMultiFormatReader> {
     if (this.reader) return this.reader;
@@ -116,20 +140,36 @@ class ZxingScanner implements Scanner {
   }
 
   async startLive(video: HTMLVideoElement, onCode: (r: ScanResult) => void) {
+    this.stopped = false;
     const reader = await this.getReader();
-    this.controls = await reader.decodeFromVideoDevice(
+    if (this.stopped) return;
+
+    const controls = await reader.decodeFromVideoDevice(
       undefined,
       video,
       (result: Result | undefined, _err, controls: IScannerControls) => {
+        if (this.stopped) {
+          controls.stop();
+          return;
+        }
         if (result) {
           onCode({ code: result.getText() });
           controls.stop();
         }
       },
     );
+
+    // decodeFromVideoDevice резолвится поздно: если stop() уже вызвали,
+    // останавливаем только что полученные controls вместе с потоком камеры.
+    if (this.stopped) {
+      controls.stop();
+      return;
+    }
+    this.controls = controls;
   }
 
   stop() {
+    this.stopped = true;
     this.controls?.stop();
     this.controls = undefined;
   }
