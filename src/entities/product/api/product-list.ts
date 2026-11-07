@@ -87,13 +87,24 @@ export const getProductList = async (
   const query = toList(searchParameters.query)[0];
 
   if (query) {
-    request = request.or(
-      [
-        `name.ilike.%${query}%`,
-        `brand.ilike.%${query}%`,
-        `category.ilike.%${query}%`,
-      ].join(","),
+    // Параметризованный RPC: запятые, скобки и кавычки в запросе — литералы,
+    // а не разделители синтаксиса PostgREST .or(), который ломал страницу.
+    const { data: matchRows, error: searchError } = await supabase.rpc(
+      "search_product_ids",
+      { p_query: query },
     );
+
+    if (searchError) {
+      throw new Error("Error on search products", { cause: searchError });
+    }
+
+    const matchIds = matchRows.map(({ id }) => id);
+
+    if (matchIds.length === 0) {
+      return [];
+    }
+
+    request = request.in("id", matchIds);
   }
 
   const sort = toList(searchParameters.sort)[0];

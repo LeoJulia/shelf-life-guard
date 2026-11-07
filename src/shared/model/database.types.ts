@@ -388,6 +388,12 @@ export type Database = {
         Args: { p_product_id?: string; p_tags?: Json; p_values?: Json };
         Returns: string;
       };
+      search_product_ids: {
+        Args: { p_query: string };
+        Returns: {
+          id: string;
+        }[];
+      };
       set_routine_items_order: {
         Args: { p_ordered_ids: string[]; p_routine_id: string };
         Returns: undefined;
