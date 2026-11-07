@@ -112,11 +112,17 @@ export const getTagsOptions = async (): Promise<string[]> => {
   return data.map(({ name }) => name).filter(Boolean);
 };
 
-export const getFilter = async () => ({
-  brands: await getBrandsList(),
-  categories: await getCategoriesList(),
-  shops: await getShopsList(),
-  volumes: await getVolumesList(),
-  tags: await getTagsOptions(),
-  priceRange: await getPriceRange(),
-});
+export const getFilter = async (): Promise<TFilterOptions> => {
+  // Запросы независимы — выполняем параллельно, а не ждём каждый по очереди.
+  const [brands, categories, shops, volumes, tags, priceRange] =
+    await Promise.all([
+      getBrandsList(),
+      getCategoriesList(),
+      getShopsList(),
+      getVolumesList(),
+      getTagsOptions(),
+      getPriceRange(),
+    ]);
+
+  return { brands, categories, shops, volumes, tags, priceRange };
+};
