@@ -44,6 +44,7 @@ export const RoutineItemsEditor = ({
     isStale: isOrderStale,
     error: orderError,
     move,
+    retry: retryOrder,
   } = useRoutineItemsOrder({
     routineId,
     items,
@@ -157,16 +158,27 @@ export const RoutineItemsEditor = ({
         </ul>
       )}
 
-      {isOrderStale && (
+      {isOrderStale && !orderError && (
         <p className='text-muted-foreground text-xs'>
           Новый порядок сохранится автоматически — можно продолжать его менять.
         </p>
       )}
 
       {orderError && (
-        <p role='alert' className='text-destructive text-sm'>
-          {orderError}
-        </p>
+        <div
+          role='alert'
+          className='text-destructive flex flex-wrap items-center gap-2 text-sm'
+        >
+          <span>{orderError}</span>
+          <Button
+            type='button'
+            variant='outline'
+            size='sm'
+            onClick={retryOrder}
+          >
+            Повторить
+          </Button>
+        </div>
       )}
     </div>
   );
