@@ -9,7 +9,8 @@ export function LogoutButton() {
 
   const logout = async () => {
     const supabase = createClient();
-    await supabase.auth.signOut();
+    // Завершаем только текущую сессию (дефолт SDK — global, все устройства).
+    await supabase.auth.signOut({ scope: "local" });
     router.push("/auth/login");
   };
 

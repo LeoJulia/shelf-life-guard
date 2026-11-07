@@ -54,10 +54,21 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  // Редирект — новый объект ответа, поэтому обновлённые/очищенные cookies из
+  // supabaseResponse нужно перенести вручную, иначе браузер и сервер разойдутся
+  // и сессия оборвётся (см. рекомендацию ниже о копировании cookies).
+  const redirectWithCookies = (url: URL) => {
+    const response = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      response.cookies.set(cookie);
+    });
+    return response;
+  };
+
   if (request.nextUrl.pathname === "/") {
     const url = request.nextUrl.clone();
     url.pathname = user ? "/dashboard" : "/auth/login";
-    return NextResponse.redirect(url);
+    return redirectWithCookies(url);
   }
 
   if (
@@ -68,7 +79,7 @@ export async function updateSession(request: NextRequest) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
-    return NextResponse.redirect(url);
+    return redirectWithCookies(url);
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
