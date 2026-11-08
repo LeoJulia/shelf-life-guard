@@ -14,7 +14,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.14",
     "@radix-ui/react-label": "^2.1.6",
     "@radix-ui/react-slot": "^1.2.2",
-    "@supabase/ssr": "latest",
+    "@supabase/ssr": "0.12.0",
     "@supabase/supabase-js": "^2.118.0",
     "@tanstack/react-table": "^9.2.8",
     "@zxing/browser": "0.1.5",
@@ -24,7 +24,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "lucide-react": "^0.511.0",
-    "next": "latest",
+    "next": "16.2.9",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.6.1",
     "react": "^19.0.0",
@@ -41,11 +41,16 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.3.1",
+    "eslint-config-next": "16.2.9",
     "postcss": "^8",
     "steiger": "^0.5.13",
     "tailwindcss": "^4.3.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5"
+  },
+  "overrides": {
+    "eslint-plugin-react-hooks": {
+      "zod-validation-error": "^4.0.2"
+    }
   }
 }
