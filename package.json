@@ -5,6 +5,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"scripts/*.test.mjs\" \"supabase/scripts/*.test.mjs\"",
     "steiger": "npx steiger ./src"
   },
   "dependencies": {
