@@ -4,6 +4,9 @@ import { fetchSignedImageUrl } from "@/shared/lib/signed-image-url";
 import { PRODUCT_IMAGES_BUCKET } from "@/shared/lib/buckets";
 import type { TProduct } from "@/entities/product";
 
+// Батч выгрузки всех строк для аналитики: равен Data API max_rows (1000).
+const FETCH_ALL_BATCH = 1000;
+
 const toList = (value: string | string[] | undefined) =>
   value === undefined ? [] : Array.isArray(value) ? value : [value];
 
@@ -145,10 +148,7 @@ export const getProductList = async (
   const buildRequest = (head = false) => {
     let request = supabase
       .from("products")
-      .select(
-        "*, product_tags(tags(name, color))",
-        paginated ? { count: "exact", head } : undefined,
-      );
+      .select("*, product_tags(tags(name, color))", { count: "exact", head });
 
     if (brands.length) {
       request = request.in("brand", brands);
@@ -250,14 +250,34 @@ export const getProductList = async (
       rows = data;
     }
   } else {
-    const { data, error } = await buildRequest();
-    if (error) {
-      throw new Error("Error on get product list", { cause: error });
+    // Сначала точный count: зная total, останавливаемся до запроса Range за
+    // пределами результата (PostgREST отдаёт 416). offset шагает на длину
+    // ответа — не теряем строки, если max_rows окажется меньше батча.
+    const { count, error: countError } = await buildRequest(true);
+    if (countError) {
+      throw new Error("Error on get product list", { cause: countError });
     }
-    rows = data;
-    total = data.length;
+
+    total = count ?? 0;
     page = 1;
-    pageCount = data.length > 0 ? 1 : 0;
+    pageCount = total > 0 ? 1 : 0;
+
+    const all: (Tables<"products"> & TProductRowWithTags)[] = [];
+    let offset = 0;
+    while (offset < total) {
+      const { data, error } = await buildRequest().range(
+        offset,
+        offset + FETCH_ALL_BATCH - 1,
+      );
+      if (error) {
+        throw new Error("Error on get product list", { cause: error });
+      }
+      // Гонка: строки удалили после count — дальше выбирать нечего.
+      if (data.length === 0) break;
+      all.push(...data);
+      offset += data.length;
+    }
+    rows = all;
   }
 
   const products = await Promise.all(
