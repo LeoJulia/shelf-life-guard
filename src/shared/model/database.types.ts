@@ -353,6 +353,15 @@ export type Database = {
           min_price: number;
         }[];
       };
+      get_product_statistics: {
+        Args: { p_today: string; p_year: number };
+        Returns: {
+          expiring_30_days: number;
+          opened_total: number;
+          spent_year: number;
+          total: number;
+        }[];
+      };
       get_shops: {
         Args: never;
         Returns: {
