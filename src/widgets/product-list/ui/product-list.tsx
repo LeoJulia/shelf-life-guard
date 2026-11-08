@@ -1,8 +1,16 @@
 import { Package } from "lucide-react";
-import { ProductCard, type TProduct } from "@/entities/product";
+import { ProductCard } from "@/entities/product";
+import { Pagination } from "@/shared/ui/pagination";
+import type { TProductListResult } from "../api";
 
-export const ProductList = ({ products }: { products: TProduct[] }) => {
-  if (!products?.length) {
+export const ProductList = ({
+  products,
+  total,
+  page,
+  pageSize,
+  pageCount,
+}: TProductListResult) => {
+  if (!products.length) {
     return (
       <div className='mt-6'>
         <div className='mt-12 flex flex-col items-center justify-center text-center'>
@@ -23,15 +31,19 @@ export const ProductList = ({ products }: { products: TProduct[] }) => {
     <div className='mt-6'>
       <div className='flex items-center justify-between'>
         <h2 className='text-lg font-semibold text-foreground'>Мои баночки</h2>
-        <span className='text-sm text-muted-foreground'>
-          {products.length} шт
-        </span>
+        <span className='text-sm text-muted-foreground'>{total} шт</span>
       </div>
       <div className='columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4'>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
+      <Pagination
+        page={page}
+        pageCount={pageCount}
+        total={total}
+        pageSize={pageSize}
+      />
     </div>
   );
 };

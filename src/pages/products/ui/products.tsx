@@ -1,11 +1,17 @@
-import { getProductList, ProductList } from "@/widgets/product-list";
+import {
+  getProductList,
+  ProductList,
+  PRODUCT_LIST_PAGE_SIZE,
+} from "@/widgets/product-list";
 
 export const Products = async ({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) => {
-  const products = await getProductList(await searchParams);
+  const result = await getProductList(await searchParams, {
+    pageSize: PRODUCT_LIST_PAGE_SIZE,
+  });
 
-  return <ProductList products={products} />;
+  return <ProductList {...result} />;
 };

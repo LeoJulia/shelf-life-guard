@@ -9,7 +9,7 @@ export const Analytics = async ({
 }) => {
   const params = await searchParams;
   // Таблица аналитики не показывает изображения — не подписываем их.
-  const products = await getProductList(params, { withImages: false });
+  const { products } = await getProductList(params, { withImages: false });
 
   // порядок по умолчанию: сначала законченные баночки
   const orderedProducts = params?.sort

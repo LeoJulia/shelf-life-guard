@@ -31,6 +31,9 @@ export const ProductSearch = ({
 
   const navigate = useCallback(
     (params: URLSearchParams) => {
+      // Смена фильтра/сортировки/поиска начинает с первой страницы: иначе
+      // прежний ?page мог бы указать за пределы суженного результата.
+      params.delete("page");
       const query = params.toString();
 
       if (query === currentParams) {
