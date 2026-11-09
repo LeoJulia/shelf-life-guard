@@ -59,7 +59,16 @@ export function Combobox({
     onValueChange?.(nextValues);
   };
 
-  const [options, setOptions] = useState(defaultOptions);
+  const [addedOptions, setAddedOptions] = useState<string[]>([]);
+  const options = [
+    ...defaultOptions,
+    ...addedOptions.filter(
+      (added) =>
+        !defaultOptions.some(
+          (option) => option.toLowerCase() === added.toLowerCase(),
+        ),
+    ),
+  ];
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -150,13 +159,7 @@ export function Combobox({
       return;
     }
 
-    setOptions((currentOptions) =>
-      currentOptions.some(
-        (option) => option.toLowerCase() === trimmedInput.toLowerCase(),
-      )
-        ? currentOptions
-        : [...currentOptions, trimmedInput],
-    );
+    setAddedOptions((currentOptions) => [...currentOptions, trimmedInput]);
 
     const nextValues = isMultiple
       ? [...selectedValues, trimmedInput]
@@ -258,12 +261,12 @@ export function Combobox({
             </div>
           )}
 
-          {filteredOptions.map((option) => {
+          {filteredOptions.map((option, index) => {
             const isSelected = selectedValues.includes(option);
 
             return (
               <div
-                key={option}
+                key={`${option}-${index}`}
                 data-combobox-item
                 role='option'
                 aria-selected={isSelected}
