@@ -22,13 +22,14 @@ export type TRoutineDates = {
  * Даты в формате YYYY-MM-DD сравниваются лексикографически, что совпадает
  * с хронологическим порядком.
  *
- * Граничный случай: end_date == today — рутина ещё активна.
+ * Граничный случай: end_date == today — рутина уже завершена (день окончания
+ * включён в завершение, поэтому «Завершить сегодня» сразу меняет статус).
  */
 export const getRoutineStatus = (
   routine: TRoutineDates,
   today: string = toLocalDateString(),
 ): TRoutineStatus => {
-  if (routine.end_date && routine.end_date < today) {
+  if (routine.end_date && routine.end_date <= today) {
     return "finished";
   }
 
